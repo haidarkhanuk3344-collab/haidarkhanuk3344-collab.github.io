@@ -59,49 +59,22 @@
     resume.querySelector('p').textContent = '完整简历已提供，可以打开查看。';
   }
 
-  const sections = [...document.querySelectorAll('[data-section]')];
-  const navLinks = [...document.querySelectorAll('#main-nav a')];
-  const titles = { about: '关于我', work: '作品', resume: '简历', contact: '联系' };
-  let framePending = false;
-  const syncPosition = () => {
-    framePending = false;
-    const marker = Math.min(innerHeight * .34, 280);
-    let current = sections[0];
-    sections.forEach(section => { if (section.getBoundingClientRect().top <= marker) current = section; });
-    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) current = sections.at(-1);
-    navLinks.forEach(link => {
-      if (link.hash === `#${current.id}`) link.setAttribute('aria-current', 'location');
-      else link.removeAttribute('aria-current');
-    });
-    document.getElementById('current-section').textContent = titles[current.id];
-    document.getElementById('section-position').textContent = `0${sections.indexOf(current) + 1} / 04`;
-    const max = document.documentElement.scrollHeight - innerHeight;
-    root.style.setProperty('--read-progress', `${max > 0 ? Math.min(100, Math.max(0, scrollY / max * 100)) : 0}%`);
-  };
-  const requestPosition = () => { if (!framePending) { framePending = true; requestAnimationFrame(syncPosition); } };
-  addEventListener('scroll', requestPosition, { passive: true });
-  addEventListener('resize', requestPosition);
-  addEventListener('hashchange', requestPosition);
-  addEventListener('load', requestPosition);
-  syncPosition();
-  document.querySelector('.skip-link').addEventListener('click', event => { event.preventDefault(); document.getElementById('main').focus(); });
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
-      if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
-    }), { threshold: .08 });
-    document.querySelectorAll('.project-card, .resume-content, .contact-links').forEach(node => { node.classList.add('reveal'); observer.observe(node); });
-  }
-  const questions = ['这个功能解决了什么问题？', '可以少一步操作吗？', '用户下一步会做什么？', '如何验证这个想法？'];
-  let questionIndex = 0;
-  document.getElementById('next-question').addEventListener('click', () => {
-    questionIndex = (questionIndex + 1) % questions.length;
-    document.getElementById('question').textContent = questions[questionIndex];
-    document.getElementById('question-number').textContent = `0${questionIndex + 1} / 04`;
-    if (!reducedMotion.matches) document.getElementById('question').animate([{ opacity: .25, transform: 'translateY(6px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 240, easing: 'ease-out' });
+  document.querySelectorAll('.resume-trigger').forEach(button => button.addEventListener('click', () => document.getElementById('resume-dialog').showModal()));
+  document.getElementById('close-resume').addEventListener('click', () => document.getElementById('resume-dialog').close());
+  document.getElementById('resume-dialog').addEventListener('click', event => {
+    const d=event.currentTarget, r=d.getBoundingClientRect();
+    if(event.target===d&&(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)) d.close();
   });
-
+  document.addEventListener('keydown', event => {
+    if (event.metaKey || event.ctrlKey || event.altKey || event.target.matches('input,textarea,[contenteditable="true"]') || document.querySelector('dialog[open]')) return;
+    const theme = event.key.toLowerCase() === 'd' ? 'light' : event.key.toLowerCase() === 'n' ? 'dark' : null;
+    if (theme && isDark() !== (theme === 'dark')) themeButton.click();
+  });
+  document.querySelector('.skip-link').addEventListener('click', event => { event.preventDefault(); document.getElementById('work').focus(); });
   const cases = {
+    worldtree: {"title": "世界树提示词库", "intro": "把个人提示词收进一棵三维世界树，让内容的积累变得可见、可探索。", "image": "assets/world-tree-fruits.jpg", "alt": "世界树提示词库的桌面测试界面", "content": "<section class=\"case-section\"><h3>让内容积累，有一种可感知的形式</h3><p>收藏提示词后，如何在下一次需要时重新找到它？这个项目尝试用树与果实建立空间化的入口：新建一条提示词，树上就增加一枚果实；点击果实，打开对应的内容。</p></section><section class=\"case-section\"><h3>在探索和查找之间保留两条路径</h3><p>可以旋转、缩放世界树，悬停或键盘聚焦查看完整标题；也可以进入提示词库全文搜索。正文支持复制、编辑、删除与撤销删除，让视觉探索之外的日常操作同样有明确入口。</p></section><section class=\"case-section\"><h3>体验中的取舍</h3><p>树枝会遮挡后方的果实，需要通过旋转查看；条目较多时使用分组。系统开启减少动态效果后，背景使用静态海报。画面表达、查找效率和动态效果之间，需要持续平衡。</p></section><section class=\"case-section\"><h3>当前状态</h3><p>提供源码与本地运行方式，提示词保存在当前浏览器中。目前没有公开在线体验地址。项目从空库开始，下方当前版本截图不含个人提示词。</p><figure class=\"current-preview\"><img src=\"assets/world-tree-current.jpg\" width=\"533\" height=\"583\" alt=\"当前世界树空库界面\" loading=\"lazy\"><figcaption>仓库 README 使用的当前界面预览</figcaption></figure></section><p class=\"case-note\">首图为仓库中的桌面测试库截图，果实来自测试数据；它用于说明空间化交互。实际新安装从空库开始，不包含示例或个人提示词。</p>", "links": [["查看项目与运行方式", "https://github.com/haidarkhanuk3344-collab/world-tree"]]},
+    hualuobo: {"title": "花萝卜", "intro": "一只住在桌面上的黑白猫，用鼠标互动与图标猫爬架，探索轻量的桌面陪伴。", "image": "assets/hualuobo-cat.png", "alt": "花萝卜的黑白猫角色动作素材", "content": "<section class=\"case-section\"><h3>让桌面环境成为互动的一部分</h3><p>猫咪可以自主活动，也会在鼠标靠近时关注、嗅闻或拍爪。文件、文件夹和快捷方式的位置被用作猫爬架，让角色与真实桌面发生联系。</p></section><section class=\"case-section\"><h3>把控制权留给使用者</h3><p>控制面板提供放出、收起、暂停、大小与图标互动开关，也保留托盘和彻底退出入口。图标组件只读取位置，不打开、拖动、重命名用户文件，也不读取文件内容。</p></section><section class=\"case-section\"><h3>当前交付与限制</h3><p>已有 Windows 10 / 11 x64 的 0.6.1 测试版安装包。采用少量完整二维动作帧，步态与动作衔接仍有限制；真实 Windows 安装、启动与图标互动仍待实机验证。</p></section><p class=\"case-note\">0.6.1 为未签名测试版，页面配图为项目角色素材，未模拟已完成实机验证。代码与角色素材暂未指定统一开源许可证。</p>", "links": [["查看 Windows 测试版", "https://github.com/haidarkhanuk3344-collab/hualuobo/releases/tag/v0.6.1"], ["查看项目", "https://github.com/haidarkhanuk3344-collab/hualuobo"]]},
+    brave: {"title": "勇者旅途", "intro": "正在开发的单机 2D 横版冒险游戏原型，从职业、战斗与装备循环探索可玩的体验。", "image": "assets/brave-journey.jpg", "alt": "勇者旅途项目游戏封面素材", "content": "<section class=\"case-section\"><h3>围绕冒险构建一条成长路径</h3><p>现有原型包含战士、射手与魔法师三个职业，城镇、四张推进式关卡、精英怪与区域 Boss。装备、强化、重铸、技能点与赏金任务，把战斗和成长连接起来。</p></section><section class=\"case-section\"><h3>从角色外观到动作反馈</h3><p>角色外观、装备预览和战斗反馈仍在迭代。仓库另有三职业的第一批完整动作预览，尚未替换正式角色，也未完成所有性别、发型与装备适配。</p></section><section class=\"case-section\"><h3>如何查看</h3><p>项目使用原生 HTML、CSS、JavaScript 和 Canvas，提供通过本地 HTTP 服务运行的方式。新建角色、读档与删除存档均在浏览器本地完成。目前没有公开在线试玩地址。</p></section><p class=\"case-note\">配图为仓库内的游戏封面素材，不是实际战斗截图。部分视觉素材由 AI 辅助生成；AI NPC 与动态任务尚未实现，当前版本没有运行时 AI 功能。</p>", "links": [["查看项目与操作说明", "https://github.com/haidarkhanuk3344-collab/brave-journey"]]},
     simplify: {
       title: 'Page Simplify',
       intro: '把界面精简中的判断，整理成一份可复用的中文 Codex Skill。',
@@ -138,6 +111,7 @@
     caseBody.querySelector('h2').textContent = data.title;
     caseBody.querySelector('.case-intro').textContent = data.intro;
     const image = caseBody.querySelector('.case-cover'); image.src = data.image; image.alt = data.alt;
+    image.classList.toggle('character-cover', button.dataset.case === 'hualuobo');
     for (const [label, url] of data.links) {
       const link = document.createElement('a'); link.textContent = `${label} ↗`; link.href = url; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.className = 'button button-outline'; caseBody.querySelector('.case-links').append(link);
     }
