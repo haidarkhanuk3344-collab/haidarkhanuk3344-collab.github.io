@@ -59,31 +59,46 @@
     resume.querySelector('p').textContent = '完整简历已提供，可以打开查看。';
   }
 
-  const views = [...document.querySelectorAll('[data-view]')];
+  const sections = [...document.querySelectorAll('[data-section]')];
   const navLinks = [...document.querySelectorAll('#main-nav a')];
   const titles = { about: '关于我', work: '作品', resume: '简历', contact: '联系' };
-  const showView = (moveFocus = false) => {
-    const key = Object.hasOwn(titles, location.hash.slice(1)) ? location.hash.slice(1) : 'about';
-    views.forEach(view => { view.hidden = view.id !== key; });
+  let framePending = false;
+  const syncPosition = () => {
+    framePending = false;
+    const marker = Math.min(innerHeight * .34, 280);
+    let current = sections[0];
+    sections.forEach(section => { if (section.getBoundingClientRect().top <= marker) current = section; });
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) current = sections.at(-1);
     navLinks.forEach(link => {
-      if (link.hash === `#${key}`) link.setAttribute('aria-current', 'page');
+      if (link.hash === `#${current.id}`) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
     });
-    document.title = `${titles[key]} · 冯恒鑫`;
-    if (moveFocus) {
-      document.getElementById(key).querySelector('h1').focus({ preventScroll: true });
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }
+    document.getElementById('current-section').textContent = titles[current.id];
+    document.getElementById('section-position').textContent = `0${sections.indexOf(current) + 1} / 04`;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    root.style.setProperty('--read-progress', `${max > 0 ? Math.min(100, Math.max(0, scrollY / max * 100)) : 0}%`);
   };
-  addEventListener('hashchange', () => showView(true));
-  showView();
+  const requestPosition = () => { if (!framePending) { framePending = true; requestAnimationFrame(syncPosition); } };
+  addEventListener('scroll', requestPosition, { passive: true });
+  addEventListener('resize', requestPosition);
+  addEventListener('hashchange', requestPosition);
+  addEventListener('load', requestPosition);
+  syncPosition();
   document.querySelector('.skip-link').addEventListener('click', event => { event.preventDefault(); document.getElementById('main').focus(); });
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
+    }), { threshold: .08 });
+    document.querySelectorAll('.project-card, .resume-content, .contact-links').forEach(node => { node.classList.add('reveal'); observer.observe(node); });
+  }
   const questions = ['这个功能解决了什么问题？', '可以少一步操作吗？', '用户下一步会做什么？', '如何验证这个想法？'];
   let questionIndex = 0;
   document.getElementById('next-question').addEventListener('click', () => {
     questionIndex = (questionIndex + 1) % questions.length;
     document.getElementById('question').textContent = questions[questionIndex];
     document.getElementById('question-number').textContent = `0${questionIndex + 1} / 04`;
+    if (!reducedMotion.matches) document.getElementById('question').animate([{ opacity: .25, transform: 'translateY(6px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 240, easing: 'ease-out' });
   });
 
   const cases = {

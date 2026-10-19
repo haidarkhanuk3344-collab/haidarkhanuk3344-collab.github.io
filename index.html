@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f5f6f8">
   <meta name="description" content="冯恒鑫的个人空间。23 岁，探索 AI 产品与交互，记录想法与实践。">
-  <title>关于我 · 冯恒鑫</title>
+  <title>冯恒鑫 · 个人空间</title>
   <script>try{const t=localStorage.getItem('fhx-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}</script>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=scroll2">
   <script defer src="profile.js"></script>
-  <script defer src="app.js"></script>
+  <script defer src="app.js?v=scroll2"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳转到内容</a>
@@ -26,40 +26,37 @@
         <a href="#resume"><span>简历</span><span class="nav-index" aria-hidden="true">03</span></a>
         <a href="#contact"><span>联系</span><span class="nav-index" aria-hidden="true">04</span></a>
       </nav>
-      <div class="sidebar-bottom"><a data-github href="https://github.com/haidarkhanuk3344-collab" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="theme-toggle" type="button">深色</button></div>
+      <div class="reading-position"><span id="current-section">关于我</span><span id="section-position">01 / 04</span><div class="reading-track"><span></span></div></div><div class="sidebar-bottom"><a data-github href="https://github.com/haidarkhanuk3344-collab" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="theme-toggle" type="button">深色</button></div>
     </aside>
     <main id="main" tabindex="-1">
       <div class="topline"><span>一个持续生长的个人空间</span><span class="space-label">FHX / SPACE</span></div>
-      <section id="about" data-view aria-labelledby="about-title">
-        <div class="eyebrow"><span class="status-dot"></span>HELLO, I'M HENGXIN</div>
-        <h1 id="about-title" tabindex="-1">你好，我是<span data-profile="name">冯恒鑫</span><span class="name-period">。</span></h1>
-        <p class="intro"><span data-profile="age">23</span> 岁，正在探索 <strong>AI 产品与交互</strong>。<br>喜欢把想法做出来，也在练习把问题想清楚。</p>
-        <div class="about-grid">
-          <div class="about-copy"><h2>从好奇心出发</h2><p>一个想法，从哪里开始？我想先观察具体的问题，再尝试做出可以体验的东西，在使用中继续调整。</p><p>这里会慢慢收集我的实践、思考，以及接下来走过的路。欢迎来坐坐。</p><a class="text-link" href="#work">看看我做过的尝试 <span aria-hidden="true">↗</span></a></div>
-          <div class="question-card"><div class="question-meta"><span>保持提问</span><span id="question-number" aria-hidden="true">01 / 04</span></div><p id="question" aria-live="polite">这个功能解决了什么问题？</p><button id="next-question" type="button">换个问题 <span aria-hidden="true">↗</span></button></div>
+      <section id="about" data-section aria-labelledby="about-title">
+        <div class="hero-layout">
+          <div class="hero-copy"><div class="eyebrow"><span class="status-dot"></span>HELLO, I'M HENGXIN</div><h1 id="about-title" tabindex="-1">你好，我是<br><span data-profile="name">冯恒鑫</span><span class="name-period">。</span></h1><p class="intro"><span data-profile="age">23</span> 岁，正在探索 <strong>AI 产品与交互</strong>。<br>喜欢把想法做出来，<br>也在练习把问题想清楚。</p><a class="text-link" href="#work">往下看看我的尝试 <span aria-hidden="true">↓</span></a></div>
+          <div class="question-scene"><div class="question-orbit" aria-hidden="true"></div><div class="question-card"><div class="question-meta"><span>保持提问</span><span id="question-number" aria-hidden="true">01 / 04</span></div><span class="question-mark" aria-hidden="true">“</span><p id="question" aria-live="polite">这个功能解决了什么问题？</p><button id="next-question" type="button">换个问题 <span aria-hidden="true">↗</span></button></div><span class="scene-caption">把好奇心，放进每一次尝试。</span></div>
         </div>
-        <div class="interest-line"><span>关注的方向</span><ul aria-label="关注的方向"><li>AI 产品</li><li>交互体验</li><li>工具与效率</li></ul></div>
-        <div class="endnote"><span>慢慢探索，认真做点东西。</span><span aria-hidden="true">↙</span></div>
+        <div class="about-bottom"><div class="about-copy"><h2>从好奇心出发</h2><p>先观察具体的问题，再做出可以体验的东西，在使用中继续调整。这里会慢慢收集我的实践、思考，以及接下来走过的路。</p></div><div class="interest-line"><span>关注的方向</span><ul aria-label="关注的方向"><li>AI 产品</li><li>交互体验</li><li>工具与效率</li></ul></div></div>
+        <a class="scroll-cue" href="#work"><span class="scroll-line" aria-hidden="true"></span><span>向下滑动，继续认识我</span><span aria-hidden="true">↓</span></a>
       </section>
-      <section id="work" data-view hidden aria-labelledby="work-title">
-        <div class="eyebrow">SELECTED EXPLORATIONS</div><h1 id="work-title" tabindex="-1">做过的一些尝试<span class="name-period">。</span></h1><p class="section-intro">从小问题开始，把想法变成可以体验的作品。</p>
+      <section id="work" data-section aria-labelledby="work-title">
+        <div class="eyebrow">SELECTED EXPLORATIONS</div><h2 id="work-title" tabindex="-1">做过的一些尝试<span class="name-period">。</span></h2><p class="section-intro">从小问题开始，把想法变成可以体验的作品。</p>
         <div class="project-list">
-          <button class="project-row" data-case="simplify" type="button"><span class="project-number">01</span><span class="project-info"><span class="project-type">方法与工具 / CODEX SKILL</span><strong>Page Simplify</strong><span>让页面精简中的判断，有据可循。</span></span><img src="assets/skill-cover.svg" width="1440" height="480" alt="" loading="lazy"><span class="project-arrow" aria-hidden="true">↗</span><span class="sr-only">，查看项目详情</span></button>
-          <button class="project-row" data-case="iqiyi" type="button"><span class="project-number">02</span><span class="project-info"><span class="project-type">交互概念 / WEB EXPERIENCE</span><strong>把好戏，调到眼前。</strong><span>以复古电视为入口，探索影视交互体验。</span></span><img src="assets/iqiyi-cover.svg" width="1440" height="520" alt="" loading="lazy"><span class="project-arrow" aria-hidden="true">↗</span><span class="sr-only">，查看项目详情</span></button>
-        </div><p class="small-note">点击作品，看看问题、取舍和具体实现。</p>
+          <button class="project-card" data-case="simplify" type="button"><span class="project-preview simplify-preview"><span class="preview-bar" aria-hidden="true"><i></i><i></i><i></i><span>PAGE SIMPLIFY / PREVIEW</span></span><img src="assets/page-simplify-desktop.png" width="1440" height="1177" alt="纸间页面精简案例预览" loading="lazy"></span><span class="project-details"><span class="project-type">01 / 方法与工具 · CODEX SKILL</span><span class="project-title">Page Simplify <span class="project-arrow" aria-hidden="true">↗</span></span><span class="project-description">让页面精简中的判断，有据可循。</span><span class="project-footer"><span>界面取舍 · 可复用方法</span><span>查看详情</span></span></span></button>
+          <button class="project-card" data-case="iqiyi" type="button"><span class="project-preview iqiyi-preview"><span class="preview-bar" aria-hidden="true"><i></i><i></i><i></i><span>INTERACTIVE SHOWCASE / PREVIEW</span></span><img src="assets/iqiyi-cover.svg" width="1440" height="520" alt="爱奇艺交互概念作品的复古电视预览" loading="lazy"></span><span class="project-details"><span class="project-type">02 / 交互概念 · WEB EXPERIENCE</span><span class="project-title">把好戏，调到眼前。<span class="project-arrow" aria-hidden="true">↗</span></span><span class="project-description">从打开电视开始，探索一段影视交互体验。</span><span class="project-footer"><span>个人概念 · 非官方项目</span><span>查看详情</span></span></span></button>
+        </div><p class="small-note">点开作品，看看具体的问题、设计取舍和实现过程。</p><a class="section-next" href="#resume">继续了解 <span aria-hidden="true">↓</span></a>
       </section>
-      <section id="resume" data-view hidden aria-labelledby="resume-title">
-        <div class="eyebrow">EXPERIENCE & NEXT STEPS</div><div class="resume-title"><h1 id="resume-title" tabindex="-1">简历<span class="name-period">。</span></h1><p class="section-intro">经历在路上，这一页也会继续更新。</p></div>
-        <div id="resume-content" class="resume-content"><span class="empty-index" aria-hidden="true">…</span><h2>给接下来的经历，留一页空间。</h2><p>教育背景与实践经历，待补充。</p><a class="text-link" href="#work">先看看已有作品 <span aria-hidden="true">↗</span></a></div><a id="resume-download" class="button" hidden>查看完整简历 ↗</a>
+      <section id="resume" data-section aria-labelledby="resume-title">
+        <div class="eyebrow">EXPERIENCE & NEXT STEPS</div><div class="resume-title"><h2 id="resume-title" tabindex="-1">简历<span class="name-period">。</span></h2><p class="section-intro">经历在路上，这一页也会继续更新。</p></div>
+        <div id="resume-content" class="resume-content"><span class="empty-index" aria-hidden="true">↗</span><h3>给接下来的经历，留一页空间。</h3><p>教育背景与实践经历，待补充。</p><a class="text-link" href="#work">先看看已有作品 <span aria-hidden="true">↗</span></a></div><a id="resume-download" class="button" hidden>查看完整简历 ↗</a>
       </section>
-      <section id="contact" data-view hidden aria-labelledby="contact-title">
-        <div class="eyebrow">LET'S CONNECT</div><h1 id="contact-title" tabindex="-1">很高兴认识你<span class="name-period">。</span></h1><p class="section-intro">关于 AI 产品、交互体验，或一个值得试试的想法。</p>
+      <section id="contact" data-section aria-labelledby="contact-title">
+        <div class="eyebrow">LET'S CONNECT</div><h2 id="contact-title" tabindex="-1">很高兴认识你<span class="name-period">。</span></h2><p class="section-intro">关于 AI 产品、交互体验，或一个值得试试的想法。</p>
         <div class="contact-links"><a data-github href="https://github.com/haidarkhanuk3344-collab" target="_blank" rel="noopener noreferrer"><span><span class="project-type">代码与实践</span><strong>在 GitHub 找到我</strong></span><span aria-hidden="true">↗</span></a><a id="contact-email" hidden></a></div>
       </section>
-      <footer><span>© 冯恒鑫</span><span>保持好奇，保持更新。</span></footer>
+      <footer><span>© 冯恒鑫 · 保持好奇，保持更新。</span><a href="#about">回到顶部 ↑</a></footer>
     </main>
   </div>
   <dialog id="case-dialog" aria-labelledby="case-title"><div class="dialog-top"><span>EXPLORATION / 项目详情</span><button id="close-case" type="button">关闭 <span aria-hidden="true">×</span></button></div><div id="case-body"></div></dialog>
-  <noscript><p class="noscript">请启用 JavaScript 以切换栏目和查看作品详情。你也可以<a href="https://github.com/haidarkhanuk3344-collab">访问我的 GitHub</a>。</p></noscript>
+  <noscript><p class="noscript">你可以直接向下浏览。启用 JavaScript 后可切换主题和查看作品详情。你也可以<a href="https://github.com/haidarkhanuk3344-collab">访问我的 GitHub</a>。</p></noscript>
 </body>
 </html>
