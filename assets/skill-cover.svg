@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="480" viewBox="0 0 1440 480" fill="none">
+  <title>Page Simplify · 页面精简</title>
+  <desc>奶油白底、墨色标题与朱红纸张构图。保留巧思，理清重点。</desc>
+  <rect width="1440" height="480" rx="12" fill="#F5F1E8"/>
+  <path d="M56 66H1384" stroke="#D9D3C6"/>
+  <rect x="56" y="30" width="13" height="13" fill="#B8442D"/>
+  <text x="81" y="41" fill="#393831" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="600" letter-spacing="2">FHX / INTERFACE TOOLS</text>
+  <text x="1384" y="41" text-anchor="end" fill="#6A685F" font-family="Helvetica,Arial,sans-serif" font-size="12" letter-spacing="2">CODEX SKILL</text>
+  <text x="53" y="192" fill="#272821" font-family="Georgia,'Times New Roman',serif" font-size="122" letter-spacing="-6">Page</text>
+  <text x="50" y="310" fill="#272821" font-family="Georgia,'Times New Roman',serif" font-size="122" letter-spacing="-6">Simplify<tspan fill="#B8442D">.</tspan></text>
+  <text x="58" y="374" fill="#393831" font-family="'Songti SC','Noto Serif CJK SC','SimSun',serif" font-size="28" letter-spacing="4">保留巧思，理清重点。</text>
+  <path d="M58 419H620" stroke="#D9D3C6"/>
+  <text x="58" y="446" fill="#706C61" font-family="Helvetica,Arial,sans-serif" font-size="12" letter-spacing="2.2">REVIEW. REFINE. PRESERVE.</text>
+  <g transform="rotate(-9 1013 240)">
+    <rect x="834" y="100" width="314" height="284" rx="4" fill="#E9E3D7" stroke="#CCC4B6"/>
+    <rect x="859" y="127" width="88" height="8" rx="2" fill="#A8A092"/>
+    <path d="M859 166H1116M859 185H1084M859 204H1116M859 223H1042" stroke="#C6BDAE" stroke-width="7"/>
+    <rect x="859" y="251" width="116" height="98" rx="2" stroke="#BEB3A2"/>
+    <rect x="993" y="251" width="123" height="98" rx="2" stroke="#BEB3A2"/>
+  </g>
+  <g transform="rotate(6 1135 267)">
+    <rect x="965" y="139" width="328" height="272" rx="4" fill="#D6CDBE" opacity=".42" transform="translate(5 7)"/>
+    <rect x="965" y="139" width="328" height="272" rx="4" fill="#FFFCF5" stroke="#CFC6B7"/>
+    <circle cx="992" cy="164" r="4" fill="#B8442D"/>
+    <path d="M1006 164H1050" stroke="#B0AA9F" stroke-width="4"/>
+    <path d="M992 208H1208M992 231H1165" stroke="#34382E" stroke-width="13"/>
+    <path d="M992 270H1245M992 284H1190" stroke="#BCB6AA" stroke-width="5"/>
+    <rect x="992" y="317" width="94" height="30" rx="3" fill="#B8442D"/>
+    <path d="M1006 332H1060" stroke="#FFF7EB" stroke-width="4"/>
+    <path d="M1107 332H1182" stroke="#8E8B80" stroke-width="4"/>
+    <path d="M992 379H1266" stroke="#E5DED1"/>
+  </g>
+  <path d="M752 118V397" stroke="#D9D3C6"/>
+  <text x="1384" y="446" text-anchor="end" fill="#B8442D" font-family="Georgia,'Times New Roman',serif" font-size="20" font-style="italic">Less noise. More character.</text>
+</svg>
