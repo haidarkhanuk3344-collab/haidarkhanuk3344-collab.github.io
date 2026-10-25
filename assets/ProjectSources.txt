@@ -1,8 +1,0 @@
-Project images used in Feng Hengxin's personal portfolio.
-
-world-tree-fruits.jpg: haidarkhanuk3344-collab/world-tree, preview-fruit-video-desktop.jpg (test-library screenshot).
-world-tree-current.jpg: same repository, preview-recovered-2026-10-04.jpg (README preview).
-hualuobo-cat.png and hualuobo-icon.png: haidarkhanuk3344-collab/hualuobo, assets/living/paw-right-03.png and assets/app/app-512.png.
-brave-journey.jpg: optimized copy of haidarkhanuk3344-collab/brave-journey, assets/ui/v26/journey-cover.png (cover artwork, not gameplay).
-
-Sources remain subject to their respective rights and notices. Their inclusion here does not grant a new license.

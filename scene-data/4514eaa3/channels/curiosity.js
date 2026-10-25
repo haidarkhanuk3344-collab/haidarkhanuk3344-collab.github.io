@@ -1,0 +1,1 @@
+import {makeNoteChannel} from "/chess/chess-tv.js"; export default makeNoteChannel({"id": "curiosity", "title": "保持好奇", "english": "Curiosity", "number": 7, "lines": ["喜欢研究，也喜欢把好奇心做成可以触碰的东西。", "可以慢慢逛，也可以去电脑里看看我的项目。"], "length": 24});

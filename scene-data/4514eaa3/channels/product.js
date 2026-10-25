@@ -1,0 +1,1 @@
+import {makeNoteChannel} from "/chess/chess-tv.js"; export default makeNoteChannel({"id": "product", "title": "产品手记", "english": "Product Notes", "number": 8, "lines": ["先想清楚问题、功能和边界，再与 AI 讨论开发需求。", "可以慢慢逛，也可以去电脑里看看我的项目。"], "length": 24});

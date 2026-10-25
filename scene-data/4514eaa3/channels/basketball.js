@@ -1,0 +1,1 @@
+import {makeNoteChannel} from "/chess/chess-tv.js"; export default makeNoteChannel({"id": "basketball", "title": "篮球", "english": "Basketball", "number": 5, "lines": ["在球场上更自在地表达自己，在疲惫的生活里找到乐趣。", "可以慢慢逛，也可以去电脑里看看我的项目。"], "length": 24});

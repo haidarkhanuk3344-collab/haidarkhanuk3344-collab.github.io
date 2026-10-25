@@ -1,0 +1,1581 @@
+/* base.css: tokens, site bar, channel-change static, layout switcher, lightbox.
+   Shared by every index and reading layout. Ghost: goes in the theme's main stylesheet. */
+/* Size-matched stand-ins: until the web fonts arrive, a local font scaled to the same widths (and given the same
+   ascent/descent) stands in, so lines don't rewrap and the page doesn't jump when the real font swaps in.
+   size-adjust = web font's width over the local font's, measured on a paragraph of English; overrides = web font's
+   metrics / size-adjust. FB covers Mac, Windows, iOS, Linux and ChromeOS (metric twins); FB2 covers Android. */
+@font-face{font-family:"Literata FB";src:local("Times New Roman"),local("TimesNewRomanPSMT"),local("Liberation Serif"),local("LiberationSerif"),local("Tinos");size-adjust:115.6%;ascent-override:102.1%;descent-override:26.8%;line-gap-override:0%}
+@font-face{font-family:"Literata FB";font-style:italic;src:local("Times New Roman Italic"),local("TimesNewRomanPS-ItalicMT"),local("Liberation Serif Italic"),local("LiberationSerif-Italic"),local("Tinos Italic");size-adjust:109.6%;ascent-override:107.7%;descent-override:28.3%;line-gap-override:0%}
+@font-face{font-family:"Literata FB";font-weight:700;src:local("Times New Roman Bold"),local("TimesNewRomanPS-BoldMT"),local("Liberation Serif Bold"),local("LiberationSerif-Bold"),local("Tinos Bold");size-adjust:115.9%;ascent-override:101.8%;descent-override:26.8%;line-gap-override:0%}
+@font-face{font-family:"Literata FB2";src:local("Noto Serif"),local("NotoSerif-Regular"),local("NotoSerif");size-adjust:98.2%;ascent-override:120.2%;descent-override:31.6%;line-gap-override:0%}
+@font-face{font-family:"Literata FB2";font-style:italic;src:local("Noto Serif Italic"),local("NotoSerif-Italic");size-adjust:95.1%;ascent-override:124.1%;descent-override:32.6%;line-gap-override:0%}
+@font-face{font-family:"Literata FB2";font-weight:700;src:local("Noto Serif Bold"),local("NotoSerif-Bold");size-adjust:98.6%;ascent-override:119.7%;descent-override:31.5%;line-gap-override:0%}
+@font-face{font-family:"Fira Sans FB";src:local("Arial"),local("ArialMT"),local("Liberation Sans"),local("LiberationSans"),local("Arimo");size-adjust:101.6%;ascent-override:92.6%;descent-override:26.6%;line-gap-override:0%}
+@font-face{font-family:"Fira Sans FB";font-style:italic;src:local("Arial Italic"),local("Arial-ItalicMT"),local("Liberation Sans Italic"),local("LiberationSans-Italic"),local("Arimo Italic");size-adjust:100.8%;ascent-override:93.3%;descent-override:26.8%;line-gap-override:0%}
+@font-face{font-family:"Fira Sans FB";font-weight:700;src:local("Arial Bold"),local("Arial-BoldMT"),local("Liberation Sans Bold"),local("LiberationSans-Bold"),local("Arimo Bold");size-adjust:94.8%;ascent-override:99.1%;descent-override:28.5%;line-gap-override:0%}
+@font-face{font-family:"Fira Sans FB2";src:local("Roboto"),local("Roboto-Regular");size-adjust:101.9%;ascent-override:92.2%;descent-override:26.5%;line-gap-override:0%}
+@font-face{font-family:"Fira Sans FB2";font-style:italic;src:local("Roboto Italic"),local("Roboto-Italic");size-adjust:104.1%;ascent-override:90.3%;descent-override:25.9%;line-gap-override:0%}
+@font-face{font-family:"Fira Sans FB2";font-weight:700;src:local("Roboto Bold"),local("Roboto-Bold");size-adjust:100.9%;ascent-override:93.1%;descent-override:26.8%;line-gap-override:0%}
+/* every common monospace is 0.6em wide like Fira Code; VT323 is 0.4em, so its stand-in is set at two thirds */
+@font-face{font-family:"Fira Code FB";src:local("Menlo"),local("Menlo-Regular"),local("Courier New"),local("CourierNewPSMT"),local("Liberation Mono"),local("LiberationMono"),local("Cousine"),local("DejaVu Sans Mono"),local("DejaVuSansMono"),local("Roboto Mono"),local("RobotoMono-Regular"),local("Droid Sans Mono"),local("DroidSansMono");ascent-override:99%;descent-override:32%;line-gap-override:0%}
+@font-face{font-family:"VT323 FB";src:local("Menlo"),local("Menlo-Regular"),local("Courier New"),local("CourierNewPSMT"),local("Liberation Mono"),local("LiberationMono"),local("Cousine"),local("DejaVu Sans Mono"),local("DejaVuSansMono"),local("Roboto Mono"),local("RobotoMono-Regular"),local("Droid Sans Mono"),local("DroidSansMono");size-adjust:66.7%;ascent-override:120%;descent-override:30%;line-gap-override:0%}
+/* for the big condensed titles only (Archivo at 62%, uppercase, several lines): a bold sans scaled to that width keeps
+   the title's line count while Archivo loads (their line-height is fixed, so only the number of lines matters).
+   Used through --display-c; other Archivo text is set wider and keeps the plain stack. */
+@font-face{font-family:"Archivo FB";font-weight:100 1000;src:local("Arial Bold"),local("Arial-BoldMT"),local("Liberation Sans Bold"),local("LiberationSans-Bold"),local("Arimo Bold"),local("Arimo-Bold");size-adjust:69.7%;ascent-override:126.3%;descent-override:30.1%;line-gap-override:0%}
+@font-face{font-family:"Archivo FB2";font-weight:100 1000;src:local("Roboto Bold"),local("Roboto-Bold");size-adjust:75.7%;ascent-override:116.2%;descent-override:27.7%;line-gap-override:0%}
+:root{
+  color-scheme: light;
+  --ground:#e8e7e3;
+  --sheet:#f3f2ee;
+  --ink:#1c1b22;
+  --soft:#3a3844;
+  --muted:#65626f;
+  --rule:rgba(28,27,34,.14);
+  --accent:#94440f;--on-accent:#fff;
+  --glow:rgba(255,160,80,.16);
+  --glow2:rgba(70,110,255,.10);
+  --codebg:#14151c;
+  --codeink:#e6e1d6;
+  --shadow:0 1px 0 rgba(0,0,0,.04),0 18px 40px -24px rgba(20,18,30,.35);
+  /* teletext palette: the screen is always a screen, so these never flip with the theme */
+  --tt-bg:#050507;--tt-w:#f2f0ea;--tt-r:#ff4b3e;--tt-g:#46f07a;--tt-y:#ffe14a;--tt-b:#3a57f5;--tt-m:#ff4fd8;--tt-c:#4ae6ff;
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --display-c:"Archivo","Archivo FB","Archivo FB2","Arial Narrow",system-ui,sans-serif;
+  --body:"Fira Sans","Fira Sans FB","Fira Sans FB2","Helvetica Neue",Arial,sans-serif;
+  --serif:"Literata","Literata FB","Literata FB2",Georgia,"Times New Roman",serif;
+  --mono:"Fira Code","Fira Code FB",ui-monospace,Menlo,Consolas,monospace;
+  --osd:"VT323","VT323 FB",ui-monospace,"Courier New",monospace;
+  --hand:"Caveat","Segoe Print","Bradley Hand",cursive;
+  --wrap:1180px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#08090e;--sheet:#0e0f16;--ink:#ebe6da;--soft:#cfc9bc;--muted:#9a97a6;--rule:rgba(255,255,255,.12);
+    --accent:#ffb867;--on-accent:#0b0a08;--glow:rgba(255,170,90,.12);--glow2:rgba(70,110,255,.14);--codebg:#14151d;--codeink:#e6e1d6;
+    --shadow:0 0 0 1px rgba(255,255,255,.04),0 30px 60px -30px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#08090e;--sheet:#0e0f16;--ink:#ebe6da;--soft:#cfc9bc;--muted:#9a97a6;--rule:rgba(255,255,255,.12);
+  --accent:#ffb867;--on-accent:#0b0a08;--glow:rgba(255,170,90,.12);--glow2:rgba(70,110,255,.14);--codebg:#14151d;--codeink:#e6e1d6;
+  --shadow:0 0 0 1px rgba(255,255,255,.04),0 30px 60px -30px rgba(0,0,0,.9);
+}
+*{box-sizing:border-box}
+/* what a post scrolls to (a part, a note, a focused link) lands below the sticky strip. The margin sits on the post's
+   elements, not as scroll-padding on the page: with scroll-padding the strip's own controls were inside the padded band,
+   so focusing one scrolled the page to "reveal" it */
+.content *{scroll-margin-top:80px}
+body{padding-bottom:70px;margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;padding-inline:16px;min-height:100%;-webkit-font-smoothing:antialiased;overflow-x:clip}
+html{overflow-x:clip}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+button{font:inherit;color:inherit}
+[hidden]{display:none!important}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* page-number entry: #pg is the button, .keyin the invisible input that summons a phone's number pad */
+#pg{cursor:pointer;border-radius:2px;position:relative}
+/* no such page: the number blinks, then the counter goes back to this page's own (theme.js) */
+#pg.miss{animation:pg-miss .9s steps(1,end)}
+@keyframes pg-miss{0%,33%,67%{opacity:1}17%,50%,83%{opacity:.12}}
+@media (prefers-reduced-motion:reduce){#pg.miss{animation:none;text-decoration:line-through}}
+#pg:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+.keyin{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0;margin:0;pointer-events:none;font-size:16px}
+
+/* ---------------------------------------------------------------- site bar (mirrors the room's top bar) */
+.site{position:relative;max-width:var(--wrap);margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:10px 18px;flex-wrap:wrap;padding-block:16px 12px}
+.site .name{font-family:var(--display);font-weight:850;font-stretch:125%;text-transform:uppercase;letter-spacing:.03em;font-size:14px;text-decoration:none}
+.site nav{display:flex;gap:2px;flex-wrap:wrap}
+.site nav a{font-family:var(--osd);font-size:19px;letter-spacing:.07em;text-decoration:none;color:var(--muted);padding:2px 8px 1px;border-radius:3px}
+.site nav a:hover{color:var(--ink)}
+.site nav a[aria-current="page"]{background:var(--ink);color:var(--ground)}
+.site nav .ext::after{content:" ↗";font-size:15px}
+.site .themeb{all:unset;cursor:pointer;font-family:var(--osd);font-size:17px;letter-spacing:.07em;color:var(--muted);padding:1px 8px 0;margin-left:6px;border:1px solid var(--rule);border-radius:3px}
+/* as wide as its longest label (LIGHT), so the nav beside it doesn't shift as it cycles */
+.site .themeb{min-width:calc(5ch + .35em);text-align:center}
+.site .themeb:hover{color:var(--ink)}
+.site .themeb:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------------------------------------------------------------- channel-change static (~120ms) */
+#static{position:fixed;inset:0;width:100%;height:100%;z-index:60;pointer-events:none;opacity:0;image-rendering:pixelated}
+#static.on{opacity:1}
+
+/* ---------------------------------------------------------------- prototype-only layout switcher ("remote") */
+.remote{position:fixed;z-index:40;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));font-family:var(--osd);color:#e9e5dc;
+  background:linear-gradient(#2a2a30,#1b1b20);border-radius:14px;box-shadow:0 18px 40px -14px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.08);width:256px}
+.remote summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px 6px;font-size:18px;letter-spacing:.08em}
+.remote summary::-webkit-details-marker{display:none}
+.remote summary .led{width:7px;height:7px;border-radius:50%;background:#ff4b3e;box-shadow:0 0 6px #ff4b3e}
+.remote:not([open]) .body{display:none}
+.remote{transition:transform .25s ease,opacity .25s ease}
+.remote.tuck:not([open]):not(:focus-within){transform:translateY(calc(100% + 24px));opacity:0;pointer-events:none}
+.remote[open] summary{border-bottom:1px solid rgba(255,255,255,.08)}
+.remote .body{padding:8px 12px 12px;display:grid;gap:10px}
+.remote .grp{display:grid;gap:4px}
+.remote .lbl{font-size:15px;letter-spacing:.1em;color:#99959f}
+.remote .keys{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.remote button{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;font-family:var(--osd);font-size:16px;letter-spacing:.03em;line-height:1;padding:7px 6px 5px;white-space:nowrap;border-radius:5px;background:#3a3a42;color:#e9e5dc;box-shadow:inset 0 -2px 0 rgba(0,0,0,.35)}
+.remote button:hover{background:#4a4a54}
+.remote button[aria-pressed="true"]{background:#e9e5dc;color:#111}
+.remote button:focus-visible{outline:2px solid #ffb867;outline-offset:2px}
+.remote .note{font-size:14px;line-height:1.1;color:#8d8994;letter-spacing:.03em}
+.remote :is(.codeg,.propsg){display:none}
+body[data-view="post"][data-read^="edit"] .remote .codeg,body[data-view="post"][data-read="manuscript"] .remote .propsg{display:grid}
+
+/* ---------------------------------------------------------------- image lightbox */
+.lb{position:fixed;inset:0;z-index:55;background:rgba(4,4,8,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:grid;place-items:center;padding:calc(24px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px));cursor:zoom-out;opacity:0;transition:opacity .2s}
+.lb.on{opacity:1}
+/* the page holds still under it (the scrollbar's gutter stays, so nothing shifts sideways either) */
+html.lb-open{overflow:hidden;scrollbar-gutter:stable;background:#131316}
+/* (the kept scrollbar gap shows the root's background, not the lightbox: the lightbox's colour over the page) */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]).lb-open{background:#050508}}
+:root[data-theme="dark"].lb-open{background:#050508}
+/* (the blur: on a phone the picture opens where it already was, and its caption on the page showed through under the
+   lightbox's own, reading as a doubled caption) */
+.lb figure{margin:0;display:grid;gap:10px;justify-items:center;max-width:min(1600px,100%);max-height:100%}
+.lb .shot{display:block;position:relative;max-width:100%;border-radius:3px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.lb img{display:block;max-width:100%;max-height:calc(100vh - 120px);object-fit:contain}
+.lb .shot::after{opacity:1;font-size:clamp(16px,1.9vw,26px)}
+/* opening rolls the tracking once: the picture jumps sideways and a band of noise wipes down it */
+.lb .shot::before{content:"";position:absolute;left:0;right:0;top:0;height:16%;z-index:1;pointer-events:none;opacity:0;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.5) 0 1px,rgba(0,0,0,.35) 1px 2px,rgba(255,255,255,.14) 2px 4px);mix-blend-mode:screen}
+.lb.on .shot img{animation:lb-track .45s steps(9,end)}
+.lb.on .shot::before{animation:lb-band .45s steps(9,end)}
+@keyframes lb-track{0%{transform:translateX(-12px);filter:saturate(1.7) brightness(1.2)}25%{transform:translateX(8px)}50%{transform:translateX(-3px);filter:none}75%{transform:translateX(1px)}100%{transform:none}}
+@keyframes lb-band{0%{opacity:1;transform:translateY(-100%)}95%{opacity:.9;transform:translateY(600%)}100%{opacity:0;transform:translateY(625%)}}
+.lb figcaption{font-family:var(--body);font-size:15px;color:#cfc9bc;text-align:center;max-width:70ch}
+.lb .x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:16px;font-family:var(--osd);font-size:20px;letter-spacing:.06em;color:#e9e5dc;background:none;border:1px solid rgba(255,255,255,.2);border-radius:4px;padding:2px 10px 0;cursor:pointer}
+/* phones: pictures run to the screen's edges on the page (read.css), so they open at that width too, not 32px smaller;
+   the caption keeps the text's margin */
+@media (max-width:640px){
+  .lb{padding-inline:env(safe-area-inset-left,0px) env(safe-area-inset-right,0px)}
+  .lb .shot{border-radius:0;box-shadow:none}
+  .lb figcaption{padding-inline:16px}
+  /* a wide picture opens at the screen's height and pans sideways (theme.js .pan): the figure scrolls, its caption
+     stays in view under it */
+  .lb.pan figure{box-sizing:border-box;width:100vw;max-width:none;overflow:auto hidden;overscroll-behavior-x:contain;justify-items:start;padding-inline:env(safe-area-inset-left,0px) env(safe-area-inset-right,0px)}
+  .lb.pan .shot,.lb.pan img{max-width:none;max-height:none}
+  .lb.pan figcaption{position:sticky;left:0;box-sizing:border-box;width:100vw;max-width:none}
+}
+
+/* narrow screens (up to where name, links and switch fit on one row, with room to spare):
+   name and the theme switch share the first row, the links get the second to themselves */
+@media (max-width:719px){
+  /* one row that never wraps, whatever font is showing (a wrap here moved the whole page when VT323 arrived);
+     scrolls sideways on the narrowest screens, with room above and below for focus rings */
+  .site nav{flex-basis:100%;margin:-6px 0 -6px -5px;padding-block:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .site nav::-webkit-scrollbar{display:none}
+  .site nav a{flex-shrink:0}
+  .site .themeb{position:absolute;top:12px;right:0;margin:0}
+  .site nav a{font-size:16px;padding:2px 5px 1px}
+  .site nav .ext::after{font-size:13px}
+}
+@media (max-width:640px){
+  .remote{width:auto;left:auto;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+  .remote[open]{width:min(256px,calc(100vw - 24px))}
+}
+@media (prefers-reduced-motion:reduce){*,::before,::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+/* index-log.css: option L for the post list, the flat one that goes with the Edit reading page.
+   A tape log: page number, title and teaser, date, runtime (reading time as H:MM:SS), grouped by year.
+   Colours and fonts come from the Edit tokens (read-edit.css, body[data-index="log"]). */
+.log{max-width:860px;margin:0 auto;padding-bottom:40px}
+.log-head{padding-block:clamp(30px,6vw,72px) clamp(22px,3vw,32px);border-bottom:1px solid var(--rule)}
+.log-head .chips{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted)}
+.log-head .chip{border:1px solid var(--rule);background:var(--sheet);padding:3px 8px 2px;border-radius:2px;color:var(--muted)}
+.log-head .pg{font-variant-numeric:tabular-nums;min-width:4ch;text-align:center}
+/* on touch screens P100 is the way into the number pad, so it gets a full-size target */
+@media (pointer:coarse){.log-head .pg::before{content:"";position:absolute;inset:-12px -12px}}
+.log-head .pg.typing{color:var(--accent)}
+.log-head .lbl{text-transform:uppercase;letter-spacing:.12em}
+.log-head h1{font-family:var(--serif);font-weight:700;font-size:clamp(36px,5vw,54px);line-height:1.05;letter-spacing:-.015em;margin:.45em 0 .3em;color:var(--ink)}
+.log-head .dek{font-family:var(--body);font-size:clamp(16px,1.3vw,18px);line-height:1.55;color:var(--soft);max-width:560px;margin:0}
+.log-head .meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 24px;margin:clamp(22px,3vw,30px) 0 0;max-width:620px}
+.log-head .meta dt{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.log-head .meta dd{margin:0;font-family:var(--body);font-size:15px;line-height:1.4;color:var(--ink);display:flex;gap:.7ch}
+.log-head .meta dd::before{content:"└";font-family:var(--mono);color:var(--muted)}
+.log-head .meta dd.rt{font-family:var(--mono);font-size:14px;font-variant-numeric:tabular-nums}
+.log-filter{display:flex;flex-wrap:wrap;gap:6px;margin-top:clamp(20px,3vw,28px)}
+.log-filter button{all:unset;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;color:var(--soft);border:1px solid var(--rule);border-radius:2px;padding:7px 10px 6px;min-height:16px}
+.log-filter button:hover{color:var(--ink);border-color:var(--muted)}
+.log-filter button[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.log-filter button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:359px){.log-filter button{padding-inline:7px}} /* (all four keys on one row at 320px) */
+
+/* rows: page · title + teaser · date · runtime */
+.log .cols,.log .rows a{display:grid;grid-template-columns:5ch minmax(0,1fr) 7ch 8ch;gap:0 18px;align-items:baseline}
+.log .cols{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:22px 10px 0}
+.log .cols span:nth-child(n+3){text-align:right}
+.log .yr{display:flex;justify-content:space-between;font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:30px 0 0;padding:0 10px 8px;border-bottom:1px solid var(--rule)}
+.log .yr span:first-child{color:var(--ink)}
+.log .rows{list-style:none;margin:0;padding:0}
+.log .rows a{padding:15px 10px 16px;border-bottom:1px solid var(--rule);text-decoration:none;color:inherit}
+.log .rows .n{font-family:var(--mono);font-size:13px;color:var(--accent);font-variant-numeric:tabular-nums}
+.log .rows .b{display:grid;gap:4px;min-width:0}
+.log .rows .t{font-family:var(--serif);font-weight:500;font-size:clamp(18px,1.5vw,20px);line-height:1.3;color:var(--ink);text-wrap:balance}
+.log .rows .x{font-family:var(--body);font-size:14.5px;line-height:1.5;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.log .rows .d,.log .rows .r{font-family:var(--mono);font-size:12.5px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.log .rows a:hover,.log .rows a:focus-visible{background:var(--sheet);outline:none}
+.log .rows a:hover .t,.log .rows a:focus-visible .t{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}
+.log .rows a:focus-visible{box-shadow:inset 2px 0 0 var(--accent)}
+.log .rows a:hover .r::before,.log .rows a:focus-visible .r::before{content:"▶\FE0E  ";color:var(--accent)}
+/* posts you started or finished get a watched bar under the runtime, like a thumbnail on a video site */
+.log .rows a[data-seen] .r{position:relative}
+.log .rows a[data-seen] .r::after{content:"";position:absolute;right:0;bottom:-6px;width:7ch;height:2px;background:linear-gradient(90deg,var(--accent) calc(var(--seen,0) * 100%),var(--rule) 0)}
+/* a finished one is played to the end: the whole bar in the accent (a grey bar read as not started) */
+.log .rows a[data-seen="done"] .r::after{background:var(--accent)}
+/* with a margin to put them in, the years hang beside the log (a dark rule starts each one), so the list reads as one
+   tape instead of eight small tables; the post count stays for screen readers */
+@media (min-width:1100px){
+  .log .yr{position:relative;height:0;margin:0;padding:0;border:0}
+  .log .yr span:first-child{position:absolute;right:calc(100% + 28px);top:19px;white-space:nowrap}
+  .log .yr span:last-child:not(:first-child){position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .log .yr + .rows > li:first-child > a{border-top:1px solid var(--ink);margin-top:-1px}
+  .log .cols{padding-bottom:8px}
+}
+.log-foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 20px;margin-top:34px;font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--muted)}
+.log-foot a{color:var(--ink);text-decoration-color:var(--accent);text-underline-offset:3px}
+@media (max-width:640px){
+  .log .cols{display:none}
+  /* page, date and runtime make a small label line over a title with the whole width */
+  .log .rows a{grid-template-columns:auto auto minmax(0,1fr);grid-template-areas:"n d r" "b b b";gap:5px 14px;padding:14px 4px 15px}
+  .log .rows .n{grid-area:n;font-size:12px}
+  .log .rows .d{grid-area:d;text-align:left;font-size:12px}
+  .log .rows .r{grid-area:r;text-align:right;font-size:12px}
+  .log .rows .b{grid-area:b}
+  .log .rows a:hover .r::before{content:none}
+  .log .yr{padding-inline:4px}
+  .log-head .meta{grid-template-columns:1fr 1fr}
+}
+
+/* index-teletext.css: option A for the post list. Teletext page 100 on the monitor.
+   Ghost: markup comes from a {{#foreach posts}} loop; see README "Index A". */
+.screen-wrap{max-width:var(--wrap);margin:0 auto;padding-block:4px 40px}
+.bezel{background:linear-gradient(#2b2b31,#1d1d22);border-radius:22px;padding:clamp(10px,2.2vw,26px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 30px 70px -30px rgba(0,0,0,.7);position:relative}
+.bezel .badge{position:absolute;left:50%;bottom:clamp(2px,.5vw,7px);transform:translateX(-50%);font-family:var(--display);font-stretch:125%;font-weight:800;font-size:10px;letter-spacing:.3em;color:#9b99a3;text-transform:uppercase;white-space:nowrap}
+.screen{position:relative;background:var(--tt-bg);border-radius:14px/18px;overflow:hidden;color:var(--tt-w);font-family:var(--osd);
+  font-size:clamp(19px,2.05vw,29px);line-height:1.08;letter-spacing:.02em;padding:clamp(12px,2.4vw,30px) clamp(12px,3vw,40px) clamp(16px,2.6vw,34px);
+  box-shadow:inset 0 0 80px rgba(0,0,0,.9),inset 0 0 10px rgba(0,0,0,.8);text-shadow:0 0 6px currentColor}
+.screen::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.035) 0 1px,transparent 1px 3px),radial-gradient(ellipse at 50% 45%,rgba(255,255,255,.05),transparent 65%),radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.55));
+  mix-blend-mode:screen}
+.tt-head{display:flex;gap:1ch;white-space:nowrap;overflow:hidden}
+.tt-head .pg{color:var(--tt-w);min-width:4ch}
+.tt-head .pg.typing{color:var(--tt-y)}
+/* touch: a 44px target around P100 without moving anything (the header grows into its own negative margin) */
+@media (pointer:coarse){.tt-head{padding-block:13px;margin-block:-13px}.tt-head .pg{padding:13px 10px;margin:-13px -10px}}
+.tt-head .svc{color:var(--tt-y)}
+.tt-head .clk{margin-left:auto;color:var(--tt-y);font-variant-numeric:tabular-nums}
+.tt-mast{margin-top:.55em;display:grid;grid-template-columns:auto 1fr;align-items:stretch}
+.tt-mast .logo{background:var(--tt-b);color:var(--tt-y);padding:.12em .6ch .02em;font-size:2.15em;line-height:1;letter-spacing:.04em}
+.tt-mast .sub{background:var(--tt-b);color:var(--tt-w);display:flex;flex-direction:column;justify-content:center;padding:0 1ch;border-left:.5ch solid var(--tt-bg)}
+.tt-mast .sub b{color:var(--tt-c);font-weight:400}
+.mosaic{height:.55em;margin:.35em 0 .5em;opacity:.9;background:
+  linear-gradient(90deg,var(--tt-r) 0 12.5%,var(--tt-y) 0 25%,var(--tt-g) 0 37.5%,var(--tt-c) 0 50%,var(--tt-b) 0 62.5%,var(--tt-m) 0 75%,var(--tt-w) 0 87.5%,var(--tt-r) 0);
+  -webkit-mask:repeating-linear-gradient(90deg,#000 0 .5ch,transparent .5ch 1ch);mask:repeating-linear-gradient(90deg,#000 0 .5ch,transparent .5ch 1ch)}
+.tt-sec{display:flex;gap:1ch;margin:.55em 0 .1em;color:var(--tt-c)}
+.tt-sec span:last-child{margin-left:auto;color:var(--tt-w);opacity:.8}
+.tt-list{list-style:none;margin:0;padding:0}
+.tt-list a{display:grid;grid-template-columns:4ch 1fr auto;gap:0 1ch;padding:.1em .4ch;text-decoration:none;border-radius:1px}
+.tt-list .n{color:var(--tt-y)}
+.tt-list .t{color:var(--tt-w);text-wrap:balance}
+.tt-list .d{color:var(--tt-g);font-variant-numeric:tabular-nums}
+.tt-list .k{grid-column:2;color:var(--tt-c);opacity:.75;font-size:.8em}
+/* pages you started or finished (theme.js): the percentage in magenta, like a subtitle page flag */
+.tt-list a[data-seen]{counter-reset:pct var(--pct,0)}
+.tt-list a[data-seen="part"] .k::before{content:counter(pct) "% SEEN · ";color:var(--tt-m);opacity:1}
+.tt-list a[data-seen="done"] .k::before{content:"SEEN · ";color:var(--tt-m)}
+.tt-list a:hover,.tt-list a:focus-visible{background:var(--tt-w);outline:none;text-shadow:none}
+.tt-list a:hover *,.tt-list a:focus-visible *{color:var(--tt-bg)}
+.tt-list a[data-seen]:is(:hover,:focus-visible) :is(.k,.d)::before,.tt-list a[data-seen]:is(:hover,:focus-visible) :is(.k,.d)::after{color:var(--tt-bg)}
+.tt-year{color:var(--tt-m);padding:.45em .4ch .05em}
+.tt-foot{margin-top:.9em;display:grid;grid-template-columns:repeat(4,1fr);gap:.5ch}
+.fx{all:unset;cursor:pointer;display:grid;place-items:center;min-height:28px;text-align:center;padding:.08em 0 0;color:var(--tt-bg);text-shadow:none;font-family:var(--osd);font-size:inherit;letter-spacing:.04em}
+.fx.r{background:var(--tt-r)}.fx.g{background:var(--tt-g)}.fx.y{background:var(--tt-y)}.fx.b{background:var(--tt-b);color:var(--tt-w)}
+.fx[aria-pressed="true"]{box-shadow:inset 0 0 0 3px var(--tt-bg),0 0 0 2px var(--tt-w)}
+.fx:focus-visible{outline:2px solid var(--tt-w);outline-offset:2px}
+.tt-hint{margin-top:.6em;color:var(--tt-c);font-size:.78em}
+.under{max-width:var(--wrap);margin:14px auto 0;display:flex;justify-content:space-between;gap:10px 24px;flex-wrap:wrap;color:var(--muted);font-size:14px}
+.under b{font-family:var(--osd);font-weight:400;font-size:18px;letter-spacing:.05em;color:var(--ink)}
+@media (max-width:640px){
+  .screen{font-size:clamp(17px,4.6vw,21px)}
+  .tt-list a{grid-template-columns:3.5ch 1fr;padding:.2em .2ch}
+  .tt-list .d{grid-column:2;grid-row:2;font-size:.85em}
+  .tt-list .k{display:none}
+  .tt-list a[data-seen="part"] .d::after{content:" · " counter(pct) "% SEEN";color:var(--tt-m)}
+  .tt-list a[data-seen="done"] .d::after{content:" · SEEN";color:var(--tt-m)}
+  .tt-mast .logo{font-size:1.7em}
+  .tt-mast .sub{font-size:.8em}
+  .tt-foot{grid-template-columns:repeat(2,1fr)}
+  .tt-hint,.bezel .badge,.tt-head .svc+span{display:none}
+  .fx{min-height:32px}
+}
+@media (max-width:480px){.tt-head .svc{display:none}}
+
+/* index-shelf.css: option B for the post list. Every post is a VHS tape lying on a shelf,
+   spine out, with a handwritten label. Years are shelf planks with Dymo labels.
+   The tapes and planks are objects, so their colors don't change with the theme. */
+.shelf{max-width:920px;margin:0 auto;padding-block:clamp(20px,5vw,56px) 60px}
+.shelf-head{display:grid;gap:6px;margin-bottom:clamp(20px,4vw,40px)}
+.shelf-head .eb{font-family:var(--osd);font-size:20px;letter-spacing:.07em;color:var(--accent)}
+.shelf-head h1{margin:0;font-family:var(--display-c);font-weight:880;font-stretch:62%;text-transform:uppercase;font-size:clamp(52px,9vw,112px);line-height:.86;text-wrap:balance}
+.shelf-head p{margin:6px 0 0;max-width:52ch;color:var(--soft);font-size:17px;line-height:1.5}
+.shelf-filter{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.shelf-filter button{all:unset;cursor:pointer;font-family:var(--osd);font-size:18px;letter-spacing:.06em;padding:3px 10px 1px;border-radius:3px;border:1px solid var(--rule);color:var(--muted)}
+.shelf-filter button:hover{color:var(--ink)}
+.shelf-filter button[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.shelf-filter button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.stack{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+.stack + .plank{margin-top:10px}
+@media (min-width:980px){.plank{margin-inline:-18px}}
+.plank{position:relative;height:18px;margin:10px 0 34px;border-radius:2px;
+  background:linear-gradient(#8a633f,#6a4829 45%,#4a311b);box-shadow:inset 0 1px 0 rgba(255,220,170,.35),0 14px 18px -8px rgba(0,0,0,.55)}
+.dymo{display:inline-block;margin:0 0 8px 6px;transform:rotate(-.8deg);background:#141418;color:#f4f4f4;font-family:var(--display);font-weight:800;font-stretch:112%;
+  font-size:13px;letter-spacing:.28em;padding:3px 9px 3px 12px;border-radius:2px;box-shadow:0 1px 0 rgba(255,255,255,.15) inset,0 2px 3px rgba(0,0,0,.5);text-shadow:0 -1px 0 rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.25)}
+
+.tape{--brand:#c9c4b8;--brandInk:#141418;display:grid;grid-template-columns:clamp(62px,12vw,110px) 1fr clamp(24px,5vw,56px);align-items:stretch;min-height:62px;text-decoration:none;color:#15172a;
+  background:linear-gradient(#1b1b1f,#0f0f12 45%,#18181c);border-radius:3px 3px 2px 2px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -2px 0 rgba(0,0,0,.6),0 3px 5px -2px rgba(0,0,0,.6);
+  transform:translateX(var(--jx,0));transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s}
+.tape:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.tape:hover,.tape:focus-visible{transform:translateX(calc(var(--jx,0px) + 18px));box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 10px 18px -6px rgba(0,0,0,.7),-18px 0 0 -14px var(--accent)}
+.tape .brand{display:flex;flex-direction:column;justify-content:center;gap:1px;padding:6px 8px 5px 10px;background:linear-gradient(90deg,var(--brand),color-mix(in srgb,var(--brand) 70%,#000));color:var(--brandInk);border-radius:3px 0 0 2px;
+  font-family:var(--display);font-stretch:118%;font-weight:850;font-size:11px;letter-spacing:.14em;line-height:1.05;text-transform:uppercase}
+.tape .brand b{font-size:15px;letter-spacing:.06em;font-weight:900;white-space:nowrap}
+.tape .label{position:relative;margin:7px 10px;padding:4px 12px 3px;background:#f2f1ec;border-radius:1px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 14px;
+  transform:rotate(var(--rot,0deg));box-shadow:0 1px 2px rgba(0,0,0,.4);
+  background-image:repeating-linear-gradient(to bottom,transparent 0 17px,rgba(60,90,180,.16) 17px 18px)}
+.tape .label .t{font-family:var(--hand);font-weight:600;font-size:clamp(21px,2.5vw,27px);line-height:1.02;color:#1c2d74;text-wrap:balance}
+.tape .label .m{font-family:var(--hand);font-weight:600;font-size:18px;color:#9b2c1c;text-align:right;line-height:1;white-space:nowrap}
+.tape .window{margin:12px 10px 12px 0;border-radius:2px;background:linear-gradient(#2a2a30,#0a0a0c);box-shadow:inset 0 1px 3px rgba(0,0,0,.9)}
+.tape:hover .window,.tape:focus-visible .window{background:linear-gradient(#3a2a18,#120c06)}
+/* a tape you started shows how far it has wound in its window (theme.js sets --seen); a finished one is full */
+.tape[data-seen]{counter-reset:pct var(--pct,0)}
+.tape[data-seen] .window{background:linear-gradient(90deg,#5a3d1f calc(var(--seen,0) * 100%),#0a0a0c 0),linear-gradient(#2a2a30,#0a0a0c)}
+.tape.b-electron{--brand:#5fd4e6}
+.tape.b-js{--brand:#f2d34a}
+.tape.b-tools{--brand:#ef6a4c}
+.tape.b-other{--brand:#cdc6ff}
+.tape.b-qa .brand{background:linear-gradient(90deg,#c0c0c0 0 14%,#c0c000 0 28%,#00c0c0 0 42%,#00c000 0 57%,#c000c0 0 71%,#c00000 0 85%,#0000c0 0)}
+.tape.b-qa .brand span,.tape.b-qa .brand b{background:#111;color:#fff;padding:0 3px;width:max-content}
+.shelf-legend{display:flex;gap:6px 16px;flex-wrap:wrap;margin-top:22px;font-family:var(--osd);font-size:17px;letter-spacing:.05em;color:var(--muted)}
+.shelf-legend i{display:inline-block;width:18px;height:10px;border-radius:1px;margin-right:6px;vertical-align:0}
+@media (max-width:640px){
+  .plank{margin-inline:0}
+  .tape{grid-template-columns:54px 1fr 10px}
+  .tape .brand{padding:4px 4px 4px 7px}
+  .tape .brand span{display:none}
+  .tape .brand b{font-size:12px;letter-spacing:0;font-stretch:100%}
+  .tape .label{grid-template-columns:1fr;margin:6px 6px}
+  .tape .label .m{text-align:left;font-size:16px}
+  .tape .window{display:none}
+  .tape[data-seen="part"] .label .m::after{content:" · " counter(pct) "% seen"}
+  .tape[data-seen="done"] .label .m::after{content:" · seen"}
+  .tape:hover,.tape:focus-visible{transform:translateX(8px)}
+}
+
+/* index-guide.css: option C for the post list. A page from a 90s German TV listings magazine.
+   Posts are broadcasts: date as the time slot, a genre, a one-line teaser, "Pick" badges.
+   The magazine is a printed object lying in the room, so its paper and ink colors don't flip with the theme. */
+.guide{--paper:#f0efe9;--news:#16161a;--gmuted:#55535c;--red:#c11d16;--yel:#ffd21f;--rule2:rgba(22,22,26,.2);
+  max-width:1040px;margin:clamp(10px,3vw,30px) auto 70px;background:var(--paper);color:var(--news);border-radius:2px;
+  box-shadow:0 2px 0 rgba(0,0,0,.06),0 40px 70px -40px rgba(0,0,0,.8);transform:rotate(-.25deg)}
+.guide .mast{display:grid;grid-template-columns:1fr auto;align-items:end;gap:8px 20px;background:var(--red);color:#fff;padding:clamp(14px,2.6vw,26px) clamp(16px,3vw,34px) clamp(10px,1.8vw,18px)}
+.guide .mast h1{margin:0;font-family:var(--display-c);font-weight:900;font-stretch:62%;font-size:clamp(58px,11vw,138px);line-height:.78;letter-spacing:-.01em;text-transform:uppercase}
+.guide .mast h1 span{display:block;font-size:.27em;font-stretch:118%;letter-spacing:.18em;line-height:1.1;margin-bottom:.35em;font-weight:800}
+.guide .mast .issue{font-family:var(--display);font-stretch:100%;font-weight:700;font-size:14px;line-height:1.3;text-align:right;text-transform:uppercase;letter-spacing:.06em}
+.guide .mast .issue b{display:inline-block;background:var(--yel);color:var(--news);padding:3px 7px 2px;margin-top:6px;font-weight:900;transform:rotate(-2deg)}
+.guide .bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:10px clamp(16px,3vw,34px);border-bottom:3px solid var(--news)}
+.guide .bar .lbl{font-family:var(--display);font-weight:800;font-stretch:110%;font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-right:6px}
+.guide .bar button{all:unset;cursor:pointer;font-family:var(--display);font-weight:750;font-stretch:90%;font-size:14px;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px 3px;border:1.5px solid var(--news);border-radius:99px}
+.guide .bar button[aria-pressed="true"]{background:var(--news);color:var(--paper)}
+.guide .bar button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.guide .cols{columns:2 340px;column-gap:clamp(22px,3.5vw,44px);column-rule:1px solid var(--rule2);padding:clamp(14px,2.4vw,24px) clamp(16px,3vw,34px) clamp(22px,3vw,34px)}
+.guide .day{break-inside:avoid;break-after:avoid;margin:0 0 8px;background:var(--news);color:var(--paper);font-family:var(--display);font-weight:850;font-stretch:112%;font-size:13px;letter-spacing:.2em;text-transform:uppercase;padding:5px 10px 4px;display:flex;justify-content:space-between}
+.guide .day span:last-child{color:var(--yel)}
+.guide .item{break-inside:avoid;display:grid;grid-template-columns:80px 1fr;gap:0 12px;padding:9px 0 13px;text-decoration:none;color:inherit;border-bottom:1px solid var(--rule2);margin-bottom:10px}
+.guide .item .time{font-family:var(--display);font-weight:900;font-stretch:72%;font-size:25px;line-height:1;white-space:nowrap;font-variant-numeric:tabular-nums}
+.guide .item .time small{display:block;font-size:12px;font-stretch:100%;font-weight:700;letter-spacing:.08em;color:var(--gmuted);margin-top:4px}
+.guide .item .gen{font-family:var(--display);font-weight:800;font-stretch:110%;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.guide .item .tipp{background:var(--yel);color:var(--news);border-radius:99px;padding:2px 8px 1px;letter-spacing:.1em;transform:rotate(-3deg)}
+.guide .item h2{margin:3px 0 4px;font-family:var(--display);font-weight:850;font-stretch:78%;font-size:23px;line-height:1.02;text-wrap:balance}
+.guide .item p{margin:0;font-family:var(--serif);font-size:15px;line-height:1.45;color:#2d2c33}
+.guide .item .meta{display:block;margin-top:6px;font-family:var(--display);font-stretch:100%;font-size:12px;font-weight:650;letter-spacing:.04em;color:var(--gmuted);text-transform:uppercase}
+.guide .item:hover h2,.guide .item:focus-visible h2{color:var(--red)}
+.guide .item[data-seen]{counter-reset:pct var(--pct,0)}
+.guide .item[data-seen="part"] .meta::after{content:" · " counter(pct) "%\00A0 watched";color:var(--red)}
+.guide .item[data-seen="done"] .meta::after{content:" · watched";color:var(--red)}
+.guide .item:focus-visible{outline:2px solid var(--red);outline-offset:4px}
+.guide .item.big{grid-column:1/-1}
+.guide .foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:3px solid var(--news);padding:10px clamp(16px,3vw,34px) 14px;font-family:var(--display);font-weight:700;font-stretch:100%;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gmuted)}
+@media (max-width:640px){
+  .guide{transform:none;margin-inline:-6px}
+  .guide .mast{grid-template-columns:1fr}
+  .guide .mast .issue{text-align:left}
+  .guide .item{grid-template-columns:62px 1fr}
+  .guide .item .time{font-size:18px}
+}
+
+/* read.css: the single-post page. Structure shared by all three reading layouts:
+   .strip (sticky teletext bar) · article.post > header.phead, aside.toc, div.content ({{content}}), footer.pend
+   Layout files (read-*.css) only re-map tokens and restyle; they don't need different markup. */
+body{--measure:680px;--read-font:var(--body);--read-size:clamp(17.5px,1.35vw,19px);--read-lh:1.68;--head-font:var(--display);--title-font:var(--display-c)}
+
+/* skip link (theme.js): a keyboard's first stop, shown only while it has focus */
+.skip{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));left:8px;z-index:60;padding:6px 12px 4px;background:var(--tt-bg);color:var(--tt-y);font-family:var(--osd);font-size:19px;letter-spacing:.04em;text-decoration:none;transform:translateY(calc(-100% - 16px))}
+.skip:focus{transform:none;outline:2px solid var(--tt-y);outline-offset:2px}
+
+/* sticky teletext strip */
+.strip{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;margin-inline:-16px;background:var(--tt-bg);color:var(--tt-w);font-family:var(--osd);font-size:19px;letter-spacing:.04em;text-shadow:0 0 5px currentColor}
+.strip .in{max-width:calc(var(--wrap) + 32px);margin:0 auto;padding:6px 16px 4px;display:flex;align-items:center;gap:1.2ch;white-space:nowrap}
+.strip a{text-decoration:none}
+.strip .back{color:var(--tt-y)}
+.strip .ttl{color:var(--tt-w);overflow:hidden;text-overflow:ellipsis;min-width:0;opacity:0;transition:opacity .25s}
+.strip.scrolled .ttl{opacity:1}
+.strip .sub{margin-left:auto;color:var(--tt-c);font-variant-numeric:tabular-nums}
+.strip .left{color:var(--tt-g);font-variant-numeric:tabular-nums}
+/* the post's page number takes a typed page number, as on the list (theme.js, when the page lists the pages) */
+.strip .pg{min-width:4ch;font-variant-numeric:tabular-nums}
+.strip .pg.typing{color:var(--tt-y)}
+/* (on a touchscreen, the strip's buttons take taps from the whole height of the strip and a little either side: the
+   strip's padding above them, and below them its padding and the 3px bar. Edit and flat Manuscript pad it more) */
+@media (pointer:coarse){.strip .pg[role="button"]::before,.strip a.back::before,.strip .sub[role="button"]::before{content:"";position:absolute;inset:-6px -6px -7px}
+  .strip a.back,.strip .sub[role="button"]{position:relative}.strip a.back::before{left:-16px}.strip .sub[role="button"]::before{right:-16px}}
+.strip .bar{height:3px;background:linear-gradient(90deg,var(--tt-r),var(--tt-y));transform-origin:left;transform:scaleX(0);pointer-events:none}
+/* PART n/m is a button: it drops the contents (nav#partmenu, built by theme.js) under the strip */
+.strip .sub[role="button"]{cursor:pointer;border-radius:2px}
+.strip .sub[role="button"]::after{content:"▼";font-size:.55em;margin-left:.6ch;vertical-align:.2em}
+.strip .sub[role="button"]:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+.partmenu{position:absolute;top:100%;right:max(16px,calc((100% - var(--wrap)) / 2));width:min(380px,calc(100vw - 32px));max-height:min(60vh,440px);overflow:auto;overscroll-behavior:contain;padding:6px 0;background:var(--tt-bg);color:var(--tt-w);border:1px solid rgba(255,255,255,.16);border-top:0;box-shadow:0 18px 40px -16px rgba(0,0,0,.7);white-space:normal}
+.partmenu a{display:grid;grid-template-columns:3ch 1fr;gap:1ch;padding:4px 14px 3px;text-decoration:none;line-height:1.1}
+.partmenu .pn{color:var(--tt-y);font-variant-numeric:tabular-nums}
+.partmenu .t{display:none}
+.partmenu a[aria-current="true"] .nm{color:var(--tt-c)}
+.partmenu a:hover,.partmenu a:focus-visible{background:var(--tt-w);color:var(--tt-bg);text-shadow:none;outline:none}
+.partmenu a:hover .pn,.partmenu a:focus-visible .pn,.partmenu a:hover .nm,.partmenu a:focus-visible .nm{color:var(--tt-bg)}
+
+.post{max-width:var(--wrap);margin:0 auto;position:relative}
+.phead{max-width:900px;margin:0 auto;padding-block:clamp(36px,7vw,90px) clamp(26px,4vw,44px)}
+.eyebrow{font-family:var(--osd);--eb-fs:21px;font-size:var(--eb-fs);letter-spacing:.06em;color:var(--accent);display:flex;flex-wrap:wrap;gap:0 1.3ch;position:relative}
+/* a post's eyebrow keeps room at the end of its first line for the resume chip, so the chip lands without moving anything */
+:where(.post:not(.page)) .eyebrow{padding-right:var(--chip-room,220px)}
+.eyebrow > span:not(:last-of-type)::after{content:"·";margin-left:1.3ch;color:var(--muted)}
+/* …except at the end of a line, when the eyebrow wraps (theme.js marks the item) */
+.eyebrow > span.eol::after{visibility:hidden}
+.phead h1{font-family:var(--title-font);font-weight:860;font-stretch:62%;text-transform:uppercase;font-size:clamp(46px,7.4vw,104px);line-height:.9;letter-spacing:-.005em;margin:.18em 0 0;text-wrap:balance}
+.stamp{display:none}
+/* "Resume at 0:03:12": theme.js adds it when you left this post part-way through */
+.resume{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:baseline;gap:.7ch;position:absolute;right:0;top:calc(var(--eb-fs) * .75);transform:translateY(-50%);white-space:nowrap;font-family:var(--osd);font-size:19px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);border:1px solid currentColor;border-radius:3px;padding:3px 10px 1px}
+.resume:hover{background:var(--accent);color:var(--ground)}
+.resume:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.toc{display:none}
+.toc:not(.on){visibility:hidden}
+.toc .rtitle,.toc .deck,.phead .meta,.toc .t{display:none}
+
+/* post body: everything Ghost's {{content}} can emit */
+.content{max-width:var(--measure);margin:0 auto;font-family:var(--read-font);font-size:var(--read-size);line-height:var(--read-lh);color:var(--soft);padding-bottom:30px;
+  --code-fs:14.5px;--code-lh:23.2px;--cbar-h:42px;--more-h:34px;--code-bw:0px}
+.content > *{margin:0 0 1.15em}
+.content li{text-wrap:pretty}
+.content{overflow-wrap:break-word}
+.content a{overflow-wrap:anywhere}
+.content a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:1.5px;text-underline-offset:3px}
+.content a:hover{text-decoration-thickness:3px}
+.content strong{color:var(--ink);font-weight:700}
+.content > h1,.content > h2{font-family:var(--head-font);font-weight:850;font-stretch:72%;text-transform:uppercase;font-size:clamp(28px,2.8vw,36px);line-height:1;color:var(--ink);margin:2.1em 0 .6em;text-wrap:balance}
+.content .sp{display:block;font-family:var(--osd);font-weight:400;font-stretch:100%;font-size:18px;letter-spacing:.08em;color:var(--accent);margin-bottom:.35em;text-transform:none}
+/* a part's own link (theme.js adds a.hl after the PART label): a # in the margin beside the heading's first line, shown on
+   hover or keyboard focus; a click copies the part's address. Only where there's a margin for it and a mouse to find it. */
+.content > :is(h1,h2){position:relative}
+.content .hl{display:none}
+@media (hover:hover) and (min-width:800px){
+  /* inline-block, so its static position is on the heading's first line; it inherits the heading's size and line
+     height so the # centres on that line in every layout */
+  .content .hl{display:inline-block;position:absolute;left:-30px;width:22px;text-align:center;font-size:inherit;line-height:inherit;letter-spacing:0;text-indent:0;text-decoration:none;color:var(--muted);opacity:0;transition:opacity .15s,color .15s}
+  .content .hl::before{content:"#";font-family:var(--mono);font-weight:400;font-size:16px;vertical-align:middle}
+  .content > :is(h1,h2):hover .hl,.content .hl:focus-visible{opacity:1}
+  .content .hl:hover{color:var(--accent)}
+  .content .hl:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+}
+/* until theme.js adds it, an empty line of the same size holds its place (Edit shows the timecode there instead) */
+body:not([data-read^="edit"]):not([data-read="phosphor"]) .content > :is(h1,h2):not(:has(> .sp))::before{content:"\a0";display:block;font-family:var(--sp-font,var(--osd));font-weight:400;font-size:var(--sp-size,18px);margin-bottom:.35em}
+.content h3{font-family:var(--head-font);font-weight:800;font-stretch:88%;font-size:22px;line-height:1.15;color:var(--ink);margin:1.8em 0 .5em}
+.content h4{font-family:var(--read-font);font-weight:700;font-size:1em;color:var(--ink);margin:1.6em 0 .4em}
+/* rarer still: an h4 in italics, rather than the browser's shrinking bold (an h6 would be 12px) */
+.content :is(h5,h6){font-family:var(--read-font);font-weight:700;font-style:italic;font-size:1em;color:var(--ink);margin:1.6em 0 .4em}
+/* Safari hangs an opening quote into the margin; not on the default blockquote, whose own “ already hangs by text-indent */
+.content p{hanging-punctuation:first}
+.content ul,.content ol{padding-left:1.3em}
+.content li{margin:.3em 0}
+.content li::marker{color:var(--accent)}
+.content ol li::marker{font-family:var(--osd);font-size:1.15em}
+.content hr{border:0;margin:2.4em 0;text-align:center;overflow:visible}
+.content hr::after{content:"▚▞▚▞▚";font-family:var(--osd);color:var(--muted);letter-spacing:.4em;font-size:18px}
+.content blockquote{margin:1.8em 0;padding:0;font-family:var(--head-font);font-stretch:80%;font-weight:600;font-size:clamp(22px,2.2vw,27px);line-height:1.25;color:var(--ink);text-indent:-.42em}
+.content blockquote::before{content:"“";color:var(--accent)}
+.content blockquote::after{content:"”";color:var(--accent)}
+.content blockquote p{display:inline;margin:0}
+.content blockquote.kg-blockquote-alt{text-align:center;text-indent:0;font-size:clamp(26px,2.8vw,34px)}
+.content :not(pre)>code{font-family:var(--mono);font-size:.84em;background:var(--rule);padding:.1em .35em;border-radius:3px;color:var(--ink);word-break:break-word;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.content code,.code pre{font-variant-ligatures:none}
+/* what else a Markdown card can hold: ==highlights==, keys, sub/superscripts, ~~strikes~~ and footnotes ([^1]) */
+.content mark{background:rgba(255,179,65,.36);color:inherit;padding:0 .12em;border-radius:2px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.content kbd{font-family:var(--osd);font-size:1.02em;line-height:1;padding:.06em .36em 0;border:1px solid var(--rule);border-bottom-width:2px;border-radius:3px;background:var(--sheet);color:var(--ink);white-space:nowrap}
+.content :is(sup,sub){font-size:.72em;line-height:0}
+.content :is(del,s){text-decoration-color:var(--accent);text-decoration-thickness:1.5px}
+.content abbr[title]{text-decoration:underline dotted var(--muted);text-underline-offset:3px;cursor:help}
+/* a footnote reference is a small number in the accent (theme.js drops Markdown's brackets); the notes follow the card
+   under a NOTES rule, and each one's arrow jumps back */
+.content .footnote-ref a{font-family:var(--osd);font-size:1.3em;text-decoration:none;color:var(--accent);padding:0 .04em 0 .06em;margin-right:-.06em}
+.content .footnote-ref a:hover{text-decoration:underline;text-decoration-thickness:1.5px}
+.content .footnote-ref a:focus-visible{outline-offset:1px}
+.post .content hr.footnotes-sep{margin:2.4em 0 .5em;height:auto;border:0;border-top:1px solid var(--rule);text-align:left}
+.post .content hr.footnotes-sep::after{content:"NOTES";display:block;width:auto;height:auto;margin:.55em 0 0;background:none;font-family:var(--osd);font-size:18px;letter-spacing:.08em;color:var(--accent)}
+.content section.footnotes{font-size:.86em;line-height:1.55;color:var(--soft)}
+.content .footnotes-list{margin:0;padding-left:1.9em}
+.content .footnote-item{margin:.45em 0}
+.content .footnote-item p{margin:0}
+.content .footnote-backref{font-family:var(--mono);text-decoration:none;color:var(--accent);padding:0 .2em}
+.content .footnote-backref:hover{text-decoration:underline}
+.content :is(.footnote-item,.footnote-ref a){border-radius:2px;transition:background-color .8s}
+.content :is(.footnote-item,.footnote-ref a):is(:target,.lit){background-color:rgba(255,179,65,.26);transition:none}
+.content .footnote-item:focus{outline:none}
+/* where a jump lands (a part, the title, the resume point) takes focus for the keyboard's sake; the scroll already shows it */
+.content [tabindex="-1"]:focus,.phead h1[tabindex="-1"]:focus{outline:none}
+
+/* images: default column width, then Ghost's wide and full-bleed cards */
+.content figure{margin:2em 0}
+.content img{display:block;max-width:100%;height:auto;margin:0 auto;border-radius:3px;box-shadow:var(--shadow);cursor:zoom-in}
+/* an image inside a link is a link, not a picture to enlarge */
+.content a img{cursor:pointer}
+.content a:is(:hover,:focus-visible) > img{outline:2px solid var(--accent);outline-offset:3px}
+.content figure.kg-width-wide{--fw:min(1040px,calc(100vw - 32px));width:var(--fw);margin-left:calc(50% - var(--fw) / 2)}
+.content figure.kg-width-full{--fw:100vw;width:var(--fw);margin-left:calc(50% - var(--fw) / 2)}
+.content figure.kg-width-full img{border-radius:0}
+/* the figure is as wide as the screen, so its caption would be too: keep it on the text column (--gutter: the space
+   from the screen's edge to the text, 16px unless a layout says otherwise) */
+.content figure.kg-width-full > figcaption{max-width:min(var(--measure),100% - 2 * var(--gutter,16px))}
+/* the ▲ (FIG. 01 in Edit) hangs left of the caption text. Plain text flow, not flex: captions hold links and spans,
+   and flex would make each of them a column */
+.content figcaption{font-family:var(--body);font-size:14.5px;line-height:1.45;color:var(--muted);margin-top:.8em;max-width:var(--measure);margin-inline:auto;
+  --cap-hang:20px;padding-left:var(--cap-hang);text-indent:calc(var(--cap-hang) * -1);overflow-wrap:anywhere}
+.content figcaption p{margin:0;display:inline}
+.content figcaption::before{content:"▲";font-family:var(--osd);color:var(--accent);font-size:13px;display:inline-block;width:var(--cap-hang);text-indent:0}
+/* photos: theme.js wraps each in span.shot[data-stamp], the post date burnt into the corner like a 90s camcorder.
+   It shows on hover and focus, and always in the lightbox. */
+.content .shot{display:block;width:fit-content;max-width:100%;margin-inline:auto;position:relative}
+.content .shot > a{display:block}
+.content figure.kg-width-full .shot,.content figure.kg-width-full .shot img{width:100%}
+.shot::after{content:attr(data-stamp);position:absolute;right:clamp(8px,2.5%,22px);bottom:clamp(6px,2.2%,18px);font-family:var(--osd);font-size:clamp(15px,1.5vw,21px);line-height:1;letter-spacing:.08em;white-space:pre;color:#ffb341;text-shadow:0 0 1px #ffb341,0 0 7px rgba(255,140,30,.8),1px 1px 0 rgba(0,0,0,.6);pointer-events:none;opacity:0;transition:opacity .2s}
+@media (hover:hover){.content .shot:hover::after{opacity:1;transition-delay:.15s}}
+.content .shot:focus-within::after{opacity:1}
+.shot[data-stamp=""]::after{display:none}
+.nosig{display:grid;place-items:center;gap:6px;aspect-ratio:16/9;max-width:100%;background:repeating-linear-gradient(90deg,#c0c0c0 0 12.5%,#c0c000 0 25%,#00c0c0 0 37.5%,#00c000 0 50%,#c000c0 0 62.5%,#c00000 0 75%,#0000c0 0 87.5%,#101010 0);border-radius:3px;font-family:var(--osd);color:#fff;text-align:center;padding:12px}
+.nosig span{background:#000;padding:4px 12px 2px;font-size:22px;letter-spacing:.08em}
+.nosig small{background:#000;padding:2px 8px;font-size:16px;opacity:.9}
+
+/* code cards: language + filename bar, line numbers, wrap and copy, long blocks fold */
+.content .code{margin:1.8em 0;background:var(--codebg);color:var(--codeink);border-radius:6px;position:relative;box-shadow:var(--shadow);overflow:hidden}
+.code .cbar{box-sizing:border-box;height:var(--cbar-h);display:flex;align-items:center;gap:10px;padding:6px 8px 4px 14px;font-family:var(--osd);font-size:17px;letter-spacing:.07em;color:#8e8a99;border-bottom:1px solid rgba(255,255,255,.07)}
+.code .lang{color:#ffb867}
+.code .file{color:#d8d3c8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;letter-spacing:.03em}
+.code .acts{margin-left:auto;display:flex;gap:6px;flex-shrink:0}
+.code .acts button{all:unset;cursor:pointer;font-family:var(--osd);font-size:16px;letter-spacing:.07em;color:#b8b4c2;padding:1px 8px;border-radius:3px;border:1px solid rgba(255,255,255,.14)}
+.code .acts button:hover{color:#fff}
+.code .acts button[aria-pressed="true"]{background:#d8d3c8;color:#111}
+.code .acts button:focus-visible,.code .more:focus-visible{outline:2px solid #ffb867;outline-offset:1px}
+.code .src{display:grid;grid-template-columns:auto 1fr;position:relative}
+.code .gut{padding:14px 10px 16px 14px;font-family:var(--mono);font-size:var(--code-fs);line-height:var(--code-lh);color:var(--gut-ink,#858197);text-align:right;user-select:none;white-space:pre;font-variant-numeric:tabular-nums;border-right:1px solid rgba(255,255,255,.05)}
+.code pre{margin:0;padding:14px 16px 16px;overflow-x:auto;font-family:var(--mono);font-size:var(--code-fs);line-height:var(--code-lh);tab-size:2;min-width:0}
+.code pre code{font-family:inherit;background:none;padding:0;color:inherit;font-size:inherit}
+.code.wrap pre{white-space:pre-wrap;word-break:break-word}
+/* WRAP makes each line a block (theme.js), so a long one wraps under itself, 2ch past its own indentation, and keeps
+   its number beside its first row: drawn in the gutter, which stays with its rule, at the end theme.js measured
+   (--num-r: the gap back to where the gutter's numbers end), in the gutter's colour (--gut-ink, which each layout sets
+   on the card, so a theme change reaches both) and on one row (the block's break-word would split 10 into 1 and 0).
+   The gutter's own numbers, and their glow where a layout gives the code one, step out of the way */
+.code.wrap pre{overflow:visible}
+.code.wrap .gut{-webkit-text-fill-color:transparent;text-shadow:none}
+.code.wrap pre code{counter-reset:ln}
+.code.wrap .ln{display:block;position:relative;counter-increment:ln;padding-left:calc(var(--ind,0ch) + 2ch);text-indent:calc(var(--ind,0ch) * -1 - 2ch)}
+.code.wrap .ln:empty::after{content:"\200B"}
+.code.wrap .ln .ind{white-space:pre}
+.code.wrap:not(.short) .ln::before{content:counter(ln);position:absolute;top:0;right:calc(100% + var(--num-r,27px));text-indent:0;white-space:nowrap;color:var(--gut-ink,#858197);font-variant-numeric:tabular-nums;-webkit-user-select:none;user-select:none;pointer-events:none}
+.code.more-x pre{-webkit-mask-image:linear-gradient(to left,transparent,#000 40px);mask-image:linear-gradient(to left,transparent,#000 40px)}
+/* likewise a contents rail too long for the screen, which scrolls inside itself (theme.js sets these) */
+.toc nav.more-below{-webkit-mask-image:linear-gradient(#000 calc(100% - 36px),transparent);mask-image:linear-gradient(#000 calc(100% - 36px),transparent)}
+.toc nav.more-above{-webkit-mask-image:linear-gradient(transparent,#000 36px);mask-image:linear-gradient(transparent,#000 36px)}
+.toc nav.more-above.more-below{-webkit-mask-image:linear-gradient(transparent,#000 36px calc(100% - 36px),transparent);mask-image:linear-gradient(transparent,#000 36px calc(100% - 36px),transparent)}
+/* a block that scrolls sideways takes keyboard focus; its ring goes round the whole card, outside it, since the card
+   clips the block and the edge fade masks it */
+.code pre:focus-visible{outline:none}
+.content .code:has(pre:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.code.short .gut{display:none}
+.code.short .src{grid-template-columns:1fr}
+/* WRAP only where a line runs past the edge (theme.js .fits: nothing does) */
+.code.fits:not(.wrap) .wrapb{display:none}
+.code.clip .src{max-height:calc(var(--code-lh) * 22 + 30px);overflow:hidden}
+.code.clip .src::after{content:"";position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(transparent,var(--codebg));pointer-events:none}
+.code .more{all:unset;cursor:pointer;display:none;width:100%;box-sizing:border-box;height:var(--more-h);line-height:18px;text-align:center;font-family:var(--osd);font-size:17px;letter-spacing:.08em;color:#ffb867;padding:8px 0 7px;border-top:1px solid rgba(255,255,255,.07)}
+.code.clip .more,.code.opened .more{display:block}
+.content .code figcaption,.content .kg-code-card > figcaption{padding:0 16px 12px calc(16px + var(--cap-hang));margin:0;color:#8e8a99}
+/* Until theme.js builds the card, a block is drawn at the card's size: room for the bar and the gutter, and the fold
+   at 22 lines. theme.js folds blocks of 30+ lines to that, so up to 23 lines and from 30 the heights agree and nothing
+   below the block moves when the card arrives; a block of 24 to 29 lines, which doesn't fold, grows by up to
+   7 lines then (only if the page is drawn before theme.js runs, as on a slow first visit). */
+.content > pre,.content .kg-code-card > pre{box-sizing:border-box;margin:1.8rem 0;margin-block:calc(var(--read-size) * 1.8);padding:calc(var(--cbar-h) + 14px) 16px 16px calc(2ch + 41px);
+  background:var(--codebg);color:var(--codeink);border:var(--code-bw) solid var(--rule);border-radius:6px;font-family:var(--mono);font-size:var(--code-fs);line-height:var(--code-lh);
+  font-variant-ligatures:none;tab-size:2;white-space:pre;overflow:auto hidden;max-height:calc(var(--code-bw) * 2 + var(--cbar-h) + var(--code-lh) * 22 + 30px + var(--more-h))}
+.content > pre code,.content .kg-code-card > pre code{font:inherit;background:none;border:0;padding:0;color:inherit}
+.content .kg-code-card{margin:1.8em 0}
+.content .kg-code-card > pre{margin:0}
+.token.comment,.token.prolog{color:#8c889a;font-style:italic}
+.token.keyword,.token.boolean,.token.important{color:#ffb867}
+.token.string,.token.char,.token.attr-value{color:#9fe3b8}
+.token.number,.token.constant{color:#ff9fb3}
+.token.function,.token.class-name{color:#8fd8ff}
+.token.operator,.token.punctuation{color:#a9a5b4}
+.token.tag,.token.selector,.token.property,.token.builtin{color:#e6b3ff}
+.token.variable,.token.parameter{color:#f2ede3}
+
+/* the rest of Ghost's cards. Ghost's own card CSS (cards.min.css, which {{ghost_head}} adds after this file) styles the
+   same elements, so each rule here repeats Ghost's selector for its element under .content: one class more, so it wins
+   whatever the load order, and it resets what Ghost sets that the design doesn't want. The prototype loads Ghost's
+   card CSS the same way, so what you see there is what the site gets. Ghost's accent (buttons, file icons, accent
+   callouts) follows the layout's. */
+.content{--ghost-accent-color:var(--accent)}
+.content .kg-bookmark-card{margin:1.8em 0;position:relative}
+.content .kg-bookmark-card a.kg-bookmark-container,.content .kg-bookmark-card a.kg-bookmark-container:hover{display:grid;grid-template-columns:1fr auto;text-decoration:none;border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--sheet);color:var(--ink)}
+.content .kg-bookmark-card .kg-bookmark-content{padding:14px 16px;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:6px;min-width:0;overflow:hidden;font-family:var(--body)}
+.content .kg-bookmark-card .kg-bookmark-title{font-size:1em;font-weight:700;color:var(--ink);line-height:1.3}
+.content .kg-bookmark-card .kg-bookmark-description{margin:0;max-height:none;font-size:15px;font-weight:400;line-height:1.45;color:var(--muted);opacity:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.content .kg-bookmark-card .kg-bookmark-metadata{margin:0;width:auto;font-family:var(--osd);font-size:17px;font-weight:400;letter-spacing:.05em;line-height:1.2;color:var(--accent);display:flex;gap:1ch;align-items:center;white-space:nowrap;min-width:0}
+.content .kg-bookmark-card .kg-bookmark-metadata > :not(img){opacity:1;font-weight:400;line-height:inherit}
+.content .kg-bookmark-card .kg-bookmark-metadata > span:nth-of-type(2){color:var(--muted)}
+.content .kg-bookmark-card .kg-bookmark-metadata > span:nth-of-type(2)::before{content:"·";margin:0 1ch 0 0;color:var(--muted)}
+.content .kg-bookmark-card .kg-bookmark-icon{width:18px;height:18px;margin:0;border-radius:2px;box-shadow:none;cursor:inherit}
+.content .kg-bookmark-card .kg-bookmark-thumbnail{position:relative;width:clamp(90px,24vw,180px);min-width:0;flex-grow:0;background:linear-gradient(135deg,#1b2a6b,#b4402a)}
+.content .kg-bookmark-card .kg-bookmark-thumbnail img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:0;box-shadow:none}
+.content .kg-callout-card{display:flex;gap:12px;padding:16px 18px;border-radius:6px;background:var(--sheet);border:1px solid var(--rule);box-shadow:none;margin:1.8em 0;color:var(--soft)}
+.content .kg-callout-card.kg-callout-card-accent{border-color:var(--accent)}
+.content .kg-callout-card.kg-callout-card-accent a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent)}
+.content .kg-callout-card .kg-callout-emoji{padding:0;font-family:var(--osd);font-size:22px;color:var(--accent);line-height:1.3}
+.content .kg-callout-card .kg-callout-text{font-size:1em;line-height:inherit;color:var(--ink)}
+.kg-toggle-card{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin:1.8em 0}
+.kg-toggle-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;padding:12px 0}
+.kg-toggle-heading-text{margin:0!important;font-family:var(--read-font);font-size:1em;font-weight:700;color:var(--ink)}
+.kg-toggle-card-icon{all:unset;cursor:pointer;width:22px;height:22px;display:grid;place-items:center;color:var(--accent);transition:transform .2s}
+.kg-toggle-card-icon svg{width:13px;height:13px}
+.kg-toggle-card-icon:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.kg-toggle-card[data-kg-toggle-state="open"] .kg-toggle-card-icon{transform:rotate(45deg)}
+.kg-toggle-content{padding-bottom:12px}
+.kg-toggle-card[data-kg-toggle-state="close"] .kg-toggle-content{display:none}
+.content .kg-button-card{margin:1.8em 0;display:flex;align-items:center;justify-content:flex-start;width:auto}
+.content .kg-button-card.kg-align-center{justify-content:center}
+.content .kg-button-card a.kg-btn{display:inline-block;height:auto;font-family:var(--osd);font-size:21px;font-weight:400;line-height:1.2;letter-spacing:.06em;text-decoration:none;border:1px solid var(--accent);background:none;color:var(--accent);padding:5px 16px 3px;border-radius:4px;opacity:1;transition:none}
+.content .kg-button-card a.kg-btn:hover{background:var(--accent);color:var(--ground);opacity:1}
+.kg-embed-card{margin:2em 0;position:relative}
+.kg-embed-card .frame{position:relative;aspect-ratio:16/9;max-width:100%;background:#000;border-radius:4px;overflow:hidden;display:grid;place-items:center;color:#e9e4d8;font-family:var(--osd);font-size:20px;letter-spacing:.06em;text-align:center;padding:16px}
+.kg-embed-card .frame::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.05) 0 1px,transparent 1px 3px)}
+/* Ghost puts the iframe straight into the figure: keep it in flow at 16:9. The prototype stand-in (.frame) positions its own. */
+.kg-embed-card > iframe{display:block;width:100%;height:auto;aspect-ratio:16/9;border:0;border-radius:4px;background:#000}
+.kg-embed-card .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* an X/Twitter post is a blockquote until Twitter's script swaps in its iframe (and stays one when the script is
+   blocked): a small card in the layout's reading type, not the pull quote */
+.content .kg-embed-card blockquote.twitter-tweet{box-sizing:border-box;width:100%;max-width:550px;margin:0 auto;padding:14px 18px;border:1px solid var(--rule);border-radius:6px;background:var(--sheet);font:400 .9em/1.55 var(--read-font);text-indent:0;text-align:left;color:var(--muted)}
+.content .kg-embed-card blockquote.twitter-tweet::before,.content .kg-embed-card blockquote.twitter-tweet::after{content:none}
+.content .kg-embed-card blockquote.twitter-tweet p{display:block;margin:0 0 .5em;color:var(--ink)}
+/* galleries: Ghost's gallery script sizes each picture by its aspect ratio (an inline flex), so a row's pictures share
+   one height and nothing is cropped. Without the script they share the row equally and crop to its height. */
+.content .kg-gallery-card .kg-gallery-container{display:flex;flex-direction:column;gap:8px}
+.content .kg-gallery-card .kg-gallery-row{display:flex;gap:8px;margin:0}
+.content .kg-gallery-card .kg-gallery-image{flex:1 1 0%;min-width:0;margin:0}
+.content .kg-gallery-card .kg-gallery-image img{display:block;width:100%;height:100%;margin:0;object-fit:cover}
+.content blockquote.kg-blockquote-alt{font-style:normal;padding:0}
+/* video: Ghost's player (cards.min.js drives it) dressed as a VCR. The picture gets the deck's on-screen display: ▶ PLAY
+   in the middle until it starts, then PLAY in the corner for a moment and PAUSE while paused (read off the classes
+   Ghost's script sets); the controls are a flat counter bar that hides while it plays and the pointer is elsewhere.
+   A looping clip (Ghost's "loop" option: muted, no controls) is just a moving picture. */
+.content .kg-video-card{position:relative;margin:2em 0;--seek-before-width:0%;--volume-before-width:100%;--vo:#f4f2ec;--vo-dim:rgba(244,242,236,.32);--vo-hi:#ffb341;--vo-edge:2px 2px 0 #111,-1px -1px 0 #111,1px -1px 0 #111,-1px 1px 0 #111}
+.content .kg-video-card .kg-video-container{position:relative;height:auto;padding-bottom:0!important;overflow:hidden;background:#000;border-radius:3px;box-shadow:var(--shadow);cursor:pointer;container-type:inline-size}
+.content .kg-video-card.kg-width-full .kg-video-container{border-radius:0}
+.content .kg-video-card:has(video[loop]) .kg-video-container{cursor:default}
+.content .kg-video-card .kg-video-container video{position:static;display:block;width:100%;height:auto;max-width:none;object-fit:contain}
+.content .kg-video-card .kg-video-hide,.content .kg-audio-card .kg-audio-hide{display:none!important}
+.content .kg-video-card .kg-video-overlay{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;background:none;transition:opacity .2s}
+.content .kg-video-card .kg-video-large-play-icon{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:.3em;padding:.16em .42em .08em;border-radius:2px;
+  font-family:var(--osd);font-size:30px;font-size:clamp(24px,6.4cqi,46px);line-height:1;letter-spacing:.06em;color:var(--vo);text-shadow:var(--vo-edge);transition:opacity .2s}
+.content .kg-video-card .kg-video-large-play-icon::after{content:"PLAY"}
+.content .kg-video-card .kg-video-large-play-icon svg{width:.6em;height:.6em;margin:0 0 .06em;fill:var(--vo);stroke:#111;stroke-width:2.6;stroke-linejoin:round;paint-order:stroke;overflow:visible}
+.content .kg-video-card .kg-video-large-play-icon:is(:hover,:focus-visible){background:var(--vo);color:#111;text-shadow:none;outline:none}
+.content .kg-video-card .kg-video-large-play-icon:is(:hover,:focus-visible) svg{fill:#111;stroke:none}
+.content .kg-video-card .kg-video-container::after{content:none;position:absolute;left:clamp(10px,3.4cqi,26px);top:clamp(8px,3cqi,22px);z-index:2;padding-right:1.05em;pointer-events:none;
+  font-family:var(--osd);font-size:24px;font-size:clamp(18px,4.2cqi,32px);line-height:1;letter-spacing:.06em;color:var(--vo);text-shadow:var(--vo-edge);background:no-repeat right 0 top 45%/.74em .74em}
+.content .kg-video-card:has(.kg-video-overlay.kg-video-hide-animated):has(.kg-video-play-icon.kg-video-hide):not(:has(video[loop])) .kg-video-container::after{content:"PLAY";animation:vosd 2.4s steps(1,end) forwards;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 1.5 18 10 3 18.5Z' fill='%23f4f2ec' stroke='%23111' stroke-width='2.4' stroke-linejoin='round' paint-order='stroke'/%3E%3C/svg%3E")}
+.content .kg-video-card:has(.kg-video-overlay.kg-video-hide-animated):has(.kg-video-pause-icon.kg-video-hide):not(:has(video[loop])) .kg-video-container::after{content:"PAUSE";
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M2.5 1.5h5v17h-5zM12.5 1.5h5v17h-5z' fill='%23f4f2ec' stroke='%23111' stroke-width='2.2' stroke-linejoin='round' paint-order='stroke'/%3E%3C/svg%3E")}
+@keyframes vosd{to{visibility:hidden}}
+.content .kg-video-card .kg-video-player-container{position:absolute;left:0;right:0;bottom:0;top:auto;width:auto;height:auto;z-index:3;background:none;transition:opacity .2s}
+.content .kg-video-card .kg-video-player{position:relative;bottom:auto;z-index:auto;display:flex;align-items:center;gap:2px;width:100%;padding:3px 8px 2px;background:rgba(10,10,12,.84);
+  font-family:var(--osd);font-size:19px;line-height:1;letter-spacing:.04em;color:var(--vo);font-variant-numeric:tabular-nums}
+.content .kg-video-card .kg-video-player :is(.kg-video-current-time,.kg-video-time){flex:none;min-width:0;padding:0 1px;font:inherit;line-height:1;color:var(--vo);white-space:nowrap}
+.content .kg-video-card .kg-video-player .kg-video-current-time{padding-left:4px}
+.content .kg-video-card .kg-video-player .kg-video-time{color:var(--vo-dim);color:rgba(244,242,236,.62)}
+.content .kg-video-card .kg-video-player .kg-video-duration{padding:0 0 0 1px}
+.content .kg-video-card .kg-video-player button{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex:none;height:32px;min-width:30px;padding:0 5px;border-radius:2px;font:inherit;color:var(--vo)}
+.content .kg-video-card .kg-video-player button:hover{color:var(--vo-hi)}
+.content .kg-video-card .kg-video-player svg{width:13px;height:13px;fill:currentColor}
+.content .kg-video-card .kg-video-player :is(.kg-video-mute-icon,.kg-video-unmute-icon) svg{width:16px;height:16px}
+.content .kg-video-card .kg-video-player .kg-video-playback-rate{min-width:36px}
+/* the sliders: a thin line, the played part solid, a bar for the head. Ghost draws the played part with ::before (Chrome,
+   Safari) and ::-moz-range-progress (Firefox), sized by --seek-before-width / --volume-before-width */
+.content .kg-video-card .kg-video-player input[type=range],.content .kg-audio-card .kg-audio-player input[type=range]{-webkit-appearance:none;appearance:none;position:relative;display:block;height:32px;margin:0 6px;padding:0;border:0;background:transparent;cursor:pointer;min-width:0}
+.content .kg-video-card .kg-video-player .kg-video-seek-slider,.content .kg-audio-card .kg-audio-player .kg-audio-seek-slider{flex:1 1 auto;width:auto}
+.content .kg-video-card .kg-video-player .kg-video-volume-slider,.content .kg-audio-card .kg-audio-player .kg-audio-volume-slider{flex:none;width:60px}
+.content .kg-video-card .kg-video-player input[type=range]::before,.content .kg-audio-card .kg-audio-player input[type=range]::before{content:"";position:absolute;left:0;top:50%;height:2px;margin-top:-1px;border-radius:0;background:var(--vo);pointer-events:none}
+.content .kg-video-card .kg-video-player .kg-video-seek-slider::before,.content .kg-audio-card .kg-audio-player .kg-audio-seek-slider::before{width:var(--seek-before-width)}
+.content .kg-video-card .kg-video-player .kg-video-volume-slider::before,.content .kg-audio-card .kg-audio-player .kg-audio-volume-slider::before{width:var(--volume-before-width)}
+.content .kg-video-card .kg-video-player input[type=range]::-webkit-slider-runnable-track{height:2px;border-radius:0;background:var(--vo-dim)}
+.content .kg-video-card .kg-video-player input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;box-sizing:border-box;width:4px;height:16px;margin-top:-7px;border:0;border-radius:0;background:var(--vo);box-shadow:0 0 0 1px #111;transform:none}
+.content .kg-video-card .kg-video-player input[type=range]::-moz-range-track{height:2px;border-radius:0;background:var(--vo-dim)}
+.content .kg-video-card .kg-video-player input[type=range]::-moz-range-progress{height:2px;border-radius:0;background:var(--vo)}
+.content .kg-video-card .kg-video-player input[type=range]::-moz-range-thumb{box-sizing:border-box;width:4px;height:16px;border:0;border-radius:0;background:var(--vo);box-shadow:0 0 0 1px #111;transform:none}
+.content .kg-video-card .kg-video-player :is(button,input):focus-visible{outline:2px solid var(--vo);outline-offset:-2px}
+@media (max-width:520px){
+  /* phones: keep the seek bar (Ghost drops it) and drop the volume slider instead; the phone has buttons for that */
+  .content .kg-video-card .kg-video-player input.kg-video-seek-slider,.content .kg-audio-card .kg-audio-player input.kg-audio-seek-slider{display:block}
+  .content .kg-video-card .kg-video-player input.kg-video-volume-slider,.content .kg-audio-card .kg-audio-player input.kg-audio-volume-slider{display:none}
+  .content .kg-video-card .kg-video-player :is(.kg-video-mute-icon,.kg-video-unmute-icon,.kg-video-playback-rate),.content .kg-audio-card .kg-audio-player :is(.kg-audio-mute-icon,.kg-audio-unmute-icon,.kg-audio-playback-rate){margin-left:0;padding:0 4px}
+}
+
+/* audio: a flat card. Without cover art the square holds a cassette, and its reels turn while it plays */
+.content .kg-audio-card{display:flex;align-items:center;gap:14px;width:100%;min-height:0;margin:1.8em 0;padding:10px 12px 10px 10px;border:1px solid var(--rule);border-radius:6px;background:var(--sheet);color:var(--ink);box-shadow:none;font-family:var(--body);
+  --vo:var(--accent);--vo-dim:var(--rule);--seek-before-width:0%;--volume-before-width:100%}
+.content .kg-audio-card + .kg-audio-card{margin-top:-.6em}
+.content .kg-audio-card .kg-audio-thumbnail{flex:none;display:block;width:76px;min-width:76px;height:76px;margin:0;border-radius:3px;object-fit:cover;box-shadow:none;cursor:default;aspect-ratio:auto}
+.content .kg-audio-card .kg-audio-thumbnail.placeholder{position:relative;background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 40'%3E%3Crect x='.5' y='.5' width='59' height='39' rx='3' fill='%2327262c' stroke='%23111'/%3E%3Crect x='5' y='4' width='50' height='22' rx='1.5' fill='%23ebe5d5'/%3E%3Crect x='5' y='7' width='50' height='2.5' fill='%23d9622b'/%3E%3Crect x='5' y='10.5' width='50' height='1.2' fill='%23e8a43a'/%3E%3Crect x='16' y='12.5' width='28' height='10' rx='5' fill='%23141318'/%3E%3Cpath d='M12 39.5 15 31h30l3 8.5z' fill='%231d1c22'/%3E%3Ccircle cx='3.6' cy='3.6' r='1' fill='%23555'/%3E%3Ccircle cx='56.4' cy='3.6' r='1' fill='%23555'/%3E%3Ccircle cx='3.6' cy='36.4' r='1' fill='%23555'/%3E%3Ccircle cx='56.4' cy='36.4' r='1' fill='%23555'/%3E%3C/svg%3E") no-repeat 8px 18px/60px 40px}
+.content .kg-audio-card .kg-audio-thumbnail.placeholder svg{display:none}
+/* the reels, over the cassette's window */
+.content .kg-audio-card .kg-audio-thumbnail.placeholder::before,.content .kg-audio-card .kg-audio-thumbnail.placeholder::after{content:"";position:absolute;top:30.5px;left:26px;width:9px;height:9px;border-radius:50%;
+  background:radial-gradient(circle,#141318 0 1.4px,transparent 1.8px),conic-gradient(#f4f2ec 0 48deg,#141318 48deg 72deg,#f4f2ec 72deg 168deg,#141318 168deg 192deg,#f4f2ec 192deg 288deg,#141318 288deg 312deg,#f4f2ec 312deg)}
+.content .kg-audio-card .kg-audio-thumbnail.placeholder::after{left:41px}
+.content .kg-audio-card:has(.kg-audio-play-icon.kg-audio-hide) .kg-audio-thumbnail.placeholder::before,.content .kg-audio-card:has(.kg-audio-play-icon.kg-audio-hide) .kg-audio-thumbnail.placeholder::after{animation:reel 1.6s linear infinite}
+@keyframes reel{to{transform:rotate(-360deg)}}
+@media (prefers-reduced-motion:reduce){.content .kg-audio-card .kg-audio-thumbnail.placeholder::before,.content .kg-audio-card .kg-audio-thumbnail.placeholder::after{animation:none!important}}
+.content .kg-audio-card .kg-audio-player-container{display:flex;flex-direction:column;justify-content:center;gap:2px;flex:1;min-width:0;width:auto;--seek-before-width:0%;--volume-before-width:100%}
+.content .kg-audio-card .kg-audio-title{width:auto;margin:0;padding:0 0 0 2px;border:0;background:none;font-family:var(--body);font-size:16px;font-weight:700;line-height:1.3;color:var(--ink)}
+.content .kg-audio-card .kg-audio-player{display:flex;align-items:center;gap:2px;flex-grow:0;padding:0;font-family:var(--osd);font-size:19px;line-height:1;letter-spacing:.04em;color:var(--ink);font-variant-numeric:tabular-nums}
+.content .kg-audio-card .kg-audio-player :is(.kg-audio-current-time,.kg-audio-time){flex:none;min-width:0;width:auto;padding:0 1px;font:inherit;line-height:1;color:var(--ink);white-space:nowrap}
+.content .kg-audio-card .kg-audio-player .kg-audio-time{color:var(--muted)}
+.content .kg-audio-card .kg-audio-player .kg-audio-duration{padding:0 0 0 1px}
+.content .kg-audio-card .kg-audio-player button{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex:none;height:32px;min-width:30px;padding:0 5px;border-radius:3px;font:inherit;color:var(--muted)}
+.content .kg-audio-card .kg-audio-player button:hover{color:var(--ink)}
+.content .kg-audio-card .kg-audio-player :is(.kg-audio-play-icon,.kg-audio-pause-icon){width:32px;margin:0 6px 0 0;border:1px solid var(--accent);color:var(--accent)}
+.content .kg-audio-card .kg-audio-player :is(.kg-audio-play-icon,.kg-audio-pause-icon):hover{background:var(--accent);color:var(--ground)}
+.content .kg-audio-card .kg-audio-player svg{width:12px;height:12px;fill:currentColor}
+.content .kg-audio-card .kg-audio-player :is(.kg-audio-mute-icon,.kg-audio-unmute-icon) svg{width:16px;height:16px}
+.content .kg-audio-card .kg-audio-player .kg-audio-playback-rate{min-width:36px;color:var(--ink)}
+.content .kg-audio-card .kg-audio-player input[type=range]::-webkit-slider-runnable-track{height:2px;border-radius:0;background:var(--rule)}
+.content .kg-audio-card .kg-audio-player input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;box-sizing:border-box;width:4px;height:16px;margin-top:-7px;border:0;border-radius:0;background:var(--ink);box-shadow:none;transform:none}
+.content .kg-audio-card .kg-audio-player input[type=range]::-moz-range-track{height:2px;border-radius:0;background:var(--rule)}
+.content .kg-audio-card .kg-audio-player input[type=range]::-moz-range-progress{height:2px;border-radius:0;background:var(--accent)}
+.content .kg-audio-card .kg-audio-player input[type=range]::-moz-range-thumb{box-sizing:border-box;width:4px;height:16px;border:0;border-radius:0;background:var(--ink);box-shadow:none;transform:none}
+.content .kg-audio-card .kg-audio-player :is(button,input):focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+@media (max-width:420px){
+  .content .kg-audio-card{gap:10px}
+  .content .kg-audio-card .kg-audio-thumbnail{width:60px;min-width:60px;height:60px}
+  .content .kg-audio-card .kg-audio-thumbnail.placeholder{background-position:0 10px}
+  .content .kg-audio-card .kg-audio-thumbnail.placeholder::before{left:18px;top:22.5px}
+  .content .kg-audio-card .kg-audio-thumbnail.placeholder::after{left:33px;top:22.5px}
+  .content .kg-audio-card .kg-audio-player .kg-audio-playback-rate{display:none}
+}
+@media (max-width:360px){.content .kg-audio-card .kg-audio-player :is(.kg-audio-mute-icon,.kg-audio-unmute-icon){display:none}}
+
+/* file downloads: the card is the link; name and size in the counter's type */
+.content .kg-file-card{display:flex;margin:1.8em 0}
+.content .kg-file-card a.kg-file-card-container{display:flex;align-items:stretch;justify-content:space-between;gap:14px;width:100%;min-height:0;padding:12px 12px 12px 16px;border:1px solid var(--rule);border-radius:6px;background:var(--sheet);color:var(--ink);text-decoration:none;font-family:var(--body);transition:border-color .15s}
+.content .kg-file-card a.kg-file-card-container:hover{border:1px solid var(--accent)}
+.content .kg-file-card a.kg-file-card-container:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.content .kg-file-card .kg-file-card-contents{display:flex;flex-direction:column;justify-content:center;gap:3px;flex:1;width:auto;min-width:0;margin:0}
+.content .kg-file-card .kg-file-card-title{font-size:16px;font-weight:700;line-height:1.3;color:var(--ink)}
+.content .kg-file-card .kg-file-card-caption{flex-grow:0;margin:0;font-size:15px;line-height:1.4;color:var(--muted);opacity:1}
+.content .kg-file-card :is(.kg-file-card-title,.kg-file-card-caption):empty{display:none}
+.content .kg-file-card .kg-file-card-metadata{display:flex;flex-wrap:wrap;gap:0 1ch;margin:2px 0 0;font-family:var(--osd);font-size:17px;line-height:1.15;letter-spacing:.05em;color:var(--accent)}
+.content .kg-file-card .kg-file-card-filename{display:inline;font-weight:400;overflow-wrap:anywhere}
+.content .kg-file-card .kg-file-card-filesize{display:inline;font-size:inherit;color:var(--muted);opacity:1}
+.content .kg-file-card .kg-file-card-filesize::before{content:"·";display:inline;margin:0 1ch 0 0}
+.content .kg-file-card .kg-file-card-icon{position:relative;display:flex;align-items:center;justify-content:center;flex:none;width:56px;min-width:56px;height:auto;min-height:56px;border-radius:3px;color:var(--accent)}
+.content .kg-file-card .kg-file-card-icon::before{content:"";position:absolute;inset:0;border-radius:3px;background:currentColor;opacity:.09;transition:opacity .15s}
+.content .kg-file-card a.kg-file-card-container:hover .kg-file-card-icon::before{opacity:.18}
+.content .kg-file-card .kg-file-card-icon svg{position:relative;width:24px;height:24px;color:inherit}
+
+/* header, product, call-to-action and signup cards: Ghost's layout and the author's colours, the page's type */
+.content .kg-header-card h2.kg-header-card-heading,.content .kg-signup-card h2.kg-signup-card-heading{font-family:var(--title-font);font-weight:860;font-stretch:62%;text-transform:uppercase;line-height:.95;letter-spacing:0;text-wrap:balance}
+.content .kg-header-card .kg-header-card-subheading,.content .kg-signup-card .kg-signup-card-subheading{font-family:var(--read-font);font-weight:400}
+.content .kg-header-card.kg-v2 a.kg-header-card-button,.content .kg-signup-card .kg-signup-card-button,.content .kg-cta-card a.kg-cta-button,.content .kg-product-card a.kg-product-card-button{font-family:var(--osd);font-size:21px;font-weight:400;letter-spacing:.06em;text-decoration:none;border-radius:4px}
+.content .kg-cta-card{border-radius:6px}
+.content .kg-signup-card .kg-signup-card-input{font-family:var(--body);font-size:1em}
+.content .kg-signup-card .kg-signup-card-disclaimer{font-size:.85em}
+/* Ghost takes the focus ring off the header and signup buttons and the signup field; a keyboard needs it back. Dark,
+   light and dark again, so one band shows against any colours the author gave the button and the card (and a
+   transparent outline, which high-contrast modes draw in their own colour) */
+.content .kg-header-card .kg-header-card-button:focus-visible,.content .kg-signup-card .kg-signup-card-button:focus-visible,.content .kg-signup-card .kg-signup-card-fields:has(.kg-signup-card-input:focus-visible){outline:2px solid transparent;outline-offset:2px;box-shadow:0 0 0 2px #111,0 0 0 4px #fff,0 0 0 6px #111}
+.content .kg-cta-card .kg-cta-sponsor-label{font-family:var(--osd);font-size:17px;font-weight:400;letter-spacing:.06em}
+/* Ghost fades the label to 45% of the card's text colour (2.3–3.3:1 here); 75% keeps it quieter than the pitch and legible */
+.content .kg-cta-card .kg-cta-sponsor-label span:not(a span){color:color-mix(in srgb,currentColor 75%,transparent)}
+.content .kg-cta-card .kg-cta-text{font-family:var(--read-font)}
+.content .kg-product-card .kg-product-card-container{max-width:none;background:var(--sheet);color:var(--ink);border:1px solid var(--rule);border-radius:6px;box-shadow:none;font-family:var(--body)}
+.content .kg-product-card h4.kg-product-card-title{font-family:var(--head-font);font-weight:800;font-stretch:88%;font-size:22px;color:var(--ink)}
+.content .kg-product-card .kg-product-card-image{border-radius:3px;box-shadow:none}
+.content .kg-product-card .kg-product-card-rating-active svg{fill:var(--accent)}
+.content :is(.kg-header-card,.kg-signup-card,.kg-cta-card) img{cursor:default;box-shadow:none}
+/* buttons filled with the accent: Ghost letters them in white (the product card's CSS) or in a colour it worked out
+   against the site's accent (inline, on CTA, header and signup buttons). Here the fill is the layout's accent, light
+   on the dark themes (amber, coral), so the letters take --on-accent: white on the light themes, near-black on the
+   dark ones. Phosphor's link colour doesn't reach them either. Buttons in a colour the author picked keep theirs. */
+.content .kg-product-card a.kg-product-card-btn-accent,.content .kg-header-card.kg-style-light a.kg-header-card-button{color:var(--on-accent)}
+.content .kg-cta-card a.kg-cta-button.kg-style-accent,.content .kg-signup-card .kg-signup-card-button.kg-style-accent,.content .kg-header-card.kg-v2 .kg-header-card-button.kg-style-accent{color:var(--on-accent)!important}
+.tbl{overflow-x:auto;margin:1.8em 0}
+.tbl table{border-collapse:collapse;width:100%;font-family:var(--body);font-size:16px;line-height:1.45;font-variant-numeric:tabular-nums}
+.tbl th{font-family:var(--osd);font-weight:400;font-size:18px;letter-spacing:.06em;color:var(--accent);text-align:left;border-bottom:1px solid var(--rule);padding:6px 12px 4px 0}
+.tbl td{border-bottom:1px solid var(--rule);padding:8px 12px 8px 0}
+.tbl.more-x{-webkit-mask-image:linear-gradient(to left,transparent,#000 40px);mask-image:linear-gradient(to left,transparent,#000 40px)}
+
+/* ← / → index search flashes a VCR on-screen display in the corner */
+.osd{position:fixed;z-index:30;top:calc(env(safe-area-inset-top,0px) + 56px);right:clamp(16px,3vw,40px);font-family:var(--osd);font-size:30px;line-height:1;letter-spacing:.06em;color:#f4f2ec;text-shadow:2px 2px 0 #111,-1px -1px 0 #111,1px -1px 0 #111,-1px 1px 0 #111,0 0 8px rgba(0,0,0,.35);pointer-events:none;opacity:0;transition:opacity .15s}
+.osd.on{opacity:1}
+.osd svg{width:1.15em;height:.58em;margin-right:.3em;fill:#f4f2ec;stroke:#111;stroke-width:1.1;stroke-linejoin:round;paint-order:stroke;overflow:visible;vertical-align:.08em}
+.content ::selection,.phead ::selection{background:color-mix(in srgb,var(--accent) 24%,transparent)}
+
+/* end of the page */
+.pend{max-width:var(--measure);margin:10px auto 0;padding-bottom:90px}
+.ende{font-family:var(--osd);font-size:20px;letter-spacing:.1em;color:var(--muted);text-align:center;margin:10px 0 36px}
+/* the picture sits by the name, the first line, however far the bio wraps */
+.author{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.author .av{width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffcf99,#a9521b 60%,#3b1d0d);display:grid;place-items:center;font-family:var(--display);font-weight:850;font-stretch:125%;color:#fff;font-size:15px;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+.author p{margin:0;font-size:15.5px;line-height:1.5;color:var(--muted)}
+.author strong{color:var(--ink)}
+.nextprev{margin-top:26px;background:var(--tt-bg);border-radius:8px;padding:12px 14px 14px;font-family:var(--osd);font-size:21px;color:var(--tt-w);text-shadow:0 0 5px currentColor;display:grid;gap:4px}
+.nextprev .lbl{color:var(--tt-c);font-size:17px;letter-spacing:.08em}
+.nextprev a{display:grid;grid-template-columns:4ch 1fr;gap:1ch;text-decoration:none;padding:2px 4px}
+.nextprev a .n{color:var(--tt-y)}
+.nextprev a:hover,.nextprev a:focus-visible{background:var(--tt-w);color:var(--tt-bg);text-shadow:none;outline:none}
+.nextprev a:hover .n,.nextprev a:focus-visible .n{color:var(--tt-bg)}
+.nextprev .k::after{content:":"}
+.nextprev .fxrow{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px;font-size:18px}
+.nextprev .fxrow .off{display:block;text-align:center;color:#8d8a96;text-shadow:none;padding:1px 0 0;background:none!important;border:1px dashed currentColor}
+.nextprev .fxrow a{display:block;text-align:center;color:var(--tt-bg);text-shadow:none;padding:2px 0 0}
+.nextprev .fxrow .fx-r{background:var(--tt-r)}.nextprev .fxrow .fx-g{background:var(--tt-g)}.nextprev .fxrow .fx-y{background:var(--tt-y)}.nextprev .fxrow .fx-b{background:var(--tt-b);color:var(--tt-w)}
+.nextprev .fxrow a:hover,.nextprev .fxrow a:focus-visible{outline:2px solid var(--tt-w);background:inherit}
+
+/* print (or save as PDF): just the post, black on white whatever the theme, links spelled out, code unfolded and wrapped */
+@page{margin:16mm 18mm}
+@media print{
+  .site,.strip,.toc,.remote,.nextprev,.lb,.osd,#static,.code .acts,.code .more,.code .gut,.stamp,.resume,.author .av,.content .hl{display:none!important}
+  /* paper and ink whatever the theme: with "background graphics" on, a dark theme would otherwise print its night colours */
+  :root,:root[data-theme]{color-scheme:light!important}
+  :root,body,.post{--ground:#fff!important;--sheet:#fff!important;--ink:#000!important;--soft:#111!important;--muted:#555!important;--rule:rgba(0,0,0,.2)!important;--accent:#000!important;--codebg:#fff!important;--codeink:#000!important}
+  html,body{background:#fff!important}
+  body{color:#000!important;padding:0!important}
+  .post{background:none!important;box-shadow:none!important}
+  .kg-callout-card,.kg-bookmark-container,.kg-toggle-card{background:none!important;border:1px solid #bbb!important}
+  .author strong,.kg-bookmark-title,.kg-toggle-heading-text,.code .cbar,.code .lang,.code .file{color:#000!important}
+  .kg-bookmark-description,.kg-bookmark-metadata,.content figcaption,.content .code figcaption{color:#333!important}
+  .code .cbar{background:none!important;border-bottom:1px solid #bbb!important}
+  .post .phead,.post .content,.post .pend{max-width:none!important;margin-inline:0!important;padding-top:0!important}
+  .phead h1,.phead .meta dd,.content,.content :is(h2,h3,h4,h5,h6),.content strong,.content blockquote,.content a{color:#000!important}
+  .content{font-size:11pt!important;line-height:1.55!important}
+  .content a[href^="http"]::after{content:" (" attr(href) ")";font-size:.8em;color:#444;word-break:break-all}
+  .content .code{background:none!important;border:1px solid #bbb!important;box-shadow:none!important}
+  .code .src{grid-template-columns:1fr!important;max-height:none!important}.code.clip .src::after{display:none}
+  .code pre{white-space:pre-wrap;word-break:break-word;font-size:9pt!important;text-shadow:none!important;-webkit-mask-image:none!important;mask-image:none!important}
+  .tbl{overflow:visible!important;-webkit-mask-image:none!important;mask-image:none!important}
+  .code pre *{color:#000!important}.code .token.comment{color:#555!important}
+  .content :not(pre)>code{color:#000!important;background:none!important;border:1px solid #ccc!important}
+  .code .src::before,.code .ln::before{display:none!important}
+  .content figure,.content .code,.content blockquote{break-inside:avoid}
+  /* except a long block (30+ lines), which would leave most of a page blank before it: it runs on across the break */
+  .content .code.clip,.content .code.opened{break-inside:auto}
+  .code .cbar{break-after:avoid}.code .src{break-before:avoid}
+  .content :is(h2,h3,h4,h5,h6){break-after:avoid}
+  .shot::after{display:none}
+  .content img{filter:none!important;mix-blend-mode:normal!important}
+  *,::before,::after{text-shadow:none!important}
+  body::before,.phead h1::after{display:none!important}
+  .content > :is(h1,h2),.code .src{background:none!important}
+}
+@media (max-width:640px){
+  /* a phone column is ~38 characters: let the browser hyphenate prose (never code) */
+  .content p,.content li{-webkit-hyphens:auto;hyphens:auto}
+  .content code,.content a{-webkit-hyphens:manual;hyphens:manual}
+  .strip{font-size:17px}
+  .strip .left{display:none}
+  .phead{padding-top:28px}
+  .eyebrow{--eb-fs:18px;--chip-room:100px}
+  .resume{font-size:17px}
+  .resume .rl{display:none}
+  .content{--code-fs:13px;--code-lh:20.8px}
+  /* pictures and code run to the edges: the screen's, or the sheet's in Manuscript (--bleed, the text's inset from
+     that edge). A phone column is ~38 characters, and a screenshot or a line of code needs the room more than a
+     margin. What's written around them stays on the text column: captions, the code bar's labels and buttons, and the
+     line numbers, which start where the text does */
+  .content figure.kg-image-card:not(.kg-width-full),.content .code,.content > pre,.content .kg-code-card{width:auto;margin-inline:calc(var(--bleed,16px) * -1)}
+  .content figure.kg-image-card:not(.kg-width-full) > figcaption{margin-inline:var(--bleed,16px)}
+  /* the other pictures too (galleries, video, a video embed, the missing-picture card) and the colour bands of header
+     and signup cards; an X post stays a small card on the column */
+  .content .kg-gallery-card:not(.kg-width-full),.content .kg-video-card:not(.kg-width-full),.content .kg-embed-card:has(> iframe,> .frame),.content :is(.kg-header-card,.kg-signup-card):not(.kg-width-full),.content > .nosig{width:auto;max-width:none;margin-inline:calc(var(--bleed,16px) * -1)}
+  .content :is(.kg-gallery-card,.kg-video-card,.kg-embed-card) > figcaption{margin-inline:var(--bleed,16px)}
+  .content .kg-video-card .kg-video-container,.content .kg-embed-card > iframe,.content .kg-embed-card .frame,.content .nosig{border-radius:0}
+  .content figure.kg-image-card img,.content .code,.content > pre,.content .kg-code-card > pre{border-radius:0}
+  .content .code,.content > pre,.content .kg-code-card > pre{border-inline-width:0}
+  .content > pre,.content .kg-code-card > pre{padding-left:calc(2ch + 21px + var(--bleed,16px))}
+  .code .cbar{padding-left:var(--bleed,16px);padding-right:calc(var(--bleed,16px) - 2px)}
+  .code .gut{padding-left:var(--bleed,16px);padding-right:8px}
+  .code pre{padding-left:12px;padding-right:var(--bleed,16px)}
+  .code.short pre{padding-left:var(--bleed,16px)}
+  .content .code figcaption,.content .kg-code-card > figcaption{padding-inline:calc(var(--bleed,16px) + var(--cap-hang)) var(--bleed,16px)}
+  /* no room for both: a named file says its language (shader-canvas.tsx), so the name takes the label's place */
+  .code .cbar:has(.file) .lang{display:none}
+  .content > h1,.content > h2{margin-top:1.8em}
+  .kg-bookmark-container{grid-template-columns:1fr}
+  .kg-bookmark-thumbnail{display:none}
+  .nextprev .fxrow{grid-template-columns:repeat(2,1fr)}
+}
+
+/* read-manuscript.css: reading layout B. The post is a typed manuscript lying on the desk:
+   a sheet of photocopy paper, Literata body, the editor's red pencil for links and headings,
+   a sticky table of contents in the left margin, and code printed on green-bar fanfold paper.
+   The sheet is an object in the room, so it stays paper in both themes; only the desk behind it follows the theme. */
+body[data-read="manuscript"]{--desk-ink:var(--ink);--desk-muted:var(--muted);--read-font:var(--serif);--read-size:clamp(17px,1.25vw,18.5px);--read-lh:1.72;--measure:640px}
+body[data-read="manuscript"]{--gutter:calc(16px + clamp(20px,6.5vw,92px))}
+body[data-read="manuscript"] .post{--sheet-pt:clamp(58px,6vw,84px);max-width:900px;margin:clamp(12px,3vw,40px) auto 0;padding:var(--sheet-pt) clamp(20px,6.5vw,92px) 10px;
+  --ink:#1b1d28;--soft:#2b2d38;--muted:#6a6872;--rule:rgba(27,29,40,.16);--accent:#c3301c;--on-accent:#fff;--sheet:#ecebe6;
+  background:#f6f6f2;color:var(--ink);border-radius:1px;box-shadow:0 1px 1px rgba(0,0,0,.06),0 30px 60px -36px rgba(0,0,0,.45)}
+body[data-read="manuscript"] .post::before{display:none}
+body[data-read="manuscript"] .phead{max-width:var(--measure);padding:0 0 clamp(26px,4vw,40px);position:relative;border-bottom:1px solid var(--rule);margin-bottom:clamp(26px,4vw,40px)}
+body[data-read="manuscript"] .eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.02em;color:var(--muted);gap:0 1.6ch;text-transform:uppercase;position:static;padding-right:0}
+body[data-read="manuscript"] .eyebrow > span:not(:last-of-type)::after{content:"/";margin-left:1.6ch}
+/* the stamp sits in the sheet's top margin on the right (above a long eyebrow, never on it; the margin is tall enough for
+   it from 641px), the resume chip in the same margin on the left
+   (on phones the stamp starts the header instead, and the chip sits beside it) */
+body[data-read="manuscript"] .resume{left:0;right:auto;top:calc(var(--sheet-pt) / -2);font-family:var(--mono);font-size:12px;letter-spacing:.06em;border-radius:2px;padding:4px 9px 3px}
+body[data-read="manuscript"] .resume:hover{color:#f6f6f2}
+body[data-read="manuscript"] .phead h1{font-family:var(--serif);font-weight:700;font-stretch:100%;text-transform:none;font-size:clamp(34px,4.6vw,56px);line-height:1.06;letter-spacing:-.015em;margin-top:.55em}
+body[data-read="manuscript"] .stamp{display:block;position:absolute;right:-8px;top:calc(var(--sheet-pt) / -2);transform:translateY(-50%) rotate(6deg);font-family:var(--display);font-stretch:112%;font-weight:900;font-size:15px;letter-spacing:.2em;
+  color:rgba(190,44,26,.92);border:3px solid rgba(195,48,28,.72);border-radius:4px;padding:5px 10px 4px;mix-blend-mode:multiply;
+  -webkit-mask:radial-gradient(circle at 30% 40%,#000 55%,rgba(0,0,0,.75) 70%,#000 90%);mask:radial-gradient(circle at 30% 40%,#000 55%,rgba(0,0,0,.75) 70%,#000 90%)}
+body[data-read="manuscript"] .content > h1,body[data-read="manuscript"] .content > h2{font-family:var(--serif);font-weight:700;font-stretch:100%;text-transform:none;font-size:clamp(24px,2.2vw,29px);line-height:1.2;
+  padding-top:calc(var(--sp-size) * 1.55);
+  text-decoration:underline;text-decoration-color:rgba(195,48,28,.28);text-decoration-thickness:.22em;text-underline-offset:-.15em;text-decoration-skip-ink:none}
+/* the red pencil is an underline, so it runs under each line of a wrapped heading's words, only as far as they go.
+   The PART label (and its placeholder before theme.js adds it) sits in the heading's top padding, out of flow, where
+   the underline doesn't reach */
+body[data-read="manuscript"] .content > :is(h1,h2) > .sp,body[data-read="manuscript"] .content > :is(h1,h2):not(:has(> .sp))::before{position:absolute;top:0;left:0;margin:0}
+body[data-read="manuscript"] .content .sp{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+body[data-read="manuscript"] .content{--sp-font:var(--mono);--sp-size:12px}
+body[data-read="manuscript"] .content h3{font-family:var(--serif);font-stretch:100%;font-weight:700;font-style:italic}
+body[data-read="manuscript"] .content a{text-decoration-thickness:1px;text-decoration-color:rgba(195,48,28,.7)}
+body[data-read="manuscript"] .content figcaption{font-family:var(--hand);font-weight:600;font-size:21px;line-height:1.15;color:#1f3a8a;--cap-hang:22px}
+body[data-read="manuscript"] .content figcaption::before{content:"↑";font-family:var(--hand);font-size:22px;color:#1f3a8a}
+body[data-read="manuscript"] .content img{box-shadow:0 0 0 6px #fff,0 1px 3px 6px rgba(0,0,0,.2);border-radius:0}
+body[data-read="manuscript"] .content figure.kg-width-full img{box-shadow:none}
+body[data-read="manuscript"] .content img:focus-visible{outline:2px solid #c3301c;outline-offset:9px}
+body[data-read="manuscript"] .code .acts button:focus-visible,body[data-read="manuscript"] .code .more:focus-visible{outline-color:#1d5b2a}
+body[data-read="manuscript"] .content figure.kg-width-wide{--fw:min(1040px,calc(100vw - 32px))}
+body[data-read="manuscript"] .content blockquote{font-family:var(--serif);font-stretch:100%;font-style:italic;font-weight:500}
+body[data-read="manuscript"] .content hr::after{content:"* * *";font-family:var(--serif);letter-spacing:.8em}
+body[data-read="manuscript"] .post .content hr.footnotes-sep::after{font-family:var(--mono);font-size:13px;letter-spacing:.08em}
+body[data-read="manuscript"] .content :not(pre)>code{background:rgba(27,29,40,.07)}
+
+/* code on continuous-feed printer paper: green bars and tractor holes */
+body[data-read="manuscript"] .content .code{--codebg:#f4f7f0;background:#f4f7f0;color:#1d2a1d;border-radius:0;box-shadow:0 1px 3px rgba(0,0,0,.18);
+  padding:0 26px;background-image:
+    radial-gradient(circle at 12px 12px,#d9d8d2 4.5px,rgba(0,0,0,.18) 5px,transparent 5.5px),
+    radial-gradient(circle at calc(100% - 12px) 12px,#d9d8d2 4.5px,rgba(0,0,0,.18) 5px,transparent 5.5px);
+  background-size:100% 24px,100% 24px;background-repeat:repeat-y}
+/* two printed lines per bar; starts below the 14px top padding shared by gutter and pre */
+body[data-read="manuscript"] .code .src{background:repeating-linear-gradient(to bottom,#dfeedb 0 46.4px,transparent 46.4px 92.8px) 0 14px/100% 92.8px repeat-y}
+body[data-read="manuscript"] .code .cbar{color:#5c6b5a;border-bottom:1px dashed rgba(0,0,0,.2);padding-left:0;padding-right:0;background:#f4f7f0}
+body[data-read="manuscript"] .code .lang{color:#1d5b2a}
+body[data-read="manuscript"] .code .file{color:#243324}
+body[data-read="manuscript"] .code .acts button{color:#304030;border-color:rgba(0,0,0,.2)}
+body[data-read="manuscript"] .code .acts button[aria-pressed="true"]{background:#304030;color:#f4f7f0}
+body[data-read="manuscript"] .code{--gut-ink:#5a6a57}body[data-read="manuscript"] .code .gut{border-right:1px dashed rgba(0,0,0,.14);padding-left:0}
+body[data-read="manuscript"] .code pre{font-family:var(--mono)}
+body[data-read="manuscript"] .code.clip .src::after{background:linear-gradient(rgba(244,247,240,0),#f4f7f0)}
+body[data-read="manuscript"] .code .more{color:#1d5b2a;border-top:1px dashed rgba(0,0,0,.2)}
+body[data-read="manuscript"] .content .code figcaption,body[data-read="manuscript"] .content .kg-code-card > figcaption{font-family:var(--mono);font-size:13px;color:#5c6b5a;padding-left:0;text-indent:0}
+body[data-read="manuscript"] .content .code figcaption::before,body[data-read="manuscript"] .content .kg-code-card > figcaption::before{display:none}
+body[data-read="manuscript"] .token.comment,body[data-read="manuscript"] .token.prolog{color:#56624f}
+body[data-read="manuscript"] .token.keyword,body[data-read="manuscript"] .token.boolean,body[data-read="manuscript"] .token.important{color:#8a2a12}
+body[data-read="manuscript"] .token.string,body[data-read="manuscript"] .token.char,body[data-read="manuscript"] .token.attr-value{color:#1d6b33}
+body[data-read="manuscript"] .token.number,body[data-read="manuscript"] .token.constant{color:#8a1f5a}
+body[data-read="manuscript"] .token.function,body[data-read="manuscript"] .token.class-name{color:#1f3f8a}
+body[data-read="manuscript"] .token.operator,body[data-read="manuscript"] .token.punctuation{color:#566155}
+body[data-read="manuscript"] .token.tag,body[data-read="manuscript"] .token.selector,body[data-read="manuscript"] .token.property,body[data-read="manuscript"] .token.builtin{color:#6a2a8a}
+body[data-read="manuscript"] .token.variable,body[data-read="manuscript"] .token.parameter{color:#1d2a1d}
+
+body[data-read="manuscript"] .pend{padding-bottom:50px}
+body[data-read="manuscript"] .ende{font-family:var(--mono);font-size:13px;letter-spacing:.2em}
+
+/* contents in the left margin, on screens wide enough to have one: beside the sheet from 1380px (from 1240px without
+   the props, below) */
+@media (min-width:1240px) and (max-width:1379px){
+  body[data-read="manuscript"]:not([data-props="off"]) .toc{display:none}
+}
+@media (min-width:1380px){
+  body[data-read="manuscript"] .content figure.kg-width-wide{--fw:852px}
+}
+@media (min-width:1240px){
+  body[data-read="manuscript"] .toc{display:block;position:absolute;top:0;bottom:0;right:calc(100% + 28px);width:190px}
+  body[data-read="manuscript"] .toc .rail{position:sticky;top:70px;padding-top:var(--sheet-pt);font-family:var(--mono);font-size:12.5px;line-height:1.35;color:var(--desk-muted)}
+  /* a list too long for the screen scrolls inside the rail; the padding keeps a focused row's ring inside the scroller */
+  body[data-read="manuscript"] .toc nav{max-height:calc(100vh - 70px - var(--sheet-pt) - 24px);overflow:hidden auto;scrollbar-width:thin;padding:4px;margin:-4px}
+  body[data-read="manuscript"] .toc a{overflow-wrap:anywhere}
+  body[data-read="manuscript"] .toc .h{letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;color:var(--desk-muted)}
+  body[data-read="manuscript"] .toc a{display:grid;grid-template-columns:18px 1fr;gap:4px;text-decoration:none;padding:4px 0;color:var(--desk-muted)}
+  body[data-read="manuscript"] .toc a::before{content:"";margin-top:.55em;height:1px;background:currentColor;opacity:.5}
+  body[data-read="manuscript"] .toc a:hover{color:var(--desk-ink)}
+  body[data-read="manuscript"] .toc a[aria-current="true"]{color:var(--desk-ink)}
+  body[data-read="manuscript"] .toc a[aria-current="true"]::before{height:2px;background:#c3301c;opacity:1}
+  /* a part's steps (h3) hang under its title on a shorter rule */
+  body[data-read="manuscript"] .toc a.step{padding:2px 0 3px 22px}
+  body[data-read="manuscript"] .toc a.step::before{width:8px}
+  body[data-read="manuscript"] .toc a.step.here{color:var(--desk-ink)}
+  /* with contents in the margin, wide images stay on the sheet (almost to the edges of the paper: 852px, above) and the
+     contents step aside for full-bleed ones */
+  body[data-read="manuscript"] .toc .rail{transition:opacity .2s,visibility .2s}
+  body[data-read="manuscript"] .toc.under .rail{opacity:0;visibility:hidden}
+}
+@media (max-width:640px){
+  body[data-read="manuscript"]{--gutter:calc(10px + clamp(20px,6.5vw,92px))}
+  body[data-read="manuscript"] .post{margin-inline:-6px;--sheet-pt:clamp(24px,6vw,84px)}
+  body[data-read="manuscript"] .stamp{position:static;display:inline-block;margin-bottom:14px;transform:rotate(-3deg)}
+  body[data-read="manuscript"] .resume{left:auto;right:0;top:19px;font-size:12px}
+  /* the printout and pictures run to the sheet's edge (read.css), pictures a little short of it so their white print
+     border and shadow stay on the paper; the printout's labels and line numbers keep to the text column */
+  body[data-read="manuscript"] .content{--bleed:clamp(20px,6.5vw,92px)}
+  body[data-read="manuscript"] .content :is(figure.kg-image-card,.kg-gallery-card):not(.kg-width-full){margin-inline:calc(10px - var(--bleed))}
+  body[data-read="manuscript"] .content :is(figure.kg-image-card,.kg-gallery-card):not(.kg-width-full) > figcaption{margin-inline:calc(var(--bleed) - 10px)}
+  body[data-read="manuscript"] .content .code{padding:0;background-image:none;box-shadow:0 1px 3px -1px rgba(0,0,0,.2)}
+  body[data-read="manuscript"] .code .cbar{padding-left:var(--bleed);padding-right:calc(var(--bleed) - 2px)}
+  body[data-read="manuscript"] .code .gut{padding-left:var(--bleed)}
+  body[data-read="manuscript"] .content :is(.code figcaption,.kg-code-card > figcaption){padding-inline:var(--bleed)}
+  body[data-read="manuscript"] .code .src{background-size:100% 83.2px;background-image:repeating-linear-gradient(to bottom,#dfeedb 0 41.6px,transparent 41.6px 83.2px)}
+}
+
+/* ------------------------------------------------------------------------------------ without the props
+   Prototype switch MANUSCRIPT PROPS: OFF (body[data-props="off"]; Ghost ships one or the other). Felix liked Manuscript
+   best but wondered if it's too skeuomorphic: this keeps its type and the editor's marks (serif headings under the red
+   pencil, blue handwritten captions, contents in the margin, green-bar code) and drops the objects. No sheet on a desk
+   (the page is the paper), no stamp, no photo prints with white borders, no tractor holes. Unlike the sheet, the page
+   follows light/dark, so the marks' colours are tokens here. */
+body[data-read="manuscript"][data-props="off"]{--ground:#f6f6f2}
+body[data-read="manuscript"][data-props="off"] .post{background:none;box-shadow:none;
+  --pencil:rgba(195,48,28,.28);--pencil-link:rgba(195,48,28,.7);--pen:#1f3a8a;--chip:rgba(27,29,40,.07);
+  --fan:#f4f7f0;--bar:#e3efdf;--fan-ink:#1d2a1d;--fan-muted:#5c6b5a;--fan-lang:#1d5b2a;--fan-num:#5a6a57;--fan-rule:rgba(0,0,0,.16);
+  --k:#8a2a12;--s:#1d6b33;--n:#8a1f5a;--f:#1f3f8a;--o:#566155;--t:#6a2a8a;--c:#56624f}
+body[data-read="manuscript"][data-props="off"] .stamp{display:none}
+body[data-read="manuscript"][data-props="off"] .resume:hover{color:var(--ground)}
+body[data-read="manuscript"][data-props="off"] .content > :is(h1,h2){text-decoration-color:var(--pencil)}
+body[data-read="manuscript"][data-props="off"] .content a{text-decoration-color:var(--pencil-link)}
+body[data-read="manuscript"][data-props="off"] .content figcaption,body[data-read="manuscript"][data-props="off"] .content figcaption::before{color:var(--pen)}
+body[data-read="manuscript"][data-props="off"] .content :not(pre)>code{background:var(--chip)}
+/* pictures lie flat on the page: a hairline instead of the print's white border, multiplied onto the paper */
+body[data-read="manuscript"][data-props="off"] .content img{box-shadow:0 0 0 1px var(--rule);border-radius:2px;mix-blend-mode:multiply}
+body[data-read="manuscript"][data-props="off"] .content figure.kg-width-full img,body[data-read="manuscript"][data-props="off"] .content .kg-gallery-image img{box-shadow:none}
+body[data-read="manuscript"][data-props="off"] .content img:focus-visible{outline-color:var(--accent);outline-offset:4px}
+/* the green bars stay (they help the eye along a long line), the holes and the paper's shadow go */
+/* the printout has a hairline border here, so the block reserved before theme.js runs counts it (read.css) */
+body[data-read="manuscript"][data-props="off"] .content{--code-bw:1px}
+body[data-read="manuscript"][data-props="off"] .content .code{--codebg:var(--fan);background:var(--fan);color:var(--fan-ink);background-image:none;box-shadow:none;border:1px solid var(--fan-rule);padding:0}
+body[data-read="manuscript"][data-props="off"] .code .src{background-image:repeating-linear-gradient(to bottom,var(--bar) 0 46.4px,transparent 46.4px 92.8px)}
+body[data-read="manuscript"][data-props="off"] .code.clip .src::after{background:linear-gradient(transparent,var(--fan))}
+body[data-read="manuscript"][data-props="off"] .code .cbar{background:var(--fan);color:var(--fan-muted);border-bottom-color:var(--fan-rule);padding-left:14px;padding-right:8px}
+body[data-read="manuscript"][data-props="off"] .code .lang,body[data-read="manuscript"][data-props="off"] .code .more{color:var(--fan-lang)}
+body[data-read="manuscript"][data-props="off"] .code .file{color:var(--fan-ink)}
+body[data-read="manuscript"][data-props="off"] .code .acts button{color:var(--fan-ink);border-color:var(--fan-rule)}
+body[data-read="manuscript"][data-props="off"] .code .acts button[aria-pressed="true"]{background:var(--fan-ink);color:var(--fan)}
+body[data-read="manuscript"][data-props="off"] .code .acts button:focus-visible,body[data-read="manuscript"][data-props="off"] .code .more:focus-visible{outline-color:var(--fan-lang)}
+body[data-read="manuscript"][data-props="off"] .code{--gut-ink:var(--fan-num)}body[data-read="manuscript"][data-props="off"] .code .gut{border-right-color:var(--fan-rule);padding-left:14px}
+body[data-read="manuscript"][data-props="off"] .code .more{border-top-color:var(--fan-rule)}
+body[data-read="manuscript"][data-props="off"] .content :is(.code figcaption,.kg-code-card > figcaption){color:var(--fan-muted);padding-inline:14px}
+body[data-read="manuscript"][data-props="off"] .code .token.comment,body[data-read="manuscript"][data-props="off"] .code .token.prolog{color:var(--c)}
+body[data-read="manuscript"][data-props="off"] .code .token.keyword,body[data-read="manuscript"][data-props="off"] .code .token.boolean,body[data-read="manuscript"][data-props="off"] .code .token.important{color:var(--k)}
+body[data-read="manuscript"][data-props="off"] .code .token.string,body[data-read="manuscript"][data-props="off"] .code .token.char,body[data-read="manuscript"][data-props="off"] .code .token.attr-value{color:var(--s)}
+body[data-read="manuscript"][data-props="off"] .code .token.number,body[data-read="manuscript"][data-props="off"] .code .token.constant{color:var(--n)}
+body[data-read="manuscript"][data-props="off"] .code .token.function,body[data-read="manuscript"][data-props="off"] .code .token.class-name{color:var(--f)}
+body[data-read="manuscript"][data-props="off"] .code .token.operator,body[data-read="manuscript"][data-props="off"] .code .token.punctuation{color:var(--o)}
+body[data-read="manuscript"][data-props="off"] .code .token.tag,body[data-read="manuscript"][data-props="off"] .code .token.selector,body[data-read="manuscript"][data-props="off"] .code .token.property,body[data-read="manuscript"][data-props="off"] .code .token.builtin{color:var(--t)}
+body[data-read="manuscript"][data-props="off"] .code .token.variable,body[data-read="manuscript"][data-props="off"] .code .token.parameter{color:var(--fan-ink)}
+/* dark: the same marks in lighter ink on a dark page; code on dark green-bar */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) body[data-read="manuscript"][data-props="off"]{--ground:#13120f}
+  :root:not([data-theme="light"]) body[data-read="manuscript"][data-props="off"] .post{
+    --ink:#ebe7dc;--soft:#d3cec2;--muted:#9d988c;--rule:rgba(235,231,220,.15);--accent:#ff7a5c;--on-accent:#13120f;--sheet:#1e1d19;
+    --pencil:rgba(255,122,92,.4);--pencil-link:rgba(255,122,92,.8);--pen:#a8bdf5;--chip:rgba(235,231,220,.09);
+    --fan:#121813;--bar:#18231a;--fan-ink:#d5e0d1;--fan-muted:#8f9e8b;--fan-lang:#8fd49f;--fan-num:#7f907b;--fan-rule:rgba(255,255,255,.14);
+    --k:#ff9a6e;--s:#9fd6a6;--n:#f0a0c8;--f:#9cc4ff;--o:#a3ad9f;--t:#d4a8f0;--c:#8a9786}
+  :root:not([data-theme="light"]) body[data-read="manuscript"][data-props="off"] .content img{mix-blend-mode:normal;box-shadow:none;filter:brightness(.88);transition:filter .3s}
+  :root:not([data-theme="light"]) body[data-read="manuscript"][data-props="off"] .content .shot:hover img{filter:none}
+}
+:root[data-theme="dark"] body[data-read="manuscript"][data-props="off"]{--ground:#13120f}
+:root[data-theme="dark"] body[data-read="manuscript"][data-props="off"] .post{
+  --ink:#ebe7dc;--soft:#d3cec2;--muted:#9d988c;--rule:rgba(235,231,220,.15);--accent:#ff7a5c;--on-accent:#13120f;--sheet:#1e1d19;
+  --pencil:rgba(255,122,92,.4);--pencil-link:rgba(255,122,92,.8);--pen:#a8bdf5;--chip:rgba(235,231,220,.09);
+  --fan:#121813;--bar:#18231a;--fan-ink:#d5e0d1;--fan-muted:#8f9e8b;--fan-lang:#8fd49f;--fan-num:#7f907b;--fan-rule:rgba(255,255,255,.14);
+  --k:#ff9a6e;--s:#9fd6a6;--n:#f0a0c8;--f:#9cc4ff;--o:#a3ad9f;--t:#d4a8f0;--c:#8a9786}
+:root[data-theme="dark"] body[data-read="manuscript"][data-props="off"] .content img{mix-blend-mode:normal;box-shadow:none;filter:brightness(.88);transition:filter .3s}
+:root[data-theme="dark"] body[data-read="manuscript"][data-props="off"] .content .shot:hover img{filter:none}
+/* the strip, its contents card and the end of the post: Edit's quiet versions (a slim mono line over a hairline, the
+   contents as a paper card, titles instead of teletext slabs) in the red pencil. With the props on, the TV's teletext stays */
+body[data-read="manuscript"][data-props="off"] .strip{--accent:#c3301c;background:var(--ground);color:var(--muted);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;text-shadow:none;border-bottom:1px solid var(--rule)}
+body[data-read="manuscript"][data-props="off"] .strip .in{padding:9px 16px 8px}
+@media (pointer:coarse){body[data-read="manuscript"][data-props="off"] .strip :is(.pg[role="button"],a.back,.sub[role="button"])::before{top:-12px;bottom:-14px}}
+body[data-read="manuscript"][data-props="off"] .strip .back,body[data-read="manuscript"][data-props="off"] .strip .pg.typing{color:var(--accent)}
+body[data-read="manuscript"][data-props="off"] .strip .ttl{color:var(--ink);text-transform:none;letter-spacing:0;font-family:var(--serif);font-size:14px}
+body[data-read="manuscript"][data-props="off"] .strip .sub,body[data-read="manuscript"][data-props="off"] .strip .left{color:var(--muted)}
+body[data-read="manuscript"][data-props="off"] .strip .left{margin-left:.6ch}
+body[data-read="manuscript"][data-props="off"] .strip .bar{height:2px;background:var(--accent)}
+body[data-read="manuscript"][data-props="off"] .strip .sub[role="button"]:hover{color:var(--ink)}
+body[data-read="manuscript"][data-props="off"] .strip .sub[role="button"]::after{font-size:.8em;margin-left:.45ch;vertical-align:.08em}
+body[data-read="manuscript"][data-props="off"] .strip .sub[role="button"]:focus-visible{outline-color:var(--accent)}
+body[data-read="manuscript"][data-props="off"] .partmenu{background:var(--ground);color:var(--soft);border:1px solid var(--rule);border-top:0;border-radius:0 0 4px 4px;box-shadow:0 18px 36px -22px rgba(0,0,0,.5);font-size:12.5px;letter-spacing:0;text-transform:none}
+body[data-read="manuscript"][data-props="off"] .partmenu a{grid-template-columns:7.5ch 1fr;gap:6px;padding:7px 14px;line-height:1.35}
+body[data-read="manuscript"][data-props="off"] .partmenu .pn{display:none}
+body[data-read="manuscript"][data-props="off"] .partmenu .t{display:block;color:var(--muted);font-variant-numeric:tabular-nums}
+body[data-read="manuscript"][data-props="off"] .partmenu a[aria-current="true"] .nm{color:var(--ink)}
+body[data-read="manuscript"][data-props="off"] .partmenu a[aria-current="true"] .t{color:var(--accent)}
+body[data-read="manuscript"][data-props="off"] .partmenu a:hover,body[data-read="manuscript"][data-props="off"] .partmenu a:focus-visible{background:var(--sheet);color:var(--ink)}
+body[data-read="manuscript"][data-props="off"] .partmenu a:hover .nm,body[data-read="manuscript"][data-props="off"] .partmenu a:focus-visible .nm{color:var(--ink)}
+body[data-read="manuscript"][data-props="off"] .partmenu a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+body[data-read="manuscript"][data-props="off"] .author .av{border-radius:2px}
+body[data-read="manuscript"][data-props="off"] .nextprev{background:none;border-radius:0;padding:0;color:var(--ink);text-shadow:none;font-family:var(--mono);font-size:14px;gap:0}
+body[data-read="manuscript"][data-props="off"] .nextprev .lbl{color:var(--muted);font-size:11.5px;letter-spacing:.1em;margin-bottom:8px}
+body[data-read="manuscript"][data-props="off"] .nextprev > a{grid-template-columns:5ch 1fr;align-items:baseline;padding:12px 0 13px;border-top:1px solid var(--rule)}
+body[data-read="manuscript"][data-props="off"] .nextprev > a .tt{font-family:var(--serif);font-weight:700;font-size:clamp(17px,1.4vw,19px);line-height:1.3;color:var(--ink);text-wrap:balance}
+body[data-read="manuscript"][data-props="off"] .nextprev > a .k{display:block;font-family:var(--mono);font-weight:400;font-size:11px;line-height:1.4;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+body[data-read="manuscript"][data-props="off"] .nextprev > a .k::after{content:none}
+body[data-read="manuscript"][data-props="off"] .nextprev a .n,body[data-read="manuscript"][data-props="off"] .nextprev a:hover .n,body[data-read="manuscript"][data-props="off"] .nextprev a:focus-visible .n{color:var(--accent)}
+body[data-read="manuscript"][data-props="off"] .nextprev a:hover,body[data-read="manuscript"][data-props="off"] .nextprev a:focus-visible{background:var(--sheet);color:var(--ink)}
+body[data-read="manuscript"][data-props="off"] .nextprev a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+/* (hovered, a title gets the pencil the headings have) */
+body[data-read="manuscript"][data-props="off"] .nextprev > a:hover .tt{text-decoration:underline;text-decoration-color:var(--pencil);text-decoration-thickness:.22em;text-underline-offset:-.15em;text-decoration-skip-ink:none}
+body[data-read="manuscript"][data-props="off"] .nextprev .fxrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+body[data-read="manuscript"][data-props="off"] .nextprev .fxrow > *{display:inline-flex;align-items:center;gap:8px;background:none!important;color:var(--soft);border:1px solid var(--rule);border-radius:2px;padding:7px 10px 6px;font-size:11.5px;letter-spacing:.08em;line-height:1.2}
+body[data-read="manuscript"][data-props="off"] .nextprev .fxrow > *::before{content:"";width:8px;height:8px;border-radius:1px;background:var(--pip);box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
+body[data-read="manuscript"][data-props="off"] .nextprev .fxrow .fx-r{--pip:var(--tt-r)}
+body[data-read="manuscript"][data-props="off"] .nextprev .fxrow .fx-g{--pip:var(--tt-g)}
+body[data-read="manuscript"][data-props="off"] .nextprev .fxrow .fx-y{--pip:var(--tt-y)}
+body[data-read="manuscript"][data-props="off"] .nextprev .fxrow .fx-b{--pip:var(--tt-b)}
+body[data-read="manuscript"][data-props="off"] .nextprev .fxrow .off{opacity:.5;border-style:dashed}
+body[data-read="manuscript"][data-props="off"] .nextprev .fxrow a:hover{color:var(--ink);border-color:var(--muted);outline:0}
+body[data-read="manuscript"][data-props="off"] .nextprev .fxrow a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* a one-line block is one green bar with its label and COPY at its end (theme.js adds .one when it all fits; as in Edit) */
+body[data-read="manuscript"][data-props="off"] .code.one{display:flex;align-items:center;--codebg:var(--bar);background:var(--bar)}
+body[data-read="manuscript"][data-props="off"] .code.one .src{flex:1;min-width:0;background-image:none}
+body[data-read="manuscript"][data-props="off"] .code.one .cbar{order:1;flex:none;height:auto;border:0;padding:0 8px 0 10px;background:none}
+body[data-read="manuscript"][data-props="off"] .code.one .wrapb{display:none}
+body[data-read="manuscript"][data-props="off"] .code.one pre{padding:13px 0 13px 14px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body[data-read="manuscript"][data-props="off"] .strip{--accent:#ff7a5c}}
+:root[data-theme="dark"] body[data-read="manuscript"][data-props="off"] .strip{--accent:#ff7a5c}
+@media (max-width:359px){body[data-read="manuscript"][data-props="off"] .nextprev .fxrow{display:grid;grid-template-columns:1fr 1fr}}
+@media (max-width:640px){body[data-read="manuscript"][data-props="off"] .strip{font-size:11px}body[data-read="manuscript"][data-props="off"] .code.one .cbar{padding-left:10px;padding-right:14px}body[data-read="manuscript"][data-props="off"] .code.one .lang{display:none}body[data-read="manuscript"][data-props="off"] .code.one pre{padding-left:16px}}
+/* wide screens: with no sheet to sit beside, the contents show from 1240px (as Edit's rail does) and run from the site
+   name's left edge to 40px short of the text; wide images keep the text's left edge and grow to the site bar's right
+   edge, clear of them. Full-bleed ones still run edge to edge (the contents step aside) */
+@media (min-width:1240px){
+  body[data-read="manuscript"][data-props="off"] .toc{right:calc(50% + var(--measure) / 2 + 40px);left:calc(50% - var(--wrap) / 2);width:auto}
+  body[data-read="manuscript"][data-props="off"] .content figure.kg-width-wide{--fw:calc(var(--wrap) / 2 + var(--measure) / 2);margin-left:0}
+  body[data-read="manuscript"][data-props="off"] .content figure.kg-width-wide :is(.shot,img),body[data-read="manuscript"][data-props="off"] .content figure.kg-width-wide > figcaption{margin-left:0}
+}
+/* phones: no sheet, so the text keeps the screen's usual 16px margin, and pictures run to its edges like code */
+@media (max-width:640px){
+  body[data-read="manuscript"][data-props="off"]{--gutter:16px}
+  body[data-read="manuscript"][data-props="off"] .post{margin-inline:0;padding-inline:0}
+  body[data-read="manuscript"][data-props="off"] .content{--bleed:16px}
+  body[data-read="manuscript"][data-props="off"] .content :is(figure.kg-image-card,.kg-gallery-card):not(.kg-width-full){margin-inline:-16px}
+  body[data-read="manuscript"][data-props="off"] .content :is(figure.kg-image-card,.kg-gallery-card):not(.kg-width-full) > figcaption{margin-inline:16px}
+  body[data-read="manuscript"][data-props="off"] .content figure.kg-image-card img{border-radius:0}
+  body[data-read="manuscript"][data-props="off"] .content .code{border-inline-width:0}
+  body[data-read="manuscript"][data-props="off"] .code .cbar{padding-left:16px;padding-right:14px}
+  body[data-read="manuscript"][data-props="off"] .code .gut{padding-left:16px}
+  body[data-read="manuscript"][data-props="off"] .content :is(.code figcaption,.kg-code-card > figcaption){padding-inline:16px}
+  body[data-read="manuscript"][data-props="off"] .code .src{background-image:repeating-linear-gradient(to bottom,var(--bar) 0 41.6px,transparent 41.6px 83.2px)}
+  /* no stamp row for the resume chip to share, so it takes the end of the eyebrow's first line, which a float keeps
+     free whether or not the chip comes (only that line: the eyebrow flows as text here, each item stays whole, and the
+     chip is a line tall so it clears the second) */
+  body[data-read="manuscript"][data-props="off"] .eyebrow{display:block;word-spacing:-1ch}
+  body[data-read="manuscript"][data-props="off"] .eyebrow > span{display:inline-block;margin-right:1.6ch;word-spacing:normal}
+  body[data-read="manuscript"][data-props="off"] .post:not(.page) .eyebrow::before{content:"";float:right;width:96px;height:1.5em;height:1lh}
+  body[data-read="manuscript"][data-props="off"] .resume{top:.73em;line-height:1.2;padding:3px 9px 2px}
+}
+
+/* read-phosphor.css: reading layout C. You read the post on the monitor itself:
+   amber phosphor on black, VT323 headings, Fira Code body, faint scanlines and a vignette,
+   photos shown as the monitor would draw them until you hover or zoom them.
+   A deliberate single-look dark design, so it doesn't follow the viewer's theme. */
+body[data-read="phosphor"]{--read-font:var(--mono);--read-size:clamp(15.5px,1.1vw,16.5px);--read-lh:1.78;--measure:720px;--head-font:var(--osd);
+  color-scheme:dark;--ground:#070503;--ink:#ffc47a;--soft:#e8dcc4;--muted:#9c8a6c;--rule:rgba(255,184,103,.2);--accent:#ffb867;--on-accent:#070503;--sheet:#120d07;
+  --codebg:#0d0904;--codeink:#f0e4cc;--shadow:none;--glow:rgba(255,170,90,.1);--glow2:rgba(255,140,60,.06);
+  background:var(--ground);color:var(--soft)}
+body[data-read="phosphor"]::before{content:"";position:fixed;inset:0;z-index:30;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.12) 0 1px,transparent 1px 3px),radial-gradient(ellipse 120% 90% at 50% 50%,transparent 66%,rgba(0,0,0,.5));mix-blend-mode:multiply}
+body[data-read="phosphor"] .site .name{color:var(--ink)}
+body[data-read="phosphor"] .site nav a[aria-current="page"]{background:var(--ink);color:#070503}
+body[data-read="phosphor"] .content{text-shadow:0 0 1px rgba(255,190,120,.35)}
+body[data-read="phosphor"] .phead h1{font-family:var(--osd);font-weight:400;font-stretch:100%;font-size:clamp(50px,7.6vw,108px);line-height:.9;letter-spacing:.01em;color:var(--ink);text-shadow:0 0 18px rgba(255,170,80,.45),0 0 2px rgba(255,200,140,.8)}
+body[data-read="phosphor"] .phead h1::after{content:"";display:inline-block;width:.5em;height:.78em;margin-left:.12em;vertical-align:-.04em;background:var(--ink);box-shadow:0 0 14px rgba(255,170,80,.6);animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+body[data-read="phosphor"] .content > h1,body[data-read="phosphor"] .content > h2{font-family:var(--osd);font-weight:400;font-stretch:100%;font-size:clamp(32px,3vw,40px);letter-spacing:.03em;color:var(--ink);text-shadow:0 0 12px rgba(255,170,80,.4)}
+/* prompt sits on the heading line, under the "Part" label */
+body[data-read="phosphor"] .content > h1,body[data-read="phosphor"] .content > h2{display:grid;grid-template-columns:auto 1fr;column-gap:.35em}
+body[data-read="phosphor"] .content > h1::before,body[data-read="phosphor"] .content > h2::before{content:">";color:var(--muted)}
+body[data-read="phosphor"] .content > h1 .sp,body[data-read="phosphor"] .content > h2 .sp{grid-column:1/-1;order:-1}
+/* the "Part" label's line, held until theme.js adds the label (the prompt already owns ::before) */
+body[data-read="phosphor"] .content > :is(h1,h2):not(:has(> .sp))::after{content:"\a0";display:block;grid-column:1/-1;order:-1;font-family:var(--osd);font-size:18px;margin-bottom:.35em}
+body[data-read="phosphor"] .content h3{font-family:var(--osd);font-weight:400;font-stretch:100%;font-size:27px;letter-spacing:.03em}
+body[data-read="phosphor"] .content .sp{color:var(--muted)}
+/* the heading is a grid (PART row, then "> title"): pin the part link to the title row */
+body[data-read="phosphor"] .content .hl{grid-row:2;grid-column:1;top:0}
+body[data-read="phosphor"] .content strong{color:#fff1da}
+/* one look whatever the theme, so the site bar's theme button would change nothing here */
+body[data-read="phosphor"] .site .themeb{display:none}
+body[data-read="phosphor"] .content a{color:var(--ink);text-decoration-style:dotted;text-decoration-thickness:1.5px}
+body[data-read="phosphor"] .content a:hover{background:var(--ink);color:#070503;text-decoration:none;text-shadow:none}
+body[data-read="phosphor"] .content :not(pre)>code{background:color-mix(in srgb,var(--ink) 11%,transparent);color:var(--ink);padding:.05em .3em;border-radius:2px;font-size:1em}
+body[data-read="phosphor"] .content blockquote{font-family:var(--osd);font-weight:400;font-stretch:100%;font-size:30px;line-height:1.1}
+body[data-read="phosphor"] .content ul{list-style:none;padding-left:2ch}
+body[data-read="phosphor"] .content ul li::before{content:"* ";color:var(--accent);margin-left:-2ch}
+body[data-read="phosphor"] .content img{filter:grayscale(1) sepia(1) saturate(2.4) hue-rotate(-12deg) brightness(.82) contrast(1.15);transition:filter .5s;border:1px solid var(--rule)}
+body[data-read="phosphor"] .content img:hover{filter:none}
+body[data-read="phosphor"] .content figcaption{font-family:var(--mono);font-size:13.5px}
+body[data-read="phosphor"] .tbl table{font-family:var(--mono);font-size:14.5px}
+body[data-read="phosphor"] .content{--code-bw:1px}
+body[data-read="phosphor"] .content .code{border:1px dashed var(--rule);border-radius:0;box-shadow:none}
+body[data-read="phosphor"] .code .cbar{background:var(--ink);color:#070503;border:0;text-shadow:none}
+body[data-read="phosphor"] .code .lang,body[data-read="phosphor"] .code .file{color:#070503}
+body[data-read="phosphor"] .code .acts button{color:#070503;border-color:rgba(0,0,0,.4)}
+body[data-read="phosphor"] .code .acts button[aria-pressed="true"]{background:#070503;color:var(--ink)}
+body[data-read="phosphor"] .code .acts button:focus-visible{outline-color:#070503}
+body[data-read="phosphor"] .code{--gut-ink:#957f58}
+body[data-read="phosphor"] .code .more{color:var(--ink)}
+body[data-read="phosphor"] .token.comment{color:#8c7a5c}
+body[data-read="phosphor"] .token.keyword,body[data-read="phosphor"] .token.boolean,body[data-read="phosphor"] .token.important{color:#ffb867}
+body[data-read="phosphor"] .token.string,body[data-read="phosphor"] .token.char,body[data-read="phosphor"] .token.attr-value{color:#ffe0a8}
+body[data-read="phosphor"] .token.number,body[data-read="phosphor"] .token.function,body[data-read="phosphor"] .token.class-name{color:#ffd08f}
+body[data-read="phosphor"] .token.tag,body[data-read="phosphor"] .token.selector,body[data-read="phosphor"] .token.property,body[data-read="phosphor"] .token.builtin,body[data-read="phosphor"] .token.constant{color:#f5a55a}
+body[data-read="phosphor"] .token.operator,body[data-read="phosphor"] .token.punctuation{color:#b89c70}
+body[data-read="phosphor"] .token.variable,body[data-read="phosphor"] .token.parameter{color:#f0e4cc}
+body[data-read="phosphor"] .author .av{filter:grayscale(1) sepia(1) saturate(2)}
+body[data-read="phosphor"] .author,body[data-read="phosphor"] .ende{font-family:var(--mono)}
+body[data-read="phosphor"] .content .kg-bookmark-card a.kg-bookmark-container,body[data-read="phosphor"] .content .kg-callout-card{border-style:dashed;border-radius:0}
+@media (max-width:640px){
+  body[data-read="phosphor"]{--read-size:16.5px}
+  /* phones can't hover, so photos stay in colour */
+  body[data-read="phosphor"] .content img{filter:none}
+  /* code runs to the screen's edges (read.css): no side rules */
+  body[data-read="phosphor"] .content .code{border-inline-width:0}
+}
+
+/* read-edit.css: reading layouts D and E ("Edit"). Manuscript without the props:
+   a flat page, the post laid out like a video editor's cut list. Sections carry a timecode (where they
+   start, in reading time), the left rail is the edit list plus a VCR tape counter and a dithered
+   tracking bar. Follows light/dark. D sets the body in Literata (the manuscript's face), E in Fira Sans.
+   Both are body[data-read^="edit"]; only fonts differ for "edit-sans". The token block also dresses
+   the Log post list (body[data-index="log"], index-log.css), so list and post read as one site. */
+body[data-read^="edit"],body[data-index="log"]{
+  --ground:#f7f5ef;--sheet:#efece3;--ink:#17160f;--soft:#403e35;--muted:#6a675c;--rule:rgba(23,22,15,.13);--accent:#b32b19;--on-accent:#fff;
+  --codebg:#efece3;--codeink:#23221b;--shadow:none;--icode:7%;
+  --read-font:var(--serif);--read-size:clamp(17px,16.55px + .111vw,18px);--read-lh:1.65;--measure:660px;--h1-font:var(--serif);
+  background:var(--ground);color:var(--ink)}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) body[data-read^="edit"],:root:not([data-theme="light"]) body[data-index="log"]{
+    --ground:#12110e;--sheet:#1b1a16;--ink:#ece8dd;--soft:#cbc6b8;--muted:#949085;--rule:rgba(236,232,221,.13);--accent:#ff7a5c;--on-accent:#12110e;
+    --codebg:#1b1a16;--codeink:#e6e1d4;--icode:10%}
+}
+:root[data-theme="dark"] body[data-read^="edit"],:root[data-theme="dark"] body[data-index="log"]{
+  --ground:#12110e;--sheet:#1b1a16;--ink:#ece8dd;--soft:#cbc6b8;--muted:#949085;--rule:rgba(236,232,221,.13);--accent:#ff7a5c;--on-accent:#12110e;
+  --codebg:#1b1a16;--codeink:#e6e1d4;--icode:10%}
+body[data-read="edit-sans"]{--read-font:var(--body);--read-size:clamp(16.5px,16.05px + .111vw,17.5px);--read-lh:1.62;--h1-font:var(--body)}
+
+/* the strip goes flat: a slim mono line with a dithered progress bar */
+body[data-read^="edit"] .strip{background:var(--ground);color:var(--muted);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;text-shadow:none;border-bottom:1px solid var(--rule)}
+body[data-read^="edit"] .strip .in{padding:9px 16px 8px}
+@media (pointer:coarse){body[data-read^="edit"] .strip :is(.pg[role="button"],a.back,.sub[role="button"])::before{top:-11px;bottom:-13px}}
+body[data-read^="edit"] .strip .back{color:var(--accent)}
+body[data-read^="edit"] .strip .pg.typing{color:var(--accent)}
+body[data-read^="edit"] .strip .ttl{color:var(--ink);text-transform:none;letter-spacing:0;font-family:var(--body);font-size:13.5px}
+body[data-read^="edit"] .strip .sub,body[data-read^="edit"] .strip .left{color:var(--muted)}
+body[data-read^="edit"] .strip .bar{height:2px;background:var(--accent)}
+/* PART n/m drops the contents as a paper card: timecodes, no page numbers */
+body[data-read^="edit"] .strip .sub[role="button"]:hover{color:var(--ink)}
+/* (the caret is big enough to see, and belongs to PART, not to MIN LEFT) */
+body[data-read^="edit"] .strip .sub[role="button"]::after{font-size:.8em;margin-left:.45ch;vertical-align:.08em}
+body[data-read^="edit"] .strip .left{margin-left:.6ch}
+body[data-read^="edit"] .strip .sub[role="button"]:focus-visible{outline-color:var(--accent)}
+body[data-read^="edit"] .partmenu{background:var(--ground);color:var(--soft);border:1px solid var(--rule);border-top:0;border-radius:0 0 4px 4px;box-shadow:0 18px 36px -22px rgba(0,0,0,.5);font-size:12.5px;letter-spacing:0;text-transform:none}
+body[data-read^="edit"] .partmenu a{grid-template-columns:7.5ch 1fr;gap:6px;padding:7px 14px;line-height:1.35}
+body[data-read^="edit"] .partmenu .pn{display:none}
+body[data-read^="edit"] .partmenu .t{display:block;color:var(--muted);font-variant-numeric:tabular-nums}
+body[data-read^="edit"] .partmenu a[aria-current="true"] .nm{color:var(--ink)}
+body[data-read^="edit"] .partmenu a[aria-current="true"] .t{color:var(--accent)}
+body[data-read^="edit"] .partmenu a:hover,body[data-read^="edit"] .partmenu a:focus-visible{background:var(--sheet);color:var(--ink)}
+body[data-read^="edit"] .partmenu a:hover .nm,body[data-read^="edit"] .partmenu a:focus-visible .nm{color:var(--ink)}
+body[data-read^="edit"] .partmenu a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+body[data-read^="edit"] .post::before{display:none}
+body[data-read^="edit"] .phead{max-width:var(--measure);padding-block:clamp(34px,6vw,76px) clamp(26px,4vw,40px);position:relative}
+body[data-read^="edit"] .phead{border-bottom:1px solid var(--rule)}
+body[data-read^="edit"] .content{padding-top:clamp(28px,4vw,44px);--cbar-h:38px;--code-bw:1px}
+/* eyebrow becomes one chip: the page number */
+body[data-read^="edit"] .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted);padding-right:0}
+body[data-read^="edit"] .eyebrow > span:not(:first-child){display:none}
+body[data-read^="edit"] .eyebrow > span::after{display:none}
+body[data-read^="edit"] .eyebrow > span:first-child{border:1px solid var(--rule);background:var(--sheet);padding:3px 8px 2px;border-radius:2px}
+body[data-read^="edit"] .phead h1{font-family:var(--h1-font);font-weight:700;font-stretch:100%;text-transform:none;font-size:clamp(32px,4.2vw,46px);line-height:1.12;letter-spacing:-.012em;margin-top:.6em;color:var(--ink)}
+body[data-read="edit-sans"] .phead h1{font-weight:500;letter-spacing:-.018em}
+/* the meta grid: recorded / runtime / topics */
+body[data-read^="edit"] .phead .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px 24px;margin:clamp(22px,3vw,32px) 0 0}
+body[data-read^="edit"] .phead .meta dt{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+body[data-read^="edit"] .phead .meta dd{margin:0;font-family:var(--body);font-size:15px;line-height:1.4;color:var(--ink);display:flex;gap:.7ch}
+body[data-read^="edit"] .phead .meta dd::before{content:"└";font-family:var(--mono);color:var(--muted)}
+/* the eyebrow here is one short chip, so the resume chip simply sits at the end of that row (same height, nothing moves) */
+body[data-read^="edit"] .resume{position:static;transform:none;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink);background:var(--sheet);border-color:var(--rule);border-radius:2px;padding:3px 9px 2px;margin:0 0 0 auto}
+/* and there is room for the whole label, so phones keep "RESUME AT" here (the other layouts drop it) */
+body[data-read^="edit"] .resume .rl{display:inline}
+body[data-read^="edit"] .resume > span:first-child{color:var(--accent)}
+body[data-read^="edit"] .resume:hover{background:var(--ink);color:var(--ground)}
+body[data-read^="edit"] .phead .meta dd.rt{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:14px}
+/* (the runtime's dimmed zeros are their own span: no flex gap inside the number) */
+body[data-read^="edit"] .phead .meta dd.rt{gap:0}
+body[data-read^="edit"] .phead .meta dd.rt::before{margin-right:.7ch}
+
+/* body copy. Prose keeps about 68 characters a line (Literata at 18px set 74 across the whole 660px); code, pictures,
+   cards, the header and the footer keep the full column */
+body[data-read^="edit"] .content > :is(p,ul,ol,h1,h2,h3,h4,h5,h6,dl,.footnotes,blockquote:not(.kg-blockquote-alt):not(.twitter-tweet)){max-width:calc(var(--read-size) * 34)}
+body[data-read="edit-sans"] .content > :is(p,ul,ol,h1,h2,h3,h4,h5,h6,dl,.footnotes,blockquote:not(.kg-blockquote-alt):not(.twitter-tweet)){max-width:calc(var(--read-size) * 32)}
+body[data-read^="edit"] .content a{text-decoration-color:color-mix(in srgb,var(--ink) 45%,transparent);text-decoration-thickness:1px}
+body[data-read^="edit"] .content a:hover{text-decoration-color:var(--accent);text-decoration-thickness:2px}
+body[data-read^="edit"] .content li::marker{color:var(--muted);font-family:var(--mono);font-size:.85em}
+/* (a number starts where the text does: "1. " in the mono is 1.53em wide, "10. " 2.04em) */
+body[data-read^="edit"] .content ol{padding-left:1.55em}
+body[data-read^="edit"] .content ol:has(> li:nth-child(10)){padding-left:2.05em}
+body[data-read="edit"] .content strong{font-weight:620}
+/* parts: the timecode is a kicker over a sans title in the post's own case, so "ShaderMaterial" or "main()" keep their
+   spelling. The kicker's line is there before theme.js fills it in, so nothing moves when it does. */
+body[data-read^="edit"] .content > h1,body[data-read^="edit"] .content > h2{font-family:var(--body);font-weight:700;font-stretch:100%;text-transform:none;font-size:clamp(21px,1.7vw,24px);letter-spacing:-.005em;line-height:1.25;margin:2.1em 0 .6em}
+body[data-read^="edit"] .content > h1::before,body[data-read^="edit"] .content > h2::before{content:attr(data-tc);content:attr(data-tc) / "";display:block;min-height:1.4em;font-family:var(--mono);font-weight:500;font-size:12.5px;line-height:1.4;letter-spacing:.04em;color:var(--accent);font-variant-numeric:tabular-nums;margin-bottom:.45em}
+/* HEADINGS: MONO CAPS (body[data-heads="mono"]) is the layout's first heading: one line of the tape log. The timecode
+   hangs, so a heading that wraps lines up under its own first word, not under the timecode */
+body[data-read^="edit"][data-heads="mono"] .content > :is(h1,h2){font-family:var(--mono);font-weight:600;text-transform:uppercase;font-size:15px;letter-spacing:.07em;line-height:1.5;margin:2.6em 0 .9em;padding-left:9ch;text-indent:-9ch}
+body[data-read^="edit"][data-heads="mono"] .content > :is(h1,h2)::before{display:inline-block;min-height:0;width:9ch;text-indent:0;font-size:inherit;line-height:inherit;letter-spacing:.02em;margin:0}
+/* a Markdown card's NOTES rule reads like a small part heading */
+body[data-read^="edit"] .post .content hr.footnotes-sep::after{font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.08em}
+body[data-read^="edit"] .content .sp{display:none}
+body[data-read^="edit"] .content > h3{font-family:var(--body);font-stretch:100%;font-weight:700;font-size:1.02em;line-height:1.3}
+/* (under a MONO CAPS part, its steps are bold at the text's size and a step's steps italic, so no step outranks the
+   part's 15px capitals) */
+body[data-read^="edit"][data-heads="mono"] .content > h3{font-family:var(--read-font);font-weight:700;font-size:1em;line-height:1.35;margin:1.9em 0 .45em}
+body[data-read^="edit"][data-heads="mono"] .content > h4{font-style:italic;font-size:.95em}
+body[data-read^="edit"][data-heads="mono"] .content > :is(h5,h6){font-weight:600;font-size:.9em;color:var(--muted)}
+/* under a step, a smaller sans, and anything deeper a quieter one (MONO CAPS keeps read.css's serif). The post's own
+   headings only: these would outrank the product and toggle cards' h4 rules */
+body[data-read^="edit"]:not([data-heads="mono"]) .content > h4{font-family:var(--body);font-stretch:100%;font-weight:700;font-size:.9em;line-height:1.35;margin:1.7em 0 .4em}
+body[data-read^="edit"]:not([data-heads="mono"]) .content > :is(h5,h6){font-family:var(--body);font-stretch:100%;font-style:normal;font-weight:600;font-size:.9em;line-height:1.35;color:var(--muted);margin:1.6em 0 .35em}
+/* a quote is a quotation: the text's own size, indented on a red rule. Ghost's second quote style (.kg-blockquote-alt)
+   is the pull quote */
+body[data-read^="edit"] .content blockquote{font-family:var(--read-font);font-stretch:100%;font-style:normal;font-weight:400;font-size:1em;line-height:var(--read-lh);text-indent:0;hanging-punctuation:first;border-left:2px solid var(--accent);padding-left:1.1em;color:var(--soft)}
+body[data-read^="edit"] .content blockquote::before,body[data-read^="edit"] .content blockquote::after{content:none}
+body[data-read^="edit"] .content blockquote.kg-blockquote-alt{border:0;padding:0;text-align:center;font-size:1.35em;font-style:italic;line-height:1.45;color:var(--ink)}
+body[data-read^="edit"] .content hr::after{content:"";display:inline-block;width:11px;height:13px;vertical-align:middle;background:linear-gradient(90deg,var(--muted) 0 4px,transparent 4px 7px,var(--muted) 7px)}
+body[data-read^="edit"] .content :not(pre)>code{background:color-mix(in srgb,var(--ink) var(--icode),transparent);border:0;border-radius:3px;font-size:.82em;padding:.1em .3em}
+body[data-read^="edit"] .content img{border-radius:2px;box-shadow:0 0 0 1px rgba(23,22,15,.07);mix-blend-mode:multiply}
+body[data-read^="edit"] .content figure.kg-width-full img,body[data-read^="edit"] .content .kg-gallery-image img{box-shadow:none}
+body[data-read^="edit"] .content figcaption{font-family:var(--mono);font-size:12.5px;line-height:1.5;letter-spacing:.01em}
+body[data-read^="edit"] .content figcaption::before{font-family:var(--mono);font-size:10px;color:var(--accent)}
+body[data-read^="edit"] .content img:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) body[data-read^="edit"] .content img{mix-blend-mode:normal;box-shadow:none;filter:brightness(.88);transition:filter .3s}
+  :root:not([data-theme="light"]) body[data-read^="edit"] .content .shot:hover img{filter:none}
+}
+:root[data-theme="dark"] body[data-read^="edit"] .content img{mix-blend-mode:normal;box-shadow:none;filter:brightness(.88);transition:filter .3s}
+:root[data-theme="dark"] body[data-read^="edit"] .content .shot:hover img{filter:none}
+/* captioned figures are numbered like plates in a manual: FIG. 01, FIG. 02 … (code cards keep their own bar) */
+body[data-read^="edit"] .content{counter-reset:fig}
+body[data-read^="edit"] .content figure:not(.code):not(.kg-code-card):has(> figcaption){counter-increment:fig}
+body[data-read^="edit"] .content figure:not(.code):not(.kg-code-card) > figcaption{--cap-hang:62px}
+body[data-read^="edit"] .content figure:not(.code):not(.kg-code-card) > figcaption::before{content:"FIG. " counter(fig,decimal-leading-zero);font-size:11px;letter-spacing:.08em;white-space:nowrap}
+/* a post's feature image (the theme puts it first in .content as figure.feature) is its cover, not a numbered figure */
+body[data-read^="edit"] .content figure.feature:not(.code):not(.kg-code-card):has(> figcaption){counter-increment:none}
+body[data-read^="edit"] .content figure.feature:not(.code):not(.kg-code-card) > figcaption::before{content:"COVER"}
+/* the header ends in a rule with its own padding: an image that opens the post (a cover, or a first image card) sits as close to it as text does */
+body[data-read^="edit"] .content > figure:first-child{margin-top:0}
+
+/* code: a flat card on the page, not a screen */
+body[data-read^="edit"] .content .code{border:1px solid var(--rule);border-radius:4px;box-shadow:none}
+body[data-read^="edit"] .code .cbar{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rule);padding:7px 8px 6px 14px}
+body[data-read^="edit"] .code .lang{color:var(--accent)}
+body[data-read^="edit"] .code .file{color:var(--ink);text-transform:none;letter-spacing:0}
+body[data-read^="edit"] .code .acts button{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--soft);border-color:var(--rule);padding:2px 7px}
+body[data-read^="edit"] .code .acts button:hover{color:var(--ink)}
+body[data-read^="edit"] .code .acts button[aria-pressed="true"]{background:var(--ink);color:var(--ground)}
+body[data-read^="edit"] .code .acts button:focus-visible,body[data-read^="edit"] .code .more:focus-visible{outline-color:var(--accent)}
+body[data-read^="edit"] .code{--gut-ink:var(--muted)}body[data-read^="edit"] .code .gut{border-right-color:var(--rule)}
+body[data-read^="edit"] .code .more{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--accent);border-top-color:var(--rule)}
+body[data-read^="edit"] .content .code figcaption,body[data-read^="edit"] .content .kg-code-card > figcaption{color:var(--muted);--cap-hang:0px}
+body[data-read^="edit"] .content .code figcaption::before,body[data-read^="edit"] .content .kg-code-card > figcaption::before{display:none}
+body[data-read^="edit"] .token.comment,body[data-read^="edit"] .token.prolog{color:var(--muted)}
+body[data-read^="edit"] .token.variable,body[data-read^="edit"] .token.parameter{color:var(--codeink)}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) body[data-read^="edit"] .code{--k:#ff9a6e;--s:#9fd6a6;--n:#f0a0c8;--f:#9cc4ff;--t:#d4a8f0;--o:#a9a497}
+}
+:root[data-theme="dark"] body[data-read^="edit"] .code{--k:#ff9a6e;--s:#9fd6a6;--n:#f0a0c8;--f:#9cc4ff;--t:#d4a8f0;--o:#a9a497}
+body[data-read^="edit"] .code .token.keyword,body[data-read^="edit"] .code .token.boolean,body[data-read^="edit"] .code .token.important{color:var(--k,#a02a17)}
+body[data-read^="edit"] .code .token.string,body[data-read^="edit"] .code .token.char,body[data-read^="edit"] .code .token.attr-value{color:var(--s,#2d6a3a)}
+body[data-read^="edit"] .code .token.number,body[data-read^="edit"] .code .token.constant{color:var(--n,#8a2360)}
+body[data-read^="edit"] .code .token.function,body[data-read^="edit"] .code .token.class-name{color:var(--f,#24478f)}
+body[data-read^="edit"] .code .token.tag,body[data-read^="edit"] .code .token.selector,body[data-read^="edit"] .code .token.property,body[data-read^="edit"] .code .token.builtin{color:var(--t,#6b3290)}
+body[data-read^="edit"] .code .token.operator,body[data-read^="edit"] .code .token.punctuation{color:var(--o,#6a675c)}
+/* a one-line command (theme.js .one: it fits beside its labels) is a single strip with the language and COPY at its
+   right end: 51px instead of a 92px card */
+body[data-read^="edit"] .code.one{display:flex;align-items:center}
+body[data-read^="edit"] .code.one .src{flex:1;min-width:0}
+body[data-read^="edit"] .code.one .cbar{order:1;flex:none;height:auto;border:0;padding:0 8px 0 10px}
+body[data-read^="edit"] .code.one .wrapb{display:none}
+body[data-read^="edit"] .code.one pre{padding:13px 0 13px 16px}
+/* a time's leading zeros are unlit digits (theme.js .z) */
+body[data-read^="edit"] .z,body[data-index="log"] .z{opacity:.38}
+
+/* code alternate "screen" (body[data-code="screen"]; pick one for Ghost): the one place the Edit page switches a
+   monitor on. Dark glass whatever the theme, the phosphor palette from the other layouts, faint scanlines. */
+body[data-read^="edit"][data-code="screen"] .content{--code-bw:0px}
+body[data-read^="edit"][data-code="screen"] .content > pre,body[data-read^="edit"][data-code="screen"] .content .kg-code-card > pre{background:#141311;color:#e9e4d8;border-radius:4px}
+body[data-read^="edit"][data-code="screen"] .content .code{--codebg:#141311;--codeink:#e9e4d8;--k:#ffb867;--s:#9fe3b8;--n:#ff9fb3;--f:#8fd8ff;--t:#e6b3ff;--o:#a9a5b4;border:0;border-radius:4px;box-shadow:0 0 0 1px rgba(0,0,0,.28)}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) body[data-read^="edit"][data-code="screen"] .content .code{--codebg:#0b0a09;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+  :root:not([data-theme="light"]) body[data-read^="edit"][data-code="screen"] .content > pre,:root:not([data-theme="light"]) body[data-read^="edit"][data-code="screen"] .content .kg-code-card > pre{background:#0b0a09}
+}
+:root[data-theme="dark"] body[data-read^="edit"][data-code="screen"] .content .code{--codebg:#0b0a09;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+:root[data-theme="dark"] body[data-read^="edit"][data-code="screen"] .content > pre,:root[data-theme="dark"] body[data-read^="edit"][data-code="screen"] .content .kg-code-card > pre{background:#0b0a09}
+body[data-read^="edit"][data-code="screen"] .code pre{text-shadow:0 0 4px color-mix(in srgb,currentColor 30%,transparent)}
+body[data-read^="edit"][data-code="screen"] .code .src::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.025) 0 1px,transparent 1px 3px);box-shadow:inset 0 0 50px rgba(0,0,0,.35)}
+body[data-read^="edit"][data-code="screen"] .code .cbar{color:#8e8a99;border-bottom-color:rgba(255,255,255,.07)}
+body[data-read^="edit"][data-code="screen"] .code .lang{color:#ffb867}
+body[data-read^="edit"][data-code="screen"] .code .file{color:#d8d3c8}
+body[data-read^="edit"][data-code="screen"] .code .acts button{color:#b8b4c2;border-color:rgba(255,255,255,.16)}
+body[data-read^="edit"][data-code="screen"] .code .acts button:hover{color:#fff}
+body[data-read^="edit"][data-code="screen"] .code .acts button[aria-pressed="true"]{background:#d8d3c8;color:#111}
+body[data-read^="edit"][data-code="screen"] .code .acts button:focus-visible,body[data-read^="edit"][data-code="screen"] .code .more:focus-visible{outline-color:#ffb867}
+body[data-read^="edit"][data-code="screen"] .code{--gut-ink:#817d93}body[data-read^="edit"][data-code="screen"] .code .gut{border-right-color:rgba(255,255,255,.05)}
+body[data-read^="edit"][data-code="screen"] .code .more{color:#ffb867;border-top-color:rgba(255,255,255,.07)}
+body[data-read^="edit"][data-code="screen"] .content .code figcaption,body[data-read^="edit"][data-code="screen"] .content .kg-code-card > figcaption{color:#8e8a99}
+body[data-read^="edit"][data-code="screen"] .code .token.comment,body[data-read^="edit"][data-code="screen"] .code .token.prolog{color:#8c889a}
+
+/* the rest of Ghost's cards lose the VT323 */
+body[data-read^="edit"] .content .kg-bookmark-card a.kg-bookmark-container{border-radius:4px}
+body[data-read^="edit"] .content .kg-bookmark-card .kg-bookmark-metadata,body[data-read^="edit"] .tbl th{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase}
+body[data-read^="edit"] .content .kg-bookmark-card .kg-bookmark-thumbnail{background:repeating-linear-gradient(90deg,#c0c0c0 0 12.5%,#c0c000 0 25%,#00c0c0 0 37.5%,#00c000 0 50%,#c000c0 0 62.5%,#c00000 0 75%,#0000c0 0 87.5%,#101010 0)}
+body[data-read^="edit"] .content .kg-callout-card{border-radius:4px}
+body[data-read^="edit"] .content .kg-callout-card .kg-callout-emoji{font-family:var(--mono);font-size:15px}
+/* the cards' buttons and small print are in the layout's mono, like the code labels and the button card (the video and
+   audio decks keep the VCR's counter) */
+body[data-read^="edit"] .content :is(.kg-header-card.kg-v2 a.kg-header-card-button,.kg-signup-card .kg-signup-card-button,.kg-cta-card a.kg-cta-button,.kg-product-card a.kg-product-card-button){font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase}
+body[data-read^="edit"] .content .kg-cta-card .kg-cta-sponsor-label{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase}
+body[data-read^="edit"] .content .kg-file-card .kg-file-card-metadata{font-family:var(--mono);font-size:12px;letter-spacing:.02em}
+body[data-read^="edit"] .content .kg-button-card a.kg-btn{font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;padding:9px 16px 8px;border-radius:2px}
+body[data-read^="edit"] .tbl table{font-size:15px}
+
+/* end of the tape */
+body[data-read^="edit"] .ende{font-family:var(--mono);font-size:12px;letter-spacing:.2em}
+body[data-read^="edit"] .author .av{border-radius:2px}
+body[data-read^="edit"] .nextprev{background:none;border-radius:0;padding:0;color:var(--ink);text-shadow:none;font-family:var(--mono);font-size:14px;gap:0}
+body[data-read^="edit"] .nextprev .lbl{color:var(--muted);font-size:11.5px;letter-spacing:.1em;margin-bottom:8px}
+body[data-read^="edit"] .nextprev > a{grid-template-columns:5ch 1fr;align-items:baseline;padding:12px 0 13px;border-top:1px solid var(--rule)}
+body[data-read^="edit"] .nextprev > a .tt{font-family:var(--h1-font);font-weight:500;font-size:clamp(17px,1.4vw,19px);line-height:1.3;color:var(--ink);text-wrap:balance}
+body[data-read^="edit"] .nextprev > a .k{display:block;font-family:var(--mono);font-weight:400;font-size:11px;line-height:1.4;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+body[data-read^="edit"] .nextprev > a .k::after{content:none}
+body[data-read^="edit"] .nextprev > a:hover .tt{text-decoration:underline 1px var(--accent);text-underline-offset:3px}
+body[data-read^="edit"] .nextprev a .n{color:var(--accent)}
+body[data-read^="edit"] .nextprev a:hover,body[data-read^="edit"] .nextprev a:focus-visible{background:var(--sheet);color:var(--ink)}
+body[data-read^="edit"] .nextprev a:hover .n,body[data-read^="edit"] .nextprev a:focus-visible .n{color:var(--accent)}
+body[data-read^="edit"] .nextprev a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+body[data-read^="edit"] .nextprev .fxrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+body[data-read^="edit"] .nextprev .fxrow > *{display:inline-flex;align-items:center;gap:8px;background:none!important;color:var(--soft);border:1px solid var(--rule);border-radius:2px;padding:7px 10px 6px;font-size:11.5px;letter-spacing:.08em;line-height:1.2}
+body[data-read^="edit"] .nextprev .fxrow > *::before{content:"";width:8px;height:8px;border-radius:1px;background:var(--pip);box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
+body[data-read^="edit"] .nextprev .fxrow .fx-r{--pip:var(--tt-r)}
+body[data-read^="edit"] .nextprev .fxrow .fx-g{--pip:var(--tt-g)}
+body[data-read^="edit"] .nextprev .fxrow .fx-y{--pip:var(--tt-y)}
+body[data-read^="edit"] .nextprev .fxrow .fx-b{--pip:var(--tt-b)}
+body[data-read^="edit"] .nextprev .fxrow .off{opacity:.5;border-style:dashed}
+body[data-read^="edit"] .nextprev .fxrow a:hover{color:var(--ink);border-color:var(--muted);outline:0}
+body[data-read^="edit"] .nextprev .fxrow a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* the lightbox's caption reads like the figure's own: FIG. 01 in red, mono */
+body[data-read^="edit"] .lb figcaption{font-family:var(--mono);font-size:12.5px;line-height:1.5}
+body[data-read^="edit"] .lb figcaption[data-fig]:not([data-fig=""])::before{content:attr(data-fig);color:#ff7a5c;margin-right:1.2ch;font-size:11px;letter-spacing:.08em}
+
+/* the left rail: edit list, tape counter, tracking bar. Only where there's a margin for it. */
+@media (min-width:1240px){
+  /* from the site name's left edge (the post box's) to 40px short of the text: 220px wide at every width it shows at */
+  body[data-read^="edit"] .toc{display:block;position:absolute;top:0;bottom:0;left:0;right:calc(50% + var(--measure) / 2 + 40px);z-index:0}
+  /* CONTENTS starts level with the eyebrow and, once the rail sticks, 52px under the strip (which carries the title) */
+  body[data-read^="edit"] .rail{position:sticky;top:calc(92px - clamp(34px,6vw,76px));padding-top:clamp(34px,6vw,76px)}
+  body[data-read^="edit"] .toc nav{font-family:var(--mono);font-size:12.5px;line-height:1.35}
+  /* a list too long for the screen scrolls inside the rail, so the deck under it stays in view: the list starts 92px
+     down, the deck takes 104px and 24px stay free under it. The padding keeps a focused row's ring inside the scroller */
+  body[data-read^="edit"] .toc nav{max-height:calc(100vh - 92px - 104px - 24px);overflow:hidden auto;scrollbar-width:thin;padding:4px;margin:-4px}
+  body[data-read^="edit"] .toc a{overflow-wrap:anywhere}
+  body[data-read^="edit"] .toc .h{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  body[data-read^="edit"] .toc a{display:grid;grid-template-columns:7.5ch 1fr;gap:6px;text-decoration:none;padding:4px 0;color:var(--muted)}
+  /* a part's steps (h3) sit under its title, without a timecode */
+  body[data-read^="edit"] .toc a.step{padding-block:2px 3px}
+  body[data-read^="edit"] .toc a.step .nm{padding-left:2ch}
+  body[data-read^="edit"] .toc a.step.here{color:var(--ink)}
+  body[data-read^="edit"] .toc .t{display:block;font-variant-numeric:tabular-nums}
+  body[data-read^="edit"] .toc a:hover{color:var(--ink)}
+  body[data-read^="edit"] .toc a[aria-current="true"]{color:var(--ink)}
+  body[data-read^="edit"] .toc a[aria-current="true"] .t{color:var(--accent)}
+  body[data-read^="edit"] .toc a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  body[data-read^="edit"] .deck{display:block;margin-top:30px}
+  /* (a post without parts has no list above it: the deck lines up with the eyebrow) */
+  body[data-read^="edit"] .toc nav:empty + .deck{margin-top:0}
+  body[data-read^="edit"] .ctr{display:flex;align-items:baseline;justify-content:space-between;font-family:var(--osd);font-size:28px;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+  body[data-read^="edit"] .ctr .st{font-size:17px;letter-spacing:.08em;color:var(--accent)}
+  body[data-read^="edit"] .trk{height:12px;margin-top:8px;background:repeating-conic-gradient(color-mix(in srgb,var(--ink) 26%,transparent) 0 25%,transparent 0 50%) 0 0/2px 2px}
+  body[data-read^="edit"] .trk i{display:block;height:100%;width:0;background:repeating-conic-gradient(var(--ink) 0 25%,color-mix(in srgb,var(--ink) 60%,transparent) 0 50%) 0 0/2px 2px}
+  body[data-read^="edit"] .hint{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);margin-top:10px;white-space:nowrap}
+  body[data-read^="edit"] .trk{cursor:ew-resize;touch-action:none;position:relative}
+  body[data-read^="edit"] .trk:hover,body[data-read^="edit"] .trk.scrub{outline:1px solid var(--rule);outline-offset:3px}
+  /* wide images keep the text's left edge and grow into the empty right margin, clear of the rail;
+     full-bleed ones still run edge to edge, and the rail steps aside for them */
+  body[data-read^="edit"] .content figure.kg-width-wide{--fw:calc(var(--measure) + 100px);margin-left:0}
+  body[data-read^="edit"] .content figure.kg-width-wide :is(.shot,img),body[data-read^="edit"] .content figure.kg-width-wide > figcaption{margin-left:0}
+  body[data-read^="edit"] .content figure.kg-width-full{position:relative;z-index:1}
+  body[data-read^="edit"] .rail{transition:opacity .2s,visibility .2s}
+  body[data-read^="edit"] .toc.under .rail{opacity:0;visibility:hidden}
+}
+@media (max-width:640px){
+  body[data-read^="edit"] .strip{font-size:11px}
+  body[data-read^="edit"][data-heads="mono"] .content > :is(h1,h2){font-size:14px}
+  body[data-read^="edit"] .phead .meta{grid-template-columns:1fr 1fr}
+  /* (Topics gets the whole row: in half of it, three topics wrapped onto three lines at 320px) */
+  body[data-read^="edit"] .phead .meta > div:nth-child(3){grid-column:1 / -1}
+  /* code and pictures run to the screen's edges (read.css): square ends, no side rules, labels on the text column */
+  body[data-read^="edit"] .content .code,body[data-read^="edit"][data-code="screen"] .content .code,
+  body[data-read^="edit"][data-code="screen"] .content > pre,body[data-read^="edit"][data-code="screen"] .content .kg-code-card > pre{border-radius:0;border-inline-width:0}
+  body[data-read^="edit"] .code .cbar{padding-left:var(--bleed,16px);padding-right:calc(var(--bleed,16px) - 2px)}
+  /* (a one-line strip drops its label on a phone: the line needs the room, and COPY keeps the bar's inset) */
+  body[data-read^="edit"] .code.one .cbar{padding-left:10px;padding-right:calc(var(--bleed,16px) - 2px)}
+  body[data-read^="edit"] .code.one .lang{display:none}
+  body[data-read^="edit"] .code.one pre{padding-left:var(--bleed,16px)}
+  body[data-read^="edit"] .content figure.kg-image-card img{border-radius:0}
+}
+/* the smallest phones: the date gets the width it needs beside the runtime, and the four keys make two rows of two */
+@media (max-width:359px){
+  body[data-read^="edit"] .phead .meta{grid-template-columns:max-content 1fr}
+  body[data-read^="edit"] .nextprev .fxrow{display:grid;grid-template-columns:1fr 1fr}
+}

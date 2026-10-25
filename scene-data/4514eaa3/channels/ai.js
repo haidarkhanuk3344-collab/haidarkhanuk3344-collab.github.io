@@ -1,0 +1,1 @@
+import {makeNoteChannel} from "/chess/chess-tv.js"; export default makeNoteChannel({"id": "ai", "title": "与 AI 共创", "english": "With AI", "number": 9, "lines": ["由我定义想做什么，与 AI 一起把想法推进到原型。", "可以慢慢逛，也可以去电脑里看看我的项目。"], "length": 24});

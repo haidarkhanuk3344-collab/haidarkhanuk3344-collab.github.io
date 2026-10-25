@@ -1,0 +1,1 @@
+import {makeNoteChannel} from "/chess/chess-tv.js"; export default makeNoteChannel({"id": "fitness", "title": "保持运动", "english": "Stay Active", "number": 6, "lines": ["篮球和健身，是生活里让我保持热情的部分。", "可以慢慢逛，也可以去电脑里看看我的项目。"], "length": 24});
