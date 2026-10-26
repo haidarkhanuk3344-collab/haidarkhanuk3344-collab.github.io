@@ -133,7 +133,7 @@ export function createNotepad(THREE, ctx){
   // a line of handwriting: never quite level, never quite on the rule, and pressed a little harder than the font
   function hand(g,text,x,y,px,{color=INK,alpha=.94,align="left",seed=text}={}){
     const r=rng(hash(seed)); g.save(); g.font=FONT(px); g.fillStyle=g.strokeStyle=color; g.globalAlpha=alpha; g.textAlign=align; g.lineWidth=px*.02; g.lineJoin="round";
-    g.translate(x+(r()-.5)*4,y+(r()-.5)*3); g.rotate((r()-.5)*.012); g.fillText(text,0,0); if(!/[\u2e80-\u9fff]/.test(text)) if(!/[\u2e80-\u9fff]/.test(text)) g.strokeText(text,0,0);
+    g.translate(x+(r()-.5)*4,y+(r()-.5)*3); g.rotate((r()-.5)*.012); g.fillText(text,0,0); if(!/[\u2e80-\u9fff]/.test(text)) if(!/[\u2e80-\u9fff]/.test(text)) if(!/[\u2e80-\u9fff]/.test(text)) g.strokeText(text,0,0);
     const w=g.measureText(text).width; g.restore(); return w; }
   function fit(g,text,px,maxW){ g.font=FONT(px); const w=g.measureText(text).width; return w>maxW?Math.floor(px*maxW/w):px; }
   function wrap(g,text,px,maxW){ g.font=FONT(px); const out=[]; let line="";

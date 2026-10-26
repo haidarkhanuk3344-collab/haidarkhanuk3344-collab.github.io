@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en" data-accent="blue">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<!-- Local technical reference mirror of Felix Rieseberg. Original attribution retained. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Felix Rieseberg</title>
+  
+  
+  
+    <link rel="stylesheet" href="/fonts/e1bc683f6f4144cd.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="/fonts/e1bc683f6f4144cd.css"></noscript>
+<script>(function(){var t=new URL("/assets/vendor/three-0.169.0/three.module.js",location.href),m=document.createElement("script");m.type="importmap";m.textContent=JSON.stringify({imports:{"three":t.href,"three/addons/":new URL("addons/",t).href}});document.currentScript.after(m);})();</script>
+  <style id="bm-bg">html{background:#07080d}</style>
+  <noscript><style>html{background:none}.bm-fallback{display:block!important}</style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Fira+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Fira+Code:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..700&family=VT323&display=swap">
+    <link rel="stylesheet" href="/assets/posts/posts.css"><link rel="stylesheet" href="/assets/theme/flat.css"><link rel="stylesheet" href="/assets/theme/home.css"></noscript>
+
+  <meta name="description" content="I work on Claude at Anthropic. Electron co-maintainer. Maintainer of too many little open source projects. Some of it is on VHS.">
+    <link rel="canonical" href="https://felixrieseberg.com/">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+    <meta property="og:site_name" content="Felix Rieseberg">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Felix Rieseberg">
+    <meta property="og:description" content="I work on Claude at Anthropic. Electron co-maintainer. Maintainer of too many little open source projects. Some of it is on VHS.">
+    <meta property="og:url" content="https://felixrieseberg.com/">
+    <meta property="og:image" content="https://storage.ghost.io/c/89/e0/89e08557-681a-40be-8264-278bf46d6b25/content/images/2026/10/facebook-card.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Felix Rieseberg">
+    <meta name="twitter:description" content="I work on Claude at Anthropic. Electron co-maintainer. Maintainer of too many little open source projects. Some of it is on VHS.">
+    <meta name="twitter:url" content="https://felixrieseberg.com/">
+    <meta name="twitter:image" content="https://storage.ghost.io/c/89/e0/89e08557-681a-40be-8264-278bf46d6b25/content/images/2026/10/x-card.jpg">
+    <meta name="twitter:site" content="@felixrieseberg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Felix Rieseberg",
+        "url": "https://felixrieseberg.com/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://felixrieseberg.com/favicon.ico",
+            "width": 48,
+            "height": 48
+        }
+    },
+    "url": "https://felixrieseberg.com/",
+    "name": "Felix Rieseberg",
+    "mainEntityOfPage": "https://felixrieseberg.com/",
+    "description": "I work on Claude at Anthropic. Electron co-maintainer. Maintainer of too many little open source projects. Some of it is on VHS."
+}
+    </script>
+
+    <meta name="generator" content="Ghost 6.73">
+    <link rel="alternate" type="application/rss+xml" title="Felix Rieseberg" href="https://felixrieseberg.com/rss/">
+    <style id="gh-members-styles">.gh-post-upgrade-cta-content,
+.gh-post-upgrade-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    text-align: center;
+    width: 100%;
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.gh-post-upgrade-cta-content {
+    border-radius: 8px;
+    padding: 40px 4vw;
+}
+
+.gh-post-upgrade-cta h2 {
+    color: #ffffff;
+    font-size: 28px;
+    letter-spacing: -0.2px;
+    margin: 0;
+    padding: 0;
+}
+
+.gh-post-upgrade-cta p {
+    margin: 20px 0 0;
+    padding: 0;
+}
+
+.gh-post-upgrade-cta small {
+    font-size: 16px;
+    letter-spacing: -0.2px;
+}
+
+.gh-post-upgrade-cta a {
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 500;
+    box-shadow: none;
+    text-decoration: underline;
+}
+
+.gh-post-upgrade-cta a:hover {
+    color: #ffffff;
+    opacity: 0.8;
+    box-shadow: none;
+    text-decoration: underline;
+}
+
+.gh-post-upgrade-cta a.gh-btn {
+    display: block;
+    background: #ffffff;
+    text-decoration: none;
+    margin: 28px 0 0;
+    padding: 8px 18px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.gh-post-upgrade-cta a.gh-btn:hover {
+    opacity: 0.92;
+}</style>
+    
+    
+    <link href="https://felixrieseberg.com/webmentions/receive/" rel="webmention">
+    <script defer src="/public/cards.min.js?v=3VmbfVx_4GrHkd6m"></script>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=sEZponTWi6Sf8sLP">
+    
+    <style>:root {--ghost-accent-color: #15171A;}</style>
+</head>
+<body class="home-template" data-index="log">
+<div id="bm-root" data-assets="/scene-data" data-site="Felix Rieseberg"></div>
+
+<div class="bm-fallback bm-plain" style="display:none">
+<header class="site">
+  <a class="name" href="https://felixrieseberg.com/">Felix Rieseberg</a>
+  <nav aria-label="Site"><a href="/about-me/">About</a><a href="/#work">Work</a><a href="/#posts">Posts</a><a href="/#online">Online</a></nav>
+  <span class="ctl"><a class="ph-room" href="/?room=1" data-room title="Back to the hi-fi version, the 3D room" hidden>HI-FI</a><button type="button" class="themeb" id="theme" title="Light, dark, or follow the system" hidden>AUTO</button></span>
+</header>
+<div class="pb-grid">
+  <main id="top">
+    <h1 class="pb-h1">Hi, I'm Felix.</h1>
+    <p class="pb-dek">I work on Claude at Anthropic. Electron co-maintainer. Maintainer of too many little open source projects.</p>
+    <p class="pb-more"><a href="/about-me/">More about me</a></p>
+    <figure class="ph-hero"><a id="bm-hero" tabindex="-1" aria-hidden="true"><img src="/assets/theme/still.jpg" width="1720" height="716" loading="eager" alt="A desk at night by a rainy window: a small TV showing the name Felix Rieseberg, a VCR, a stack of labelled video tapes, a desk lamp and a plant."></a></figure>
+    <div class="ph-warn" id="bm-warn" data-nosnippet role="note" aria-label="Static version"><button type="button" class="ph-warn-x" id="bm-warn-x" aria-label="Dismiss" title="Dismiss" hidden>×</button><p class="ph-warn-k"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M12 3 22.5 21h-21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v5.2M12 18v.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Static version</p><p class="ph-warn-t">Personal websites and portfolios are some of the last places where the Internet is still creative and fun, so I worked very hard on an interactive experience. Your computer and browser identified themselves as a device where the experience might be bad, so you've been routed to this static version.</p><p class="ph-warn-a" id="bm-try" hidden><a href="?room=1">Click here to try the interactive version anyway.</a></p></div>
+    <section id="work"><h2>Work</h2><div class="pb-item"><div class="pb-hd"><span class="t">Anthropic</span><span class="y">2025–now</span></div><p>I work on whatever allows me to make people productive with AI. In my time at the company so far, I&#x27;ve led engineering for Claude.ai, Cowork, and Code Desktop. Always looking for the next big thing! <a href="https://claude.com/download">claude.com/download</a></p></div><div class="pb-item"><div class="pb-hd"><span class="t">Notion</span><span class="y">2023–2025</span></div><p>Notion&#x27;s desktop apps for Mac and Windows, plus the web plumbing underneath them. <a href="https://www.notion.com/desktop">notion.com/desktop</a></p></div><div class="pb-item"><div class="pb-hd"><span class="t">Stripe</span><span class="y">2021–2023</span></div><p>Two years on Stripe&#x27;s core payments APIs, the part developers call when they want to get paid. <a href="https://stripe.com">stripe.com</a></p></div><div class="pb-item"><div class="pb-hd"><span class="t">Slack</span><span class="y">2016–2021</span></div><p>Nearly five years on Slack&#x27;s desktop app for macOS, Windows and Linux, first writing code, later managing the team. <a href="https://slack.com/downloads">slack.com/downloads</a></p></div><div class="pb-item"><div class="pb-hd"><span class="t">Microsoft</span><span class="y">2011–2016</span></div><p>Five years at Microsoft, evangelizing Windows Phone in Munich and San Francisco, then open source, mostly making npm install work on Windows. <a href="https://github.com/felixrieseberg/windows-build-tools">github.com/felixrieseberg/windows-build-tools</a></p></div><p class="pb-lbl pb-grp">Projects</p><div class="pb-item"><div class="pb-hd"><span class="t">Electron</span><span class="y">2016–now</span></div><p>I&#x27;ve helped maintain Electron since 2016, which explains why most things on this shelf are Electron apps. <a href="https://www.electronjs.org">electronjs.org</a></p></div><div class="pb-item"><div class="pb-hd"><span class="t">Electron Fiddle</span><span class="y">2018–now</span></div><p>A quick way to try Electron: small experiments, any version, no setup. <a href="https://www.electronjs.org/fiddle">electronjs.org/fiddle</a></p></div><div class="pb-item"><div class="pb-hd"><span class="t">Clippy</span><span class="y">2025–now</span></div><p>Clippy from Office 97, back on your desktop and running a language model on your own computer. <a href="https://felixrieseberg.github.io/clippy/">felixrieseberg.github.io/clippy</a></p></div><div class="pb-item"><div class="pb-hd"><span class="t">Language Model Builder</span><span class="y">2026–now</span></div><p>A free Mac app that explains how language models work, then lets you train a small one yourself. <a href="https://languagemodelbuilder.com">languagemodelbuilder.com</a></p></div><div class="pb-item"><div class="pb-hd"><span class="t">windows95</span><span class="y">2018–now</span></div><p>Windows 95 in an Electron app, yes, the full thing, with the hard emulation work done by v86. <a href="https://github.com/felixrieseberg/windows95">github.com/felixrieseberg/windows95</a></p></div><div class="pb-item"><div class="pb-hd"><span class="t">macintosh.js</span><span class="y">2020</span></div><p>Mac OS 8 in an Electron app pretending to be a 1991 Macintosh Quadra, with the emulation done by Basilisk II. <a href="https://github.com/felixrieseberg/macintosh.js">github.com/felixrieseberg/macintosh.js</a></p></div>
+
+<div id="podcasts" data-year="2026"><a id="interviews"></a><p class="pb-lbl pb-grp">Podcasts</p><div class="pb-links"><ul><li><a href="https://www.youtube.com/watch?v=_FSxDLhTQ5o&ref=felixrieseberg.com">MTS</a>, October 2026</li><li><a href="https://www.youtube.com/watch?v=D-SVFneJ_Nk&ref=felixrieseberg.com">Silicon Valley Girl</a>, October 2026</li><li><a href="https://hanselminutes.com/1053/language-model-builder-with-felix-rieseberg?ref=felixrieseberg.com">Hanselminutes</a>, August 2026</li><li><a href="https://summation.buzzsprout.com/1783651/episodes/19523120-anthropic-s-felix-rieseberg-why-ai-wins-a-nobel-before-a-pulitzer?ref=felixrieseberg.com">Summation</a>, July 2026</li><li><a href="https://www.lennysnewsletter.com/p/how-i-ai-how-the-engineer-behind?ref=felixrieseberg.com">How I AI</a>, May 2026</li><li><a href="https://www.youtube.com/watch?v=9MEJ4syOVrQ&ref=felixrieseberg.com">The MAD Podcast</a>, April 2026</li><li><a href="https://www.latent.space/p/felix-anthropic?ref=felixrieseberg.com">Latent Space</a>, March 2026</li></ul></div></div>
+    <script>(function(s){ var y=s.getAttribute("data-year"), box=s.querySelector(".pb-links"), out="", esc=function(x){ var e=document.createElement("i"); e.textContent=x; return e.innerHTML; };
+      // Ghost's list (page "interviews"): one item a podcast, "[Show](recording), Month Year"; drawn as the Work rows, after Projects
+      [].forEach.call(box.querySelectorAll("li"),function(li){ var a=li.querySelector('a[href^="https://"]'); if(!a) return;
+        var w=li.textContent.replace(a.textContent,"").replace(/^[\s,;:·(–—-]+|[\s).]+$/g,"");
+        out+='<div class="pb-item"><div class="pb-hd"><a class="t" href="'+esc(a.href)+'">'+esc(a.textContent.trim())+'</a><span class="y">'+esc(/\d{4}/.test(w)?w:(w+" "+y).trim())+'</span></div></div>'; });
+      if(out){ box.innerHTML=out; box.className=""; } else s.hidden=true; })(document.currentScript.previousElementSibling);</script></section>
+    <section id="posts"><h2>Posts</h2>
+        <ol class="pb-idx" id="bm-posts">
+<li data-y="2026"><a href="https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/" data-date="13 Oct 2026"><span class="t">How to be more ambitious: A tutorial for humans with models</span><span class="d">13 Oct<span class="dy"> 2026</span></span></a></li><li data-y="2026"><a href="https://felixrieseberg.com/made-by-mechanical-means/" data-date="27 Sep 2026"><span class="t">Made by mechanical means</span><span class="d">27 Sep<span class="dy"> 2026</span></span></a></li><li data-y="2025"><a href="https://felixrieseberg.com/the-fanciest-ecards/" data-date="28 Feb 2025"><span class="t">The Fanciest eCards</span><span class="d">28 Feb<span class="dy"> 2025</span></span></a></li><li data-y="2025"><a href="https://felixrieseberg.com/things-people-get-wrong-about-electron/" data-date="21 Jan 2025"><span class="t">Things people get wrong about Electron</span><span class="d">21 Jan<span class="dy"> 2025</span></span></a></li><li data-y="2024"><a href="https://felixrieseberg.com/using-webgl-shadertoy-shaders-in-three-js/" data-date="21 Sep 2024"><span class="t">Using WebGL Shadertoy Shaders in Three.js</span><span class="d">21 Sep<span class="dy"> 2024</span></span></a></li><li data-y="2023"><a href="https://felixrieseberg.com/adventures-in-measuring-javascript/" data-date="08 Nov 2023"><span class="t">Adventures in Measuring JavaScript</span><span class="d">8 Nov<span class="dy"> 2023</span></span></a></li><li data-y="2023"><a href="https://felixrieseberg.com/debugging-native-node-js-addons-with-electron/" data-date="18 Aug 2023"><span class="t">Debugging native Node.js addons with Electron on macOS</span><span class="d">18 Aug<span class="dy"> 2023</span></span></a></li><li data-y="2021"><a href="https://felixrieseberg.com/better-rebasing/" data-date="01 Sep 2021"><span class="t">Avoid Git Merge Conflicts During a Big Rebase</span><span class="d">1 Sep<span class="dy"> 2021</span></span></a></li><li data-y="2020"><a href="https://felixrieseberg.com/on-running-an-electron-contributor-training/" data-date="03 Feb 2020"><span class="t">On Running an Electron Contributor Training</span><span class="d">3 Feb<span class="dy"> 2020</span></span></a></li><li data-y="2019"><a href="https://felixrieseberg.com/codesigning-electron-apps-in-ci/" data-date="01 Dec 2019"><span class="t">Code-signing Electron Apps in CI</span><span class="d">1 Dec<span class="dy"> 2019</span></span></a></li><li data-y="2019"><a href="https://felixrieseberg.com/debugging-electron-apps-on-windows/" data-date="29 May 2019"><span class="t">Debugging Native Crashes in Electron Apps on Windows</span><span class="d">29 May<span class="dy"> 2019</span></span></a></li><li data-y="2019"><a href="https://felixrieseberg.com/managing-node_modules-and-branches/" data-date="17 Apr 2019"><span class="t">Dependencies and Git branches</span><span class="d">17 Apr<span class="dy"> 2019</span></span></a></li><li data-y="2019"><a href="https://felixrieseberg.com/progressive-web-apps-electron/" data-date="08 Apr 2019"><span class="t">Progressive Web Apps &amp; Electron</span><span class="d">8 Apr<span class="dy"> 2019</span></span></a></li><li data-y="2018"><a href="https://felixrieseberg.com/introducing-electron-fiddle/" data-date="10 Aug 2018"><span class="t">Introducing Electron Fiddle</span><span class="d">10 Aug<span class="dy"> 2018</span></span></a></li><li data-y="2018"><a href="https://felixrieseberg.com/defeating-electron/" data-date="12 Jul 2018"><span class="t">Defeating Electron</span><span class="d">12 Jul<span class="dy"> 2018</span></span></a></li><li data-y="2017"><a href="https://felixrieseberg.com/introducing-electron/" data-date="18 Dec 2017"><span class="t">A Guide to Electron</span><span class="d">18 Dec<span class="dy"> 2017</span></span></a></li><li data-y="2017"><a href="https://felixrieseberg.com/ember-electron-2/" data-date="10 Apr 2017"><span class="t">Ember-Electron 2: Building Desktop Apps with Ember and Electron</span><span class="d">10 Apr<span class="dy"> 2017</span></span></a></li><li data-y="2017"><a href="https://felixrieseberg.com/using-native-windows-features-from-electron/" data-date="09 Jan 2017"><span class="t">Using Native Windows Features from Electron</span><span class="d">9 Jan<span class="dy"> 2017</span></span></a></li><li data-y="2016"><a href="https://felixrieseberg.com/running-your-own-parse-with-azure-and-docker/" data-date="29 Jan 2016"><span class="t">Running your own Parse with Azure and Docker</span><span class="d">29 Jan<span class="dy"> 2016</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/using-travis-to-deploy-apps-to-azure/" data-date="02 Sep 2015"><span class="t">Using Travis to Deploy Apps to Azure</span><span class="d">2 Sep<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/flynn-azure/" data-date="18 Aug 2015"><span class="t">Deploying Flynn Clusters on Azure</span><span class="d">18 Aug<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/deploy-jekyll-pages-using-git-and-travis-ci/" data-date="14 Aug 2015"><span class="t">Deploy Jekyll Pages using Git and Travis CI</span><span class="d">14 Aug<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/a-peer-review-bot-for-github/" data-date="23 Jul 2015"><span class="t">A Peer Review Bot for GitHub</span><span class="d">23 Jul<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/npm-v3-is-out-and-its-a-really-big-deal-for-windows/" data-date="26 Jun 2015"><span class="t">npm@3 is here and it&#x27;s a huge deal for Windows</span><span class="d">26 Jun<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/wicked-cool-excel-functions-with-blockspring/" data-date="17 Jun 2015"><span class="t">Wicked Cool Excel Functions with Blockspring</span><span class="d">17 Jun<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/twitter-clone-azure-mobile-services/" data-date="12 Apr 2015"><span class="t">Building a Android Twitter Clone with Azure Mobile Services</span><span class="d">12 Apr<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/installing-ghost-on-azure/" data-date="08 Apr 2015"><span class="t">Installing Ghost on Azure</span><span class="d">8 Apr<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/improved-ember-cli-performance-with-windows/" data-date="11 Mar 2015"><span class="t">Improved Ember Cli Performance with Windows</span><span class="d">11 Mar<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/open-source-newcomers/" data-date="09 Mar 2015"><span class="t">Open Source: A Small Guide for Newcomers</span><span class="d">9 Mar<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/deis-azure-coreos/" data-date="27 Feb 2015"><span class="t">Host your own Heroku-style platform with Deis and Azure</span><span class="d">27 Feb<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/deploying-ember-cli-to-azure-websites/" data-date="21 Feb 2015"><span class="t">Deploying Ember Cli to Azure Websites</span><span class="d">21 Feb<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/deploying-sailsjs-apps-in-seconds/" data-date="17 Feb 2015"><span class="t">Deploying SailsJS Apps in Seconds</span><span class="d">17 Feb<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/node-0-12-stable-and-azure-websites/" data-date="06 Feb 2015"><span class="t">Node 0.12 (Stable) and Azure Websites</span><span class="d">6 Feb<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/open-source-engineer-microsoft/" data-date="05 Feb 2015"><span class="t">What is a Microsoft Open Source Engineer, anyway?</span><span class="d">5 Feb<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/iojs-on-azure-websites/" data-date="19 Jan 2015"><span class="t">Azure Websites and io.js</span><span class="d">19 Jan<span class="dy"> 2015</span></span></a></li><li data-y="2015"><a href="https://felixrieseberg.com/ecmascript6-introduction/" data-date="15 Jan 2015"><span class="t">ECMAScript 6: A Quick Intro to the Future of JavaScript</span><span class="d">15 Jan<span class="dy"> 2015</span></span></a></li><li data-y="2014"><a href="https://felixrieseberg.com/building-standalone-node-js-apps/" data-date="19 Nov 2014"><span class="t">Building Standalone Node.js Apps with Node Webkit</span><span class="d">19 Nov<span class="dy"> 2014</span></span></a></li><li data-y="2014"><a href="https://felixrieseberg.com/the-ghost-updater-for-azure-websites/" data-date="21 Oct 2014"><span class="t">The Ghost Updater for Azure Websites</span><span class="d">21 Oct<span class="dy"> 2014</span></span></a></li><li data-y="2014"><a href="https://felixrieseberg.com/the-windows-dev-environment/" data-date="17 Jul 2014"><span class="t">The Small Windows Dev Environment</span><span class="d">17 Jul<span class="dy"> 2014</span></span></a></li><li data-y="2013"><a href="https://felixrieseberg.com/node-mayhem-an-open-source-node-js-html5-multiplayer-shooter/" data-date="11 Nov 2013"><span class="t">Node Mayhem: An Open-Source Node.js HTML5 Multiplayer Shooter</span><span class="d">11 Nov<span class="dy"> 2013</span></span></a></li><li data-y="2012"><a href="https://felixrieseberg.com/mapping-skydrive-as-a-folder-on-windows-rt/" data-date="23 Dec 2012"><span class="t">Mapping SkyDrive as a folder on Windows RT</span><span class="d">23 Dec<span class="dy"> 2012</span></span></a></li><li data-y="2012"><a href="https://felixrieseberg.com/windows-8-displaying-a-clock-on-live-tiles/" data-date="22 Dec 2012"><span class="t">Windows 8: Displaying a clock on Live Tiles</span><span class="d">22 Dec<span class="dy"> 2012</span></span></a></li>
+    </ol>
+    </section>
+    <section id="online"><h2>Online</h2>
+      <div class="pb-item"><div class="pb-hd"><a class="t" href="https://x.com/felixrieseberg">X</a><span class="y">@felixrieseberg</span></div></div>
+      <div class="pb-item"><div class="pb-hd"><a class="t" href="https://github.com/felixrieseberg">GitHub</a><span class="y">felixrieseberg</span></div></div>
+      <div class="pb-item"><div class="pb-hd"><a class="t" href="https://www.linkedin.com/in/felixrieseberg/">LinkedIn</a><span class="y">in/felixrieseberg</span></div></div>
+      <div class="pb-item"><div class="pb-hd"><a class="t" href="https://bsky.app/profile/felixrieseberg.bsky.social">Bluesky</a><span class="y">felixrieseberg.bsky.social</span></div></div>
+    </section>
+  </main>
+</div>
+<footer class="pfoot">
+  <nav aria-label="Footer"><a href="https://felixrieseberg.com/">Home</a><a href="/about-me/">About</a><a href="/#work">Work</a><a href="/#posts">Posts</a><a href="/#online">Online</a></nav>
+  <a class="ph-room" href="/?room=1" data-room title="Back to the hi-fi version, the 3D room" hidden>HI-FI</a>
+</footer>
+<script>(function(){ try{ if(localStorage.getItem("bm.view")!=="reading") return; }catch(e){ return; }
+  [].forEach.call(document.querySelectorAll("a.ph-room[data-room]"),function(a){ a.hidden=false; a.onclick=function(){ try{ localStorage.removeItem("bm.view"); }catch(e){} }; }); })();</script>
+</div>
+
+<template id="bm-desktop"><div id="still" aria-hidden="true"><div class="tv-spill"><i></i></div></div>
+<div id="osd" aria-hidden="true"><div class="tv-scr"><div class="tv-pic"><div class="tv-lb">▶▶ LOADING</div><div class="tv-ch">CH 00</div><div class="tv-mid"><div class="tv-cta"></div><div class="tv-meter"><span class="bar"><i></i></span><span class="pc">0%</span></div><div class="tv-snd on"><span>SOUND</span><b><i class="s-on">ON</i><i class="s-off">OFF</i></b></div></div></div><div class="tv-noise"></div><div class="tv-glass"></div></div></div>
+<button id="enter" hidden aria-label="Enter the room"></button>
+<button id="gate-sound" hidden role="switch" aria-checked="true">Sound</button>
+
+<canvas id="gl" aria-label="A late-90s production monitor on a desk by a rainy Berlin window at night. Its input buttons and the stack of tapes navigate the site."></canvas>
+
+<div class="hud top">
+  <button class="name" id="home-link">Felix Rieseberg</button>
+  <nav class="menu" aria-label="Site">
+    <a href="#about" data-page="about">ABOUT</a>
+    <a href="#work" data-page="work">WORK</a>
+    <a href="#posts" data-page="posts">POSTS</a>
+    <a href="#online" data-page="online">ONLINE</a>
+  </nav>
+</div>
+
+<!-- the room is the welcome: no caption over it (the top bar carries the links); the name and line stay for readers and search -->
+<h1 class="sr">Felix Rieseberg</h1>
+<p class="sr">I work on Claude at Anthropic. Electron co-maintainer. Maintainer of too many little open source projects.</p>
+
+<section class="hud panel" id="panel" hidden aria-labelledby="p-title">
+  <header><div><div class="ch" id="p-ch">CH 01</div><h2 id="p-title">About</h2></div><div class="hbtns"><button class="close" id="p-hide" aria-label="Hide the card, the tape plays on" hidden>HIDE</button><button class="close" id="p-close" aria-label="Back to home">HOME</button></div></header>
+  <div class="body" id="p-body"></div>
+</section>
+
+<div class="hud ctl">
+  <div class="hint" id="hint">C use computer · M use CD player · Z zoom TV · 1–6 monitor buttons</div>
+  <div class="btns"><button class="sound" id="cardon" aria-label="Show the Work card" hidden>SHOW CARD · N</button><button class="sound" id="unzoom">BACK TO THE DESK · ESC</button><button class="sound" id="credits"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.6"/><path d="M12 11v5.4"/><circle cx="12" cy="7.7" r="1.25" fill="currentColor" stroke="none"/></svg><span>CREDITS</span></button><a class="sound" id="reading" href="/?reading=1" aria-label="Lo-fi version" title="Lo-fi version"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true" focusable="false"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg><span>LO-FI</span></a><button class="sound" id="sound" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="spk-w" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="spk-x" d="M17 9.5l5 5M22 9.5l-5 5"/></svg><span>SOUND OFF</span></button></div>
+</div>
+<div id="lite" hidden><div class="card" role="dialog" aria-modal="true" aria-labelledby="liteQ" aria-describedby="liteD"><h2 id="liteQ">Switch to the lo-fi version?</h2><p id="liteD">If the 3D adventure here is a little too much, you can switch to a plain website with roughly the same content.</p><div class="row"><button class="sound" id="liteStay">STAY</button><a class="sound" id="liteGo" href="/?reading=1">GO LO-FI</a></div></div></div>
+
+<div id="tip" hidden></div>
+<a id="plink" hidden target="_blank" rel="noopener"></a>
+<div id="err" hidden></div>
+<div id="live" class="sr" aria-live="polite"></div>
+<div id="pc-sr" class="sr" aria-live="polite"></div></template>
+<template id="bm-about"><p>I work on Claude at Anthropic. <a href="https://github.com/electron/electron?ref=felixrieseberg.com">Electron</a> Co-Maintainer. Maintainer of too many little open source projects.</p>
+<p>I have previously led teams and apps at <a href="https://notion.so/?ref=felixrieseberg.com">Notion</a>, <a href="https://stripe.com/?ref=felixrieseberg.com">Stripe</a>, <a href="https://slack.com/?ref=felixrieseberg.com">Slack</a>, and <a href="https://www.microsoft.com/?ref=felixrieseberg.com">Microsoft</a>. At some point I was also an O'Reilly Author and Trainer but it's been a few years.</p>
+<h2 id="things-i-do">Things I do</h2>
+<p>I work on whatever allows me to make people productive with AI. In my time at Anthropic so far, I've led engineering for Claude.ai, Cowork, and Code Desktop. Always looking for the next big thing!</p>
+<p>I'm a <a href="https://github.com/felixrieseberg?ref=felixrieseberg.com">contributor to and maintainer of a bunch of open source projects</a> - with an ever-growing list, but I'm most proud of my work on  <a href="https://github.com/electron/electron?ref=felixrieseberg.com">Electron</a>, <a href="https://www.languagemodelbuilder.com/?ref=felixrieseberg.com">Language Model Builder</a>, <a href="https://github.com/modelcontextprotocol/mcpb?ref=felixrieseberg.com">MCBP</a>, <a href="https://github.com/felixrieseberg/windows95?ref=felixrieseberg.com">windows95</a>, <a href="https://github.com/felixrieseberg/macintosh.js/?ref=felixrieseberg.com">macintosh.js</a>, and <a href="https://felixrieseberg.github.io/clippy/?ref=felixrieseberg.com">clippy</a>. I have an uncurable addiction to building things I find fun and cute (and not necessarily super valuable), you can find the full list <a href="https://github.com/felixrieseberg?tab=repositories&q=&type=&language=&sort=stargazers&ref=felixrieseberg.com">on GitHub</a>.</p>
+<h2 id="things-i-did">Things I did</h2>
+<p>From 2023 to 2025, I led the Web Infrastructure and Desktop App teams at Notion.</p>
+<p>From 2021 until 2023, I led a team called Payments Integration Experience working on the future of payments at Stripe.</p>
+<p>From 2016 to 2021, I worked as a Senior Staff Engineer and Engineering Manager at Slack, where I got to support a team of amazing C++ engineers building the cross-platform desktop framework Electron – as well as Slack's desktop apps for macOS, Windows, and Linux. I cared a lot about the Node.js and Electron ecosystems, so I wrote an O'Reilly guide called "<a href="https://www.safaribooksonline.com/library/view/introducing-electron/9781491996041/?ref=felixrieseberg.com">Introducing Electron</a>". I still care today, I just write fewer books.</p>
+<p>Before joining the little fledgling Slack, I worked from 2014 to 2016 as an Open Source Engineer at Microsoft, spending my time coding or talking about Open Source. We tried to improve developer's lives by releasing quality code on GitHub — as well as touring the world and presenting the lessons we've learned. I built things like the <a href="http://github.com/felixrieseberg/windows-build-tools?ref=felixrieseberg.com">windows-build-tools</a> or <a href="http://github.com/felixrieseberg/npm-windows-upgrade?ref=felixrieseberg.com">npm-windows-upgrade</a>.</p>
+<p>From 2011 to 2014, I worked with Microsoft Germany and Microsoft Silicon Valley specifically with younger companies as as Startup Developer Evangelist - first focusing on Berlin, then on the San Francisco Bay Area.</p>
+<p>I also once wrote an <a href="http://www.amazon.de/Windows-Store-entwickeln-HTML5-JavaScript/dp/3866455674?ref=felixrieseberg.com">O'Reilly book on Windows App Development with JavaScript</a>. It's in German, but even if you do read it, it's very solidly out of date now and contains nothing you should read. I once built a terrible but surprisingly successful game, being the single developer behind <a href="https://www.youtube.com/results?search_query=awesome+zombie+sniper&ref=felixrieseberg.com">Awesome Zombie Sniper</a>. The code was outrageous but it brought minor joy to more than a million players. The actual goal of the work was to help developers succeed on Windows, Windows Phone, and Xbox  by exploring cross-platform issues with Unity and the game was a surprisingly lucky "Hello World" demo.</p>
+<p>From 2007 to 2011, I got my startup experience leading the German <a href="http://www.apfeltalk.de/?ref=felixrieseberg.com">Apfeltalk.de</a> magazine as Executive Editor where we served 10 million monthly users everything they needed to know about iOS and macOS. I'm proud that our team took the website from a small community to one of the biggest tech sites in Europe.</p>
+<p>Academically, I graduated from the MSc program at the University of Oxford's Internet Institute, researching at the intersection of sociology, law, economics, and computer science. Before that, I studied at the University of Duesseldorf where I also spent some time as visiting lecturer for app development and New Media Research Associate.</p>
+</template>
+<template id="bm-interviews" data-year="2026"><ul><li><a href="https://www.youtube.com/watch?v=_FSxDLhTQ5o&ref=felixrieseberg.com">MTS</a>, October 2026</li><li><a href="https://www.youtube.com/watch?v=D-SVFneJ_Nk&ref=felixrieseberg.com">Silicon Valley Girl</a>, October 2026</li><li><a href="https://hanselminutes.com/1053/language-model-builder-with-felix-rieseberg?ref=felixrieseberg.com">Hanselminutes</a>, August 2026</li><li><a href="https://summation.buzzsprout.com/1783651/episodes/19523120-anthropic-s-felix-rieseberg-why-ai-wins-a-nobel-before-a-pulitzer?ref=felixrieseberg.com">Summation</a>, July 2026</li><li><a href="https://www.lennysnewsletter.com/p/how-i-ai-how-the-engineer-behind?ref=felixrieseberg.com">How I AI</a>, May 2026</li><li><a href="https://www.youtube.com/watch?v=9MEJ4syOVrQ&ref=felixrieseberg.com">The MAD Podcast</a>, April 2026</li><li><a href="https://www.latent.space/p/felix-anthropic?ref=felixrieseberg.com">Latent Space</a>, March 2026</li></ul></template>
+<script>
+(function(){
+  var d=document, root=d.documentElement, q=new URLSearchParams(location.search).get("view");
+  var BM=window.__BM={page:"home", everywhere:false, tvPosts:true, assetBase:d.getElementById("bm-root").dataset.assets||null};
+  // lite zip: heavy scene folders come from an external host, versioned like the theme's own copy (<url>/<ver>/bake/…)
+  if(BM.assetBase) BM.assetBase=BM.assetBase.replace(/\/*$/,"/")+"4514eaa3/";
+  // posts from Ghost, in both shapes the two scene builds expect
+  BM.posts=[].map.call(d.querySelectorAll("#bm-posts a"),function(a){return {t:(a.querySelector(".t")||a).textContent,u:a.href,d:a.dataset.date};});
+  BM.postsA=BM.posts.map(function(p){return [p.t,p.u,p.d];});
+  BM.about=(function(){
+    var t=d.getElementById("bm-about"), out=[], sp=function(x){ return x.replace(/\s+/g," ").trim(); };
+    if(!t) return out;
+    var para=function(el){ // text plus [start,end,href] for its links
+      var text="", links=[];
+      (function walk(n){ [].forEach.call(n.childNodes,function(c){
+        if(c.nodeType===3){ text+=c.nodeValue.replace(/\s+/g," "); return; }
+        if(c.nodeType!==1) return;
+        if(c.tagName==="BR"){ text+=" "; return; }
+        var a=c.tagName==="A"&&c.getAttribute("href"), at=text.length; walk(c);
+        if(a&&text.length>at) links.push([at,text.length,c.href]);
+      }); })(el);
+      var lead=text.length-text.replace(/^\s+/,"").length; text=text.trim();
+      links=links.map(function(l){ return [Math.max(0,l[0]-lead),Math.min(text.length,l[1]-lead),l[2]]; }).filter(function(l){ return l[1]>l[0]; });
+      return links.length?["p",text,links]:["p",text];
+    };
+    (function blocks(root){ [].forEach.call(root.children,function(el){
+      var tag=el.tagName;
+      if(/^H[1-6]$/.test(tag)) out.push(["h",sp(el.textContent)]);
+      else if(tag==="P"){ var b=para(el); if(b[1]) out.push(b); }
+      else if(tag==="UL"||tag==="OL") [].forEach.call(el.children,function(li,i){ out.push(["l",sp(li.textContent),tag==="OL"?(i+1)+".":"*"]); });
+      else if(tag==="BLOCKQUOTE") out.push(["q",sp(el.textContent)]);
+      else if(tag==="HR") out.push(["r"]);
+      else if(tag==="PRE") out.push(["c",el.textContent.replace(/\n$/,"")]);
+      else if(tag==="IMG") out.push(["i",el.getAttribute("alt")||""]);
+      else if(tag==="FIGURE"||tag==="DIV"||tag==="SECTION"){ var img=el.querySelector("img"); if(img&&!el.querySelector("p,h1,h2,h3,ul,ol,pre")) out.push(["i",img.getAttribute("alt")||""]); else blocks(el); }
+    }); })(t.content);
+    // a list ends with a blank line, like the PC's own text
+    return out;
+  })();
+  // the room's three.js draws with WebGL 2 only
+  var gl=false, glx=null; try{ glx=window.WebGL2RenderingContext&&d.createElement("canvas").getContext("webgl2"); gl=!!glx; }catch(e){}
+  var kind="desktop";
+  // Scene pages live at real URLs when the room is on every page: /about-me/, /portfolio/, /posts/.
+  // the interviews on the cassette's card: the list on Ghost's page "interviews". One list item an interview: the link's
+  // text is the show, its href the recording, whatever text follows the link in the item is the month ("Latent Space, Mar")
+  (function(){ var t=d.getElementById("bm-interviews"); if(!t) return;
+    var out=[]; var as=t.content.querySelectorAll('li a[href^="https://"]'); if(!as.length) as=t.content.querySelectorAll('a[href^="https://"]');   // the list's links, not an intro's
+    [].forEach.call(as,function(a){
+      var s=a.textContent.replace(/\s+/g," ").trim(), li=a.closest("li"), w=li?li.textContent.replace(a.textContent,"").replace(/^[\s,;:·(–—-]+|[\s).]+$/g,""):"";
+      if(s) out.push([s,a.href,w]); });
+    if(out.length){ BM.interviews=out; BM.interviewsLabel=t.getAttribute("data-year")||""; } })();
+  // The scene routes with #about/#work/#posts, so translate: its hash URLs become paths, and it reads
+  // its start page through __BM.pageAt(path) when there is no hash.
+  var base=new URL("https://felixrieseberg.com/",location.href).pathname.replace(/\/+$/,"/");
+  var R={home:base,about:base+"about-me/",work:base+"portfolio/",posts:base+"posts/",online:base+"online/"}, P={};
+  var ALIAS={twitter:"online",github:"online",contact:"online"}; // old room links that now open Online
+  for(var k in R) P[R[k]]=k;
+  // where the remote's "The long version" / "All posts" go: the plain page (in every-page mode that's ?view=flat)
+  BM.aboutHref=R.about+(BM.everywhere?"?view=flat":""); BM.postsHref=R.posts+(BM.everywhere||BM.tvPosts?"?view=flat":"");
+  // pages the room owns a URL for: all of them in every-page mode, else home, /about-me/ (always the PC), /online/ and (with Room TV posts) /posts/
+  var own=function(pg){ return BM.everywhere||pg==="home"||pg==="about"; }; // only pages that exist in Ghost get a path; Work/Posts/Online stay /#hash
+  var site=d.getElementById("bm-root").dataset.site||d.title, T={home:site,about:"About",work:"Work",posts:"Posts",online:"Online"};
+  for(var t in T) if(t!=="home") T[t]=T[t]+" · "+site; T[BM.page]=d.title;
+  var syncTitle=function(){ var h=location.hash.slice(1); h=ALIAS[h]||h; var pg=R[h]&&!own(h)?h:P[location.pathname]; if(pg&&(pg===h||own(pg))&&T[pg]) d.title=T[pg]; };
+  addEventListener("popstate",function(){ syncTitle(); setTimeout(syncTitle,0); });
+  addEventListener("hashchange",syncTitle); syncTitle();
+  { // the room always owns /online/, so the path translation is always on
+    BM.pageAt=function(path){ var pg=P[path]; return pg&&own(pg)?pg:""; };
+    var raw={replaceState:history.replaceState.bind(history),pushState:history.pushState.bind(history)};
+    ["replaceState","pushState"].forEach(function(fn){
+      history[fn]=function(s,t,u){
+        if(typeof u==="string"){
+          var m=u.match(/#(\w+)$/), path=u.split(/[?#]/)[0];
+          if(m&&ALIAS[m[1]]) m=[ "#"+ALIAS[m[1]], ALIAS[m[1]] ];
+          if(m&&R[m[1]]&&own(m[1])) u=R[m[1]]+location.search;
+          else if(m&&R[m[1]]) u=R.home+location.search+m[0]; // About/Work in the room on home: /#about
+          else if(m) u=location.pathname+location.search; // other room hashes (#options, #debug): keep the URL
+          else if(u.indexOf("#")<0&&P[path]&&P[path]!=="home") u=R.home+location.search;
+          var pg=m&&R[m[1]]&&!own(m[1])?m[1]:P[u.split(/[?#]/)[0]]; if(pg&&T[pg]) d.title=T[pg];
+        }
+        return raw[fn](s,t,u);
+      };
+    });
+  }
+  // the long About text, as a plain page, from inside the room (/about-me/?view=flat)
+  var flat=d.getElementById("bm-flat");
+  if(q==="flat"&&flat){
+    ["view","index","read"].forEach(function(k){ if(flat.dataset[k]) d.body.setAttribute("data-"+k,flat.dataset[k]); });
+    flat.dataset.css.split(" ").forEach(function(h){ var l=d.createElement("link"); l.rel="stylesheet"; l.href=h; d.head.appendChild(l); });
+    d.body.appendChild(flat.content.cloneNode(true));
+    var js=flat.dataset.js.split(" ");
+    (function next(){ var h=js.shift(); if(!h) return window.BM&&window.BM[flat.dataset.init||"page"](); var e=d.createElement("script"); e.src=h; e.onload=next; d.body.appendChild(e); })();
+    return;
+  }
+  // no WebGL (old GPU, blocked, disabled): the plain links, like with JavaScript off
+  // the room calls it too when its renderer can't be made
+  // the plain home in the post pages' design; soft: the room could still run, so the warning gets its button
+  BM.plain=function(soft){ root.classList.remove("bm-scene","bm-"+kind); if(css) css.disabled=true;
+    var r=d.getElementById("bm-root"); if(r) r.textContent="";
+    var bg=d.getElementById("bm-bg"); if(bg) bg.disabled=true;
+    var home=!!d.querySelector(".bm-plain");
+    // /#about (the post pages' About link) has no plain version on home: the About page does
+    if(home&&/^#about$/.test(location.hash)) return location.replace(R.about+(read?"?reading=1":force?"?plain=1":"")), true;
+    if(soft){ var t=d.getElementById("bm-try"), hero=d.getElementById("bm-hero"); if(t) t.hidden=false; if(hero) hero.href="?room=1"; }
+    var warn=d.getElementById("bm-warn"), wx=d.getElementById("bm-warn-x");
+    // Reading view (the room's button, ?reading=1): the visitor chose it, so no warning; the header gets a way back
+    if(read){ if(warn) warn.hidden=true; var back=R.home+"?room=1"+(home?"":"#about"); // ?room=1 forgets the choice however the link is opened
+      [].forEach.call(d.querySelectorAll(".bm-fallback a.ph-room[data-room]"),function(a){ a.href=back; a.onclick=unread; a.hidden=false; });
+      var hero=d.getElementById("bm-hero"); if(hero){ hero.href=back; hero.setAttribute("data-room",""); hero.onclick=unread; } }
+    else if(warn&&wx){ try{ if(localStorage.getItem("bm.plainWarn")==="off") warn.hidden=true; }catch(e){}
+      wx.hidden=false; wx.onclick=function(){ warn.hidden=true; try{ localStorage.setItem("bm.plainWarn","off"); }catch(e){} }; }
+    if(home) d.body.setAttribute("data-index","log");
+    // the posts under their years (the rows stay in one list for the room). The last three years show; the years before
+    // wait behind one "older posts" line (Felix 2026-10-16). Nothing that recent: the newest year shows
+    var idx=home&&d.getElementById("bm-posts");
+    if(idx&&!idx.dataset.grouped){ idx.dataset.grouped=1; var yr=null, ol=null, from=new Date().getFullYear()-3, old=[], n=0;
+      [].slice.call(idx.children).forEach(function(li){ var y=li.getAttribute("data-y");
+        if(y!==yr){ yr=y; var g=d.createElement("li"); g.className="pb-yr"; g.innerHTML='<span class="y"></span><ol></ol>'; g.firstChild.textContent=y; idx.insertBefore(g,li); ol=g.lastChild;
+          if(+y<from&&g!==idx.firstElementChild){ g.hidden=true; old.push(g); } }
+        ol.appendChild(li); if(ol.parentNode.hidden) n++; }); idx.classList.add("pb-grouped");
+      if(old.length){ var more=d.createElement("li"), mb=d.createElement("button"), y0=old[old.length-1].firstChild.textContent, y1=old[0].firstChild.textContent;
+        more.className="pb-older"; mb.type="button"; mb.textContent=(n===1?"1 older post":n+" older posts")+" ("+(y0===y1?y0:y0+"\u2013"+y1)+")";
+        mb.onclick=function(){ old.forEach(function(g){ g.hidden=false; }); more.remove(); var a=old[0].querySelector("a"); if(a) a.focus({preventScroll:true}); };
+        more.appendChild(mb); idx.appendChild(more); } }
+    // the header: the page you're on, and the post pages' colour switch (same choice, felixtext.theme, as on a post)
+    [].forEach.call(d.querySelectorAll(".bm-fallback header.site nav a"),function(a){ var p=location.pathname;
+      if((a.hash==="#online"&&/\/online\/$/.test(p))||(!a.hash&&a.pathname===p&&p!==R.home)) a.setAttribute("aria-current","page"); });
+    [].forEach.call(d.querySelectorAll(".bm-fallback #theme"),function(b){ var T=[["auto","AUTO"],["light","LIGHT"],["dark","DARK"]], i=0;
+      try{ i=Math.max(0,T.map(function(t){ return t[0]; }).indexOf(localStorage.getItem("felixtext.theme"))); }catch(e){}
+      var apply=function(){ var k=T[i][0]; if(k==="auto") root.removeAttribute("data-theme"); else root.setAttribute("data-theme",k);
+        b.textContent=T[i][1]; b.setAttribute("aria-label","Colour theme: "+(k==="auto"?"follow the system":k)+". Change"); };
+      apply(); b.hidden=false; b.onclick=function(){ i=(i+1)%T.length; try{ localStorage.setItem("felixtext.theme",T[i][0]); }catch(e){} apply(); }; });
+    // ?plain=1 (or ?reading=1) sticks while clicking around the static site (home and About)
+    if(force) [].forEach.call(d.querySelectorAll(".bm-fallback a[href]"),function(a){ try{ var u=new URL(a.href); if(a.hasAttribute("data-room")||a.getAttribute("href").charAt(0)==="#") return;
+      if(u.origin===location.origin&&!u.searchParams.has("room")&&(u.pathname===R.home||u.pathname===R.about)){ u.searchParams.set(read?"reading":"plain","1"); a.href=u.href; } }catch(e){} });
+    // /posts/ and /portfolio/ have no plain page of their own: the plain home opens at that section
+    var at=home&&!location.hash&&(BM.page==="posts"||BM.page==="work")&&d.getElementById(BM.page);
+    var show=function(){ [].forEach.call(d.querySelectorAll(".bm-fallback"),function(e){ e.style.display="block"; }); if(at){ at.scrollIntoView(); at=null; } }, left=0;
+    ["https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Fira+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Fira+Code:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..700&family=VT323&display=swap",
+     "/assets/posts/posts.css","/assets/theme/flat.css","/assets/theme/home.css"].forEach(function(h,i){
+      var l=d.createElement("link"); l.rel="stylesheet"; l.href=h; if(i){ left++; l.onload=l.onerror=function(){ if(!--left) show(); }; } d.head.appendChild(l); });
+    setTimeout(show,3000); return true; };
+  // a browser that draws WebGL on the processor can't draw the room: every core goes to it and the machine may stop
+  // answering (Hacker News, 14 Oct 2026). It gets the plain home, with a way into the room for the curious (?room=1)
+  var soft=false; try{ if(gl&&!navigator.webdriver&&!/[?&]room=1\b/.test(location.search)){
+    var ri=glx.getExtension("WEBGL_debug_renderer_info"), rn=String(glx.getParameter(ri?ri.UNMASKED_RENDERER_WEBGL:glx.RENDERER)||"");
+    soft=/swiftshader|llvmpipe|softpipe|lavapipe|software|basic render/i.test(rn)||!d.createElement("canvas").getContext("webgl2",{failIfMajorPerformanceCaveat:true}); } }catch(e){}
+  // ?plain=1 shows the plain home anyway, for testing it (not linked anywhere); with WebGL 2 its box keeps the button
+  var force=/[?&]plain=1\b/.test(location.search)&&!/[?&]room=1\b/.test(location.search); // ?room=1 (the warning's button) wins
+  // ?reading=1: Reading view, the room's own link to the static site
+  // the choice is remembered (post pages link back to / without it); ?room=1 or the way back to the room forgets it
+  var unread=function(){ try{ localStorage.removeItem("bm.view"); }catch(e){} }, read=false;
+  try{ if(/[?&]room=1\b/.test(location.search)) unread();
+    else if(/[?&]reading=1\b/.test(location.search)){ read=true; localStorage.setItem("bm.view","reading"); }
+    else read=localStorage.getItem("bm.view")==="reading"; }catch(e){ read=/[?&]reading=1\b/.test(location.search)&&!/[?&]room=1\b/.test(location.search); }
+  if(read) force=true;
+  if(!gl||soft||force){ BM.plain(read?soft:soft||(force&&gl)); return; }
+  root.classList.add("bm-scene","bm-"+kind);
+  var css=d.createElement("link"); css.rel="stylesheet"; css.href="/assets/scene/4514eaa3/desktop.css"; d.head.appendChild(css);
+  // the markup goes in once its stylesheet has arrived, so it never shows (or shifts) unstyled; then the module
+  var mounted=false;
+  function mount(){
+    if(mounted) return; mounted=true;
+    d.getElementById("bm-root").appendChild(d.getElementById("bm-"+kind).content.cloneNode(true));
+    var b=d.createElement("script"); b.src="/assets/scene/4514eaa3/boot.js"; b.async=false; d.body.appendChild(b);   // the loading display
+    var s=d.createElement("script"); s.type="module"; s.src="/assets/scene/4514eaa3/desktop.js";
+    d.body.appendChild(s);
+  }
+  css.onload=css.onerror=mount; setTimeout(mount,4000);
+})();
+</script>
+
+
+<script>
+// Temporary: point Work/Posts/Online at the room until the fc739e7 theme is uploaded. Delete it after that.
+document.querySelectorAll('a[href]').forEach(function(a){
+  var u = new URL(a.href, location.href);
+  if (u.origin !== location.origin) return;
+  var h = {'/portfolio/':'work','/posts/':'posts','/online/':'online'}[u.pathname];
+  if (h) a.href = '/#' + h;
+});
+</script>
+</body>
+</html>

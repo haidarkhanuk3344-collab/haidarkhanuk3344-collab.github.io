@@ -1,0 +1,1 @@
+{"name":"chess-personal-room","private":true,"type":"module","scripts":{"start":"node server.mjs","build":"python3 scripts/personalize.py && python3 scripts/refine.py && node scripts/check.mjs"}}

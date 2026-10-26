@@ -1,0 +1,9 @@
+{
+  "name": "chess-personal-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node _source/chess-3d/server.mjs",
+    "build": "npm --prefix _source/chess-3d run build"
+  }
+}
