@@ -1,1 +1,1 @@
-import {makeNoteChannel} from "/chess/chess-tv.js"; export default makeNoteChannel({"id": "chess", "title": "冯恒鑫", "english": "Chess", "number": 11, "lines": ["AI Product Manager，喜欢研究、动手和运动。", "可以慢慢逛，也可以去电脑里看看我的项目。"], "length": 24});
+import {makeNoteChannel} from "/chess/chess-tv.js"; export default makeNoteChannel({"id": "chess", "title": "冯恒鑫", "english": "Chess", "number": 12, "lines": ["AI Product Manager，喜欢研究、动手和运动。", "可以慢慢逛，也可以去电脑里看看我的项目。"], "length": 24});

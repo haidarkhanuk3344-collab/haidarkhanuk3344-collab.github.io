@@ -15,7 +15,9 @@
 - `npm run build`：生成网站文件并检查脚本和媒体资源。
 - 将源码和构建结果一起提交到 main，Pages 自动更新。
 
-截图与视频放在 `chess-assets/projects/`；`plain.html` 是内容直达和 WebGL 失败兜底。
+截图与视频放在 `chess-assets/projects/`；`plain.html` 是可独立阅读的项目作品集和 WebGL 失败兜底，由构建自动生成；布局在 `_source/chess-3d/custom/plain.html` 维护，项目文字仍来自 `chess-content.js`，不要直接改生成结果。
+
+海辛截图导览在 `demos/haixin.html`，使用明确标注的独立示例数据；镜流入口链接到其公开交互演示。
 
 `_source/felix-replica/site/` 只保留构建需要的参考入口和场景脚本。其余运行资源在根目录 assets、scene-data 等目录中，无需原电脑或本地镜像即可维护。
 

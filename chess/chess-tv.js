@@ -138,7 +138,7 @@ function makeChannel(config) {
           text(g, '我的兴趣现场。', 60, 181, 76, C.cream, 600);
           text(g, '电脑里看项目，', 66, 306, 45, C.cream, 500);
           text(g, '房间里认识我。', 66, 372, 45, C.cream, 500);
-          projects.forEach((item, i) => { const x = 66 + i * 211; line(g, x, 485, x + 180, 485, C.sand, 2); text(g, `0${i + 1}`, x, 506, 18, C.sand, 500, MONO); text(g, item.title, x, 542, 30, C.cream, 500); });
+          projects.forEach((item, i) => { const step = 850 / projects.length, x = 66 + i * step; line(g, x, 485, x + step - 24, 485, C.sand, 2); text(g, `0${i + 1}`, x, 506, 18, C.sand, 500, MONO); text(g, item.title, x, 542, 30, C.cream, 500); });
           asterisk(g, 801, 364, 63, C.gold, t);
         }
         chrome(g, { number: '00', light: s !== 0, time: t, length, paused });

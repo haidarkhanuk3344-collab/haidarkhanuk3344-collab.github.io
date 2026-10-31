@@ -1,17 +1,20 @@
 from pathlib import Path
-import re,json,shutil
+import re,json,shutil,subprocess
 ROOT=Path(__file__).resolve().parents[1]; SITE=ROOT.parents[1]; BASE=SITE/'assets/scene/4514eaa3'; SRC=ROOT.parent/'felix-replica/site'
 # Rebuild only our adaptation layer; the downloaded reference is kept separately.
 s=(SRC/'assets/scene/4514eaa3/desktop.js').read_text()
 s=s.replace('import * as THREE from "three";','import * as THREE from "three";\nimport {createChessRoom,drawChessPoster,drawChessPrint} from "/chess/room.js";\nlet chessRoom=null;')
-projects=[('ContextFlow','境流','探索镜头之间的上下文，让下一镜头听懂「承接上一镜头」。图像与视频 API 原型已接入，连贯性与成本收益仍待验证。','#789887'),('Brave Journey','勇者旅途','把喜欢的横版冒险加入自己的想法。已有战斗与装备系统，AI NPC 对话是下一步实验。','#caa06e'),('World Tree','世界树','让个人提示词长在一棵树上，用果实作为整理、查找与复制的入口。','#64794f'),('Hualuobo','花萝卜','桌面上的黑白小猫：从一段动作开始，探索有趣的陪伴。Windows 测试版待继续验证。','#baa98d')]
+# Derive every project surface from the same content source.
+content=json.loads(subprocess.check_output(['node','--input-type=module','-e',
+ 'const {projects}=await import('+json.dumps((ROOT/'custom/chess-content.js').as_uri())+'); console.log(JSON.stringify(projects));'],text=True))
+projects=[(p['english'],p['title'],p['description'],p['color']) for p in content]
 notes=[('Basketball','篮球','在球场上更自在地表达自己，在疲惫的生活里找到乐趣。'),('Stay Active','保持运动','篮球和健身，是生活里让我保持热情的部分。'),('Curiosity','保持好奇','喜欢研究，也喜欢把好奇心做成可以触碰的东西。'),('Product Notes','产品手记','先想清楚问题、功能和边界，再与 AI 讨论开发需求。'),('With AI','与 AI 共创','由我定义想做什么，与 AI 一起把想法推进到原型。'),('In Progress','持续完善','这个房间与这里的项目都会持续更新。未完成也是创作过程的一部分。'),('Chess','冯恒鑫','AI Product Manager，喜欢研究、动手和运动。')]
 tapes=[]
-for en,cn,d,c in projects:tapes.append(dict(t=en,y='PROJECT',d=d,bg=c,ink='#fff6df',big=[en.upper()],link=['打开 GitHub','https://github.com/haidarkhanuk3344-collab']))
+for item,(en,cn,d,c) in zip(content,projects):tapes.append(dict(t=en,y='PROJECT',d=d,bg=c,ink='#fff6df',big=[en.upper()],link=['打开 GitHub',item.get('repo','https://github.com/haidarkhanuk3344-collab')]))
 for en,cn,d in notes:tapes.append(dict(t=en,y='LIFE / NOTES',d=d,bg='#733b3a',ink='#eee5cc',big=[en.upper()]))
 s=re.sub(r'const TAPES = \[.*?\n\];', 'const TAPES = '+json.dumps(tapes,ensure_ascii=False)+';',s,count=1,flags=re.S)
-s=s.replace('const JOBS=5;', 'const JOBS=4;')
-ids=['contextflow','brave','world-tree','hualuobo']+['basketball','fitness','curiosity','product','ai','progress','chess']
+s=s.replace('const JOBS=5;', f'const JOBS={len(projects)};')
+ids=[p['id'] for p in content]+['basketball','fitness','curiosity','product','ai','progress','chess']
 s=re.sub(r'const CH_IDS=\[[^;]+;', 'const CH_IDS='+json.dumps(ids)+';',s,count=1)
 s=re.sub(r'const CH_SRC=\{[^;]+;', 'const CH_SRC={};',s,count=1)
 s=re.sub(r'const NOMUSIC=new Set\([^;]+;', 'const NOMUSIC=new Set();',s,count=1)
@@ -42,6 +45,7 @@ s=s.replace('"bm-options"','"chess-room-options"').replace('"felixtext.tape"','"
 s=s.replace('BACK TO THE DESK · ESC','返回房间 · ESC').replace('BACK TO THE DESK','返回房间')
 s=s.replace('const CREDITS=[','const CREDITS=[\n  ["Room source & interaction design","Felix Rieseberg",null,"https://felixrieseberg.com/?room=1","source"],',1)
 s=s.replace('const CC_BY={','const CC_BY={source:"https://felixrieseberg.com/?room=1",',1)
+s=s.replace('if(!/^https:\\/\\//.test(url)) return true;', 'if(!/^https:\\/\\//.test(url)&&!/^\\/demos\\/[a-z0-9-]+\\.html$/.test(url)) return true;')
 # Add meaningful notes without overloading the TV's ASCII teletext page.
 (BASE/'desktop.js').write_text(s)
 for f in (ROOT/'custom').glob('chess-*.js'):shutil.copy2(f,SITE/'chess'/f.name)
@@ -49,9 +53,9 @@ shutil.copy2(ROOT/'custom/chess-pc.js',BASE/'pc/basic.js');shutil.copy2(ROOT/'cu
 ch=SITE/'scene-data/4514eaa3/channels'
 (ch/'chess-intro.js').write_text('export {default} from "/chess/chess-tv.js";\n')
 for i,id in enumerate(ids):
- if i<4:body=f'import {{makeProjectChannel}} from "/chess/chess-tv.js"; export default makeProjectChannel({i});'
+ if i<len(projects):body=f'import {{makeProjectChannel}} from "/chess/chess-tv.js"; export default makeProjectChannel({i});'
  else:
-  en,cn,d=notes[i-4];cfg=dict(id=id,title=cn,english=en,number=i+1,lines=[d,'可以慢慢逛，也可以去电脑里看看我的项目。'],length=24)
+  en,cn,d=notes[i-len(projects)];cfg=dict(id=id,title=cn,english=en,number=i+1,lines=[d,'可以慢慢逛，也可以去电脑里看看我的项目。'],length=24)
   body='import {makeNoteChannel} from "/chess/chess-tv.js"; export default makeNoteChannel('+json.dumps(cfg,ensure_ascii=False)+');'
  (ch/(id+'.js')).write_text(body+'\n')
 # A small independent entrypoint: no Ghost account, search, stats or original biography.

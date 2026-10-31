@@ -1,1 +1,1 @@
-import {makeNoteChannel} from "/chess/chess-tv.js"; export default makeNoteChannel({"id": "progress", "title": "持续完善", "english": "In Progress", "number": 10, "lines": ["这个房间与这里的项目都会持续更新。未完成也是创作过程的一部分。", "可以慢慢逛，也可以去电脑里看看我的项目。"], "length": 24});
+import {makeNoteChannel} from "/chess/chess-tv.js"; export default makeNoteChannel({"id": "progress", "title": "持续完善", "english": "In Progress", "number": 11, "lines": ["这个房间与这里的项目都会持续更新。未完成也是创作过程的一部分。", "可以慢慢逛，也可以去电脑里看看我的项目。"], "length": 24});

@@ -1,1 +1,1 @@
-import {makeProjectChannel} from "/chess/chess-tv.js"; export default makeProjectChannel(3);
+import {makeProjectChannel} from "/chess/chess-tv.js"; export default makeProjectChannel(4);
